@@ -1,0 +1,168 @@
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { useCallback, useEffect, useState } from 'react';
+
+import { API_ENDPOINT } from '../API';
+import { ActionType } from '../store/actionTypes';
+import { GlobalVars } from '../GlobalVars';
+import React from 'react';
+import { Store } from '../store';
+import { authToken } from '../_helpers/auth-header';
+// import { useToasts } from 'react-toast-notifications'
+import useUserState from './useUserState';
+
+const autoReconnections = [200, 200, 300, 300, 500, 500, 1000, 1000, 1500, 2000, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 5000, 10000, 20000, 10000, 20000, 40000, 60000, 100000];
+
+
+export const useSignalR = (): {
+    JoinPair: Function,
+    LeavePair: Function,
+    OnTicker: Function,
+    OnUserOrdersUpdate: Function,
+    Onweb_mobileactivate: Function,
+    Onweb_enabledtwofactor: Function,
+    Onweb_canceltwofactor: Function,
+    Onweb_mobileisonline_true: Function,
+    GetTerminalConnectionId: Function,
+    Onweb_2step_confirmed: Function,
+
+    ConnectPrivate: Function,
+    ConnectTerminal: Function
+} => {
+
+    const {
+        state: { terminalHubConnection, privateHubConnection },
+        dispatch
+    } = React.useContext(Store);
+
+
+    const { isSignedIn } = useUserState();
+    // const { addToast } = useToasts()
+
+    const GetTerminalConnectionId = useCallback(() => {
+        return terminalHubConnection?.connectionId;
+    }, [terminalHubConnection]);
+
+    const ConnectTerminal = useCallback(() => {
+        console.log("ConnectTerminal()")
+        if (!terminalHubConnection || terminalHubConnection === undefined) {
+            const hubConnect = new HubConnectionBuilder()
+                .withUrl(API_ENDPOINT + '/terminalhub')
+                .withAutomaticReconnect(autoReconnections)
+                .build();
+            try {
+                hubConnect.start().then(() => {
+                    dispatch({
+                        type: ActionType.SET_TERMINAL_HUBCONNECTION,
+                        payload: hubConnect
+                    });
+                })
+            }
+            catch (err) {
+                // addToast(err, {
+                //     appearance: 'error',
+                //     autoDismiss: false,
+                // })
+            }
+        }
+
+    }, [dispatch, terminalHubConnection]);
+
+    const ConnectPrivate = useCallback(() => {
+        return;
+        console.log("ConnectPrivate()")
+        if (!privateHubConnection || privateHubConnection === undefined || isSignedIn) {
+            const hubConnect = new HubConnectionBuilder()
+                .withUrl(API_ENDPOINT + '/privatehub', { accessTokenFactory: () => authToken() })
+                .withAutomaticReconnect(autoReconnections)
+                .build();
+            try {
+                hubConnect.start().then(() => {
+                    dispatch({
+                        type: ActionType.SET_PRIVATE_HUBCONNECTION,
+                        payload: hubConnect
+                    });
+
+                })
+            }
+            catch (err) {
+                // if (GlobalVars.isInDebugMode)
+                //     addToast(err, {
+                //         appearance: 'error',
+                //         autoDismiss: false,
+                //     })
+            }
+        }
+    }, [dispatch, isSignedIn, privateHubConnection])
+
+
+    async function JoinPair(pairId: string) {
+
+    }
+
+    async function LeavePair(pairId: string) {
+
+    }
+
+
+    const OnTicker = useCallback((ticker) => {
+        if (terminalHubConnection && terminalHubConnection.state === HubConnectionState.Connected) {
+            terminalHubConnection.on('ticker', ticker)
+        }
+    }, [terminalHubConnection])
+
+    const OnUserOrdersUpdate = useCallback((userOrdersUpdate) => {
+        if (privateHubConnection && privateHubConnection.state === HubConnectionState.Connected) {
+            privateHubConnection.on('userOrdersUpdate', userOrdersUpdate)
+        }
+    }, [privateHubConnection])
+
+    const Onweb_mobileactivate = useCallback((web_mobileactivate) => {
+        console.log("useCallback web_mobileactivate")
+        if (privateHubConnection && privateHubConnection.state === HubConnectionState.Connected) {
+            privateHubConnection.on('web_mobileactivate', web_mobileactivate)
+        }
+    }, [privateHubConnection])
+
+    const Onweb_enabledtwofactor = useCallback((web_enabledtwofactor) => {
+        console.log("useCallback web_enabledtwofactor")
+        if (privateHubConnection && privateHubConnection.state === HubConnectionState.Connected) {
+            privateHubConnection.on('web_enabledtwofactor', web_enabledtwofactor)
+        }
+    }, [privateHubConnection])
+
+    const Onweb_canceltwofactor = useCallback((web_canceltwofactor) => {
+        console.log("useCallback web_canceltwofactor")
+        if (privateHubConnection && privateHubConnection.state === HubConnectionState.Connected) {
+            privateHubConnection.on('web_canceltwofactor', web_canceltwofactor)
+        }
+    }, [privateHubConnection])
+
+    const Onweb_mobileisonline_true = useCallback((web_mobileisonline_true) => {
+        console.log("useCallback web_mobileisonline_true")
+        if (privateHubConnection && privateHubConnection.state === HubConnectionState.Connected) {
+            privateHubConnection.on('web_mobileisonline_true', web_mobileisonline_true)
+        }
+    }, [privateHubConnection])
+
+    const Onweb_2step_confirmed = useCallback((web_2step_confirmed) => {
+        console.log("useCallback web_2step_confirmed")
+        if (terminalHubConnection && terminalHubConnection.state === HubConnectionState.Connected) {
+            terminalHubConnection.on('web_2step_confirmed', web_2step_confirmed)
+        }
+    }, [terminalHubConnection])
+
+    return {
+        JoinPair: JoinPair,
+        LeavePair: LeavePair,
+        OnTicker: OnTicker,
+        OnUserOrdersUpdate: OnUserOrdersUpdate,
+        Onweb_mobileactivate: Onweb_mobileactivate,
+        Onweb_enabledtwofactor: Onweb_enabledtwofactor,
+        Onweb_canceltwofactor: Onweb_canceltwofactor,
+        Onweb_mobileisonline_true: Onweb_mobileisonline_true,
+        GetTerminalConnectionId: GetTerminalConnectionId,
+        Onweb_2step_confirmed: Onweb_2step_confirmed,
+        ConnectPrivate: ConnectPrivate,
+        ConnectTerminal: ConnectTerminal
+    };
+};

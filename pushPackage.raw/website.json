@@ -1,0 +1,8 @@
+{
+    "websiteName": "BITFLEX",
+    "websitePushID": "web.com.bit-flex",
+    "allowedDomains": ["https://bcflex.com"],
+    "urlFormatString": "https://bcflex.com/notification/%@/%@",
+    "authenticationToken": "KDgGNMnR85gmaynN5kgvbCUZ7VSyyf8Jc9CA",
+    "webServiceURL": "https://bcflex.com/push"
+}

@@ -1,0 +1,9 @@
+{
+  "uuid": "04540495-cd18-45b2-a5cb-9ada4d27e2b4",
+  "name": "zeus.trvpn.app",
+  "type": "ikev2-eap",
+  "remote": {
+    "addr": "zeus.trvpn.app"
+  }
+}
+e

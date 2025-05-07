@@ -1,0 +1,13 @@
+ {   
+     "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "95Z6SC5F94.com.cryptex.bitflex",
+            "paths": ["/confirmemail"]
+            }
+        ]
+    },
+    "webcredentials": {
+      "apps": [ "95Z6SC5F94.com.cryptex.bitflex" ]
+   },
+}

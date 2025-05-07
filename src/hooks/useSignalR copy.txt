@@ -1,0 +1,93 @@
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { useCallback, useEffect, useState } from 'react';
+
+import { API_ENDPOINT } from '../API';
+import { ActionType } from '../store/actionTypes';
+import React from 'react';
+import { Store } from '../store';
+import { authToken } from '../_helpers/auth-header';
+import useUserState from './useUserState';
+
+const autoReconnections = [200, 200, 300, 300, 500, 500, 1000, 1000, 1500, 2000, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 5000, 10000, 20000, 10000, 20000, 40000, 60000, 100000];
+
+class TerminalOnTicker {
+
+}
+
+export const useSignalR = (): [Function, Function, Function] => {
+
+    const {
+        state: { terminalHubConnection, privateHubConnection },
+        dispatch
+    } = React.useContext(Store);
+
+    const { isSignedIn } = useUserState();
+
+    const ConnectPublic = useCallback(async () => {
+        if (!dispatch) return;
+        const hubConnect = new HubConnectionBuilder()
+            .withUrl(API_ENDPOINT + '/terminalhub')
+            .withAutomaticReconnect(autoReconnections)
+            .build();
+        try {
+            await hubConnect.start()
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            dispatch({
+                type: ActionType.SET_TERMINAL_HUBCONNECTION,
+                payload: hubConnect
+            });
+        }
+    }, [dispatch]);
+
+    const ConnectPrivate = useCallback(async () => {
+        if (!dispatch) return;
+        const hubConnect = new HubConnectionBuilder()
+            .withUrl(API_ENDPOINT + '/privatehub', { accessTokenFactory: () => authToken() })
+            .withAutomaticReconnect(autoReconnections)
+            .build();
+        try {
+            await hubConnect.start()
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            dispatch({
+                type: ActionType.SET_PRIVATE_HUBCONNECTION,
+                payload: hubConnect
+            });
+        }
+    }, [dispatch]);
+
+    async function JoinPair(pairId: string) {
+
+    }
+
+    async function LeavePair(pairId: string) {
+
+    }
+
+    useEffect(() => {
+        // if (!privateHubConnection && isSignedIn)
+        //     ConnectPrivate()
+    }, [ConnectPrivate, isSignedIn, privateHubConnection]);
+
+    useEffect(() => {
+        // if (!terminalHubConnection)
+        //     ConnectPublic();
+    }, [ConnectPublic, terminalHubConnection]);
+
+
+    const OnTicker = useCallback((OnTicker) => {
+        if (terminalHubConnection && terminalHubConnection.state === HubConnectionState.Connected) {
+            terminalHubConnection.on('ticker', OnTicker)
+        }
+    }, [terminalHubConnection])
+
+
+    return [JoinPair, LeavePair, OnTicker];
+};

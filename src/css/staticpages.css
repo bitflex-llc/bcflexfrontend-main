@@ -1,0 +1,72 @@
+.bf-static-menuelem {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 150%;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 8px;
+    text-align: left;
+
+    padding-left: 15px;
+}
+
+.active {
+    color: white !important;
+    /* border-radius: 7px !important; */
+    background: linear-gradient(90deg, #cf8900 0%, #b89e14 100%);
+    /* width: 82%; */
+}
+
+/* tr:nth-child(noteven) {
+    background-color: #191e25;
+}
+
+tr:nth-child(even) {
+    background-color: #2A3541;
+} */
+
+.table-fee-td {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    /* identical to box height */
+    color: #8E9091;
+    text-align: center;
+    width: 22.5%;
+}
+
+.width10Percent{
+    width: 10% !important;
+}
+
+
+
+.table-fee-th {
+    text-align: center;
+    width: 22.5%;
+    background: #222a34;
+    color: white;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    /* identical to box height */
+    color: #FFFFFF;
+}
+
+.fee-h3 {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 33px;
+    /* identical to box height */
+    color: #FFFFFF;
+}

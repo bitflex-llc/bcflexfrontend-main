@@ -1,0 +1,9 @@
+{
+  "short_name": "BCFLEX ",
+  "name": "BCFLEX Exchange",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "gcm_sender_id": "24070800136"
+}
