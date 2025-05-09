@@ -2257,6 +2257,7 @@ select:-webkit-autofill:focus {
   /* padding-right: 8px;
   padding-left: 8px; */
   margin: 0 auto;
+  padding: 5px;
 }
 
 @media (max-width: 768px) {
@@ -2288,7 +2289,7 @@ a:hover {
   background: rgb(9, 9, 11) !important;
   /* float: 'left'; */
   display: flex;
-  border: 1px solid #433C3C;
+  border: 1px dashed rgb(39, 39, 42);
   box-shadow: 0 0 px #433C3C;
   overflow: hidden;
   height: 100%;
@@ -2718,7 +2719,7 @@ a:hover {
   font-style: normal;
   font-weight: bold;
   font-size: 36px;
-  line-height: 47px;
+  /* line-height: 47px; */
 }
 
 @media (max-width: 768px) {

@@ -376,7 +376,7 @@ export function CreateOrder({
                     }
                 }}>
                 <TabList>
-                    <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab'>Limit</Tab>
+                    {/* <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab'>Limit</Tab> */}
                     {/* <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab'>Market</Tab> */}
                 </TabList>
                 <div className="portlet-body">

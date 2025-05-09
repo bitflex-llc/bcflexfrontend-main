@@ -175,39 +175,39 @@ export function NavMenu({
                     {window.location.hostname === 'bcflex.in' && <div style={{ position: 'absolute', top: 8, right: -11 }}>{<img style={{ width: 22 }} src={india_flag} alt="" />}</div>}
                 </Link>
 
-                {isMobile && <div className={"font-roboto menuitem"} style={{ position: 'relative' }} onClick={() => {
+                {/* {isMobile && <div className={"font-roboto menuitem"} style={{ position: 'relative' }} onClick={() => {
                     history('/p2p')
                 }}>P2P
                     <div style={{ position: 'absolute', top: -7, right: -16, fontSize: 8, height: 9, background: Colors.bitFlexGoldenColor, padding: 1, paddingLeft: 3, paddingRight: 3, borderRadius: 3 }}>NEW</div>
-                </div>}
+                </div>} */}
 
                 {!isSmall &&
                     <>
                         {!isMobile &&
                             <>
-                                <div className={activeIndex === 0 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} onClick={() => {
+                                {/* <div className={activeIndex === 0 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} onClick={() => {
                                     setactiveIndex(0)
                                     history('/terminal/' + globalPairName)
-                                }}>Trade</div>
+                                }}>Trade</div> */}
 
                                 {/* <div className={activeIndex === 1 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} onClick={() => {
                                     setisListingRequestModalOpen(true)
                                     setactiveIndex(1)
                                 }}>Listing Request</div> */}
 
-                                <div className={activeIndex === 2 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
+                                {/* <div className={activeIndex === 2 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
                                     setactiveIndex(2)
                                     history('/nft')
                                 }}>NFT
                                     <div style={{ position: 'absolute', top: -7, right: -16, fontSize: 8, height: 9, background: Colors.bitFlexGoldenColor, padding: 1, paddingLeft: 3, paddingRight: 3, borderRadius: 3 }}>DEV</div>
-                                </div>
+                                </div> */}
 
-                                <div className={activeIndex === 2 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
+                                {/* <div className={activeIndex === 2 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
                                     setactiveIndex(3)
                                     history('/launchpad')
                                 }}>Launchpad
                                     <div style={{ position: 'absolute', top: -7, right: -16, fontSize: 8, height: 9, background: Colors.bitFlexGoldenColor, padding: 1, paddingLeft: 3, paddingRight: 3, borderRadius: 3 }}>DEV</div>
-                                </div>
+                                </div> */}
                                 {/* 
                                 <div className={activeIndex === 2 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
                                     setactiveIndex(100)
@@ -216,12 +216,12 @@ export function NavMenu({
                                     <div style={{ position: 'absolute', top: -7, right: -16, fontSize: 8, height: 9, background: Colors.bitFlexGoldenColor, padding: 1, paddingLeft: 3, paddingRight: 3, borderRadius: 3 }}>BETA</div>
                                 </div> */}
 
-                                <div className={activeIndex === 3 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
+                                {/* <div className={activeIndex === 3 ? "font-roboto menuitem selected bf-header-content-hide" : "font-roboto menuitem bf-header-content-hide"} style={{ position: 'relative' }} onClick={() => {
                                     setactiveIndex(3)
                                     history('/p2p')
                                 }}>P2P
                                     <div style={{ position: 'absolute', top: -7, right: -16, fontSize: 8, height: 9, background: Colors.bitFlexGoldenColor, padding: 1, paddingLeft: 3, paddingRight: 3, borderRadius: 3 }}>DEV</div>
-                                </div>
+                                </div> */}
                             </>
                         }
                         {isTerminal &&

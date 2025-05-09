@@ -49,7 +49,7 @@ const intialState: IState = {
   settings: undefined,
 
 
-  globalPairName: localStorage.getItem('globalPairName') || "BTC_USDT"
+  globalPairName: localStorage.getItem('globalPairName') || "PLUTO_INR"
 
 };
 

@@ -335,7 +335,7 @@ const RenderMarketTabs = ({
         <TabList>
           <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab' style={{ width: '10%', display: favMarkets.length === 0 ? 'none' : '' }}><FaStar className="star-active" style={{ margin: 'auto', paddingTop: 2 }} /></Tab>
           {markets.map(market => (
-            <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab' style={{ width: 55, fontSize: 17 }}>{market.symbol}</Tab>
+            <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab' style={{ width: '33.33333%', fontSize: 17 }}>{market.symbol}</Tab>
           ))}
           <Tab className='react-tabs__tab unactive-tab' selectedClassName='active-tab' style={{ width: 35, display: searchString.length === 0 ? 'none' : '' }}><FaSearch style={{ margin: 'auto', color: '#bdbdbd', paddingTop: 2 }} /></Tab>
         </TabList>
