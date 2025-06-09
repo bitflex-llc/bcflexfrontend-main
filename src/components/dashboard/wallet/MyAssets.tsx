@@ -239,8 +239,8 @@ export default function MyAssets() {
                             <tr>
                                 <th className='thFix stickyHeader tdFix-left noborder'>{!isMobile ? "Coin / Token / Asset" : "Currency"}</th>
                                 <th className='thFix stickyHeader noborder'>Available</th>
-                                {!isMobile && <th className='thFix stickyHeader noborder'>On Orders</th>}
-                                <th className='thFix stickyHeader noborder'>Total</th>
+                                {/* {!isMobile && <th className='thFix stickyHeader noborder'>On Orders</th>}
+                                <th className='thFix stickyHeader noborder'>Total</th> */}
                                 <th className='thFix stickyHeader noborder'>Actions</th>
                             </tr>
                         </thead>
