@@ -157,8 +157,8 @@ export default function MyAssets() {
                             </div>
                         </td>
                         <td className='tdFix'>{coinBalance.available?.toFixed(4)}</td>
-                        {!isMobile && <td className='tdFix'>{coinBalance.onOrders?.toFixed(4)}</td>}
-                        <td className='tdFix'>{coinBalance.total?.toFixed(4)}</td>
+                        {/* {!isMobile && <td className='tdFix'>{coinBalance.onOrders?.toFixed(4)}</td>} */}
+                        {/* <td className='tdFix'>{coinBalance.total?.toFixed(4)}</td> */}
                         <td className='tdFix' style={{ cursor: 'pointer', display: 'inline-flex', textAlign: 'center', width: isMobile ? '100%' : '95%', placeContent: 'space-evenly' }} onClick={() => {
 
                         }}>
