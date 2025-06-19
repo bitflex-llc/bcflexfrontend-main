@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { BFPortlet } from '../html/BFPortlet';
 import { BitflexOpenApi } from '../../_helpers/BitflexOpenApi';
-import { DispacherBaseTypes } from '.';
+import { DispatcherActionTypes } from '.';
 import { FaCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -45,9 +45,9 @@ export function Orders({
         OnUserOrdersUpdate((actionType: any, order: ApiGetOrders) => {
             switch (actionType) {
                 case "Add":
-                case "Update": dispatch_myOrders({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: order });
+                case "Update": dispatch_myOrders({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: order });
                     break;
-                case "Remove": dispatch_myOrders({ type: DispacherBaseTypes.DELETE, value: order });
+                case "Remove": dispatch_myOrders({ type: DispatcherActionTypes.DELETE, value: order });
                     break;
             }
         });
@@ -62,7 +62,7 @@ export function Orders({
         BitflexOpenApi.OrdersApi.apiVversionOrdersCancelPost("1.0", order.id).then(result => {
 
             if (result.data.result)
-                dispatch_myOrders({ type: DispacherBaseTypes.DELETE, value: order })
+                dispatch_myOrders({ type: DispatcherActionTypes.DELETE, value: order })
             else {
                 document.getElementById(order.id)?.style.setProperty("opacity", "1");
                 alert("[Orders] Error order cancel: " + result.data.reason)

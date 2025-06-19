@@ -7,7 +7,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { BFModalWindow } from '../../html/BFModalWindow';
 import { BitflexOpenApi } from '../../../_helpers/BitflexOpenApi';
 import { DepositModal } from './deposit';
-import { DispacherBaseTypes } from '../../terminal';
+import { DispatcherActionTypes } from '../../terminal';
 import { StaticPagesLayout } from '../../staticpages/StaticPagesLayout';
 import { WithdrawModal } from './WithdrawModal';
 import { useBitflexDeviceId } from '../../../hooks/useBitflexDeviceId';
@@ -77,7 +77,7 @@ export default function MyAssets() {
         BitflexOpenApi.UserApi.apiVversionUserBalanceslistGet("1.0",)
             .then(response =>
                 dispatch_balances({
-                    type: DispacherBaseTypes.INIT_LOAD,
+                    type: DispatcherActionTypes.INIT_LOAD,
                     value: response.data.balances
                 }))
             .finally(() => setcurrenciesLoading(false))
@@ -85,7 +85,7 @@ export default function MyAssets() {
 
         BitflexOpenApi.MarketsApi.apiVversionMarketsCurrenciesGet("1.0").then(response => {
             localStorage.setItem('currencies', JSON.stringify(response.data));
-            dispatch_currencies({ type: DispacherBaseTypes.INIT_LOAD, value: response.data });
+            dispatch_currencies({ type: DispatcherActionTypes.INIT_LOAD, value: response.data });
         });
     }
 
@@ -93,11 +93,11 @@ export default function MyAssets() {
     const [currencies, dispatch_currencies] = useReducer((currencies: Array<GetApiMarketsCurrenciesResponse>, { type, value }): Array<GetApiMarketsCurrenciesResponse> => {
         const index = currencies.findIndex((item) => item.name === value.name);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 setcurrenciesLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) return [...currencies, value];
                 else {
                     const newValue = [...currencies];
@@ -111,11 +111,11 @@ export default function MyAssets() {
     const [balances, dispatch_balances] = useReducer((balances: Array<GetBalanceRequestModel>, { type, value }): Array<GetBalanceRequestModel> => {
         const index = balances.findIndex((item) => item.currency === value.currency);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 setbalancesLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) return [...balances, value];
                 else {
                     const newBalances = [...balances];

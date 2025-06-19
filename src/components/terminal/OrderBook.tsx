@@ -1,4 +1,4 @@
-import { DispacherBaseTypes, ICurrentMarketState } from '.';
+import { DispatcherActionTypes, ICurrentMarketState } from '.';
 /* eslint-disable react-hooks/exhaustive-deps */
 import { IOrderBookUpdate, IOrderbookOrder } from '../../store/types';
 import { OrderViewModel, TradeType } from '../../api-wrapper/api';
@@ -102,11 +102,11 @@ export function OrderBook({
     const [bidOrdersInside, dispatch_bidOrdersInside] = useReducer((orders: Array<OrderRenderModel>, { type, value }): Array<OrderRenderModel> => {
         const index = orders.findIndex((item) => item.price === value.price);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 // setisOrderBookLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) {
                     return [...orders.sort((a, b) => (a.price! > b.price! ? -1 : 1)).slice(0, 25), value];
                 }
@@ -115,7 +115,7 @@ export function OrderBook({
                     newOrders[index] = value;
                     return newOrders.sort((a, b) => (a.price! > b.price! ? -1 : 1)).slice(0, 25);
                 }
-            case DispacherBaseTypes.DELETE:
+            case DispatcherActionTypes.DELETE:
                 return orders.filter((_, index) => index !== orders.findIndex((x) => x.price === value.price),);
             default:
                 return orders;
@@ -125,11 +125,11 @@ export function OrderBook({
     const [askOrdersInside, dispatch_askOrdersInside] = useReducer((orders: Array<OrderRenderModel>, { type, value }): Array<OrderRenderModel> => {
         const index = orders.findIndex((item) => item.price === value.price);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 // setisOrderBookLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) {
                     return [...orders.sort((a, b) => (b.price! > a.price! ? -1 : 1)).slice(0, 25), value];
                 } else {
@@ -137,7 +137,7 @@ export function OrderBook({
                     newOrders[index] = value;
                     return newOrders.sort((a, b) => (b.price! > a.price! ? -1 : 1)).slice(0, 25);
                 }
-            case DispacherBaseTypes.DELETE:
+            case DispatcherActionTypes.DELETE:
                 return orders.filter((_, index) => index !== orders.findIndex((x) => x.price === value.price),);
             default:
                 return orders;
@@ -146,14 +146,14 @@ export function OrderBook({
 
     useEffect(() => {
         bidOrders && dispatch_bidOrdersInside({
-            type: DispacherBaseTypes.INIT_LOAD,
+            type: DispatcherActionTypes.INIT_LOAD,
             value: bidOrders
         });
     }, [bidOrders])
 
     useEffect(() => {
         askOrders && dispatch_askOrdersInside({
-            type: DispacherBaseTypes.INIT_LOAD,
+            type: DispatcherActionTypes.INIT_LOAD,
             value: askOrders
         });
     }, [askOrders])
@@ -199,8 +199,8 @@ export function OrderBook({
                     comparer.buy?.added?.forEach(async (value) => {
                         console.log("comparer.buy?.added?", value)
                         value.isNew = true;
-                        dispatch_bidOrdersInside({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: value, });
-                        // dispatch_bidOrdersInside({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: value, });
+                        dispatch_bidOrdersInside({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: value, });
+                        // dispatch_bidOrdersInside({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: value, });
                         setTimeout(() => {
                             console.log(getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body))
                             getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body)?.classList.remove("removingOrder");
@@ -209,7 +209,7 @@ export function OrderBook({
                     comparer.sell?.added?.forEach(async (value) => {
                         console.log("comparer.sell?.added?", value)
                         value.isNew = true;
-                        dispatch_askOrdersInside({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: value, });
+                        dispatch_askOrdersInside({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: value, });
                         setTimeout(() => {
                             console.log(getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body))
                             getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body)?.classList.remove("removingOrder");
@@ -217,11 +217,11 @@ export function OrderBook({
                     });
 
                     comparer.buy?.updated?.forEach(async (value) => {
-                        dispatch_bidOrdersInside({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: value, });
+                        dispatch_bidOrdersInside({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: value, });
                         AnimateBuyRowCallback(value)
                     });
                     comparer.sell?.updated?.forEach(async (value) => {
-                        dispatch_askOrdersInside({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: value, });
+                        dispatch_askOrdersInside({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: value, });
                         AnimateSellRowCallback(value)
                     });
 
@@ -231,7 +231,7 @@ export function OrderBook({
                         //     getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body)?.classList.add("removingOrder");
                         // }, 20)
                         // setTimeout(() => { 
-                        dispatch_bidOrdersInside({ type: DispacherBaseTypes.DELETE, value: value, });
+                        dispatch_bidOrdersInside({ type: DispatcherActionTypes.DELETE, value: value, });
                         // }, 320)
                     });
                     comparer.sell?.removed?.forEach(async (value) => {
@@ -240,7 +240,7 @@ export function OrderBook({
                         //     getElementByAttribute("bf-datarow", value.price?.toFixed(8), document.body)?.classList.add("removingOrder");
                         // }, 20)
                         // setTimeout(() => { 
-                        dispatch_askOrdersInside({ type: DispacherBaseTypes.DELETE, value: value, });
+                        dispatch_askOrdersInside({ type: DispatcherActionTypes.DELETE, value: value, });
                         // }, 320)
                     });
 

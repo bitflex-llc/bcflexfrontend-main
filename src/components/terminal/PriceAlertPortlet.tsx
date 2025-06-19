@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BFGradientButton } from '../html/BFGradientButton';
 import { BFPortlet } from '../html/BFPortlet';
 import { BitflexOpenApi } from '../../_helpers/BitflexOpenApi';
-import { DispacherBaseTypes } from './index';
+import { DispatcherActionTypes } from './index';
 import { FaTrash } from 'react-icons/fa';
 import { Store } from '../../store';
 import { useTranslation } from 'react-i18next';
@@ -70,7 +70,7 @@ export function PriceAlertPortlet({
             .then(response => {
                 switch (response.data.status) {
                     case PriceAlertCreateStatus.Created:
-                        dispatch_userAlerts({ type: DispacherBaseTypes.INIT_LOAD, value: response.data.currentAlerts });
+                        dispatch_userAlerts({ type: DispatcherActionTypes.INIT_LOAD, value: response.data.currentAlerts });
                         break;
                     case PriceAlertCreateStatus.FailAlreadyExists:
                         BFNotifictionRef.current?.Notify(t('Error'), t('Price Already Exists'), BFNotificationType.Error);
@@ -87,7 +87,7 @@ export function PriceAlertPortlet({
         if (!userAlerts) return;
 
         BitflexOpenApi.NotificationsApi.apiVversionNotificationsPricealertDelete("1.0", alertId)
-        dispatch_userAlerts({ type: DispacherBaseTypes.DELETE, value: alertId });
+        dispatch_userAlerts({ type: DispatcherActionTypes.DELETE, value: alertId });
     }, [dispatch_userAlerts, userAlerts])
 
     useEffect(() => {

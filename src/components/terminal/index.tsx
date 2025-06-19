@@ -38,6 +38,12 @@ export enum DispacherBaseTypes {
     DELETE
 }
 
+export enum DispatcherActionTypes {
+    INIT_LOAD,
+    ADD_OR_UPDATE,
+    DELETE
+}
+
 export interface ICurrentMarketState {
     pairId: number;
     pairName: string;
@@ -57,7 +63,7 @@ export default function Terminal() {
 
     const { isSignedIn } = useUserState();
 
-    let { base_quote_pair = "POPEYE_INR" } = useParams<{ base_quote_pair: string }>();
+    let { base_quote_pair = "PLUTO_INR" } = useParams<{ base_quote_pair: string }>();
 
     const { width } = useWindowDimensions();
 

@@ -7,7 +7,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { BFPortlet } from '../../html/BFPortlet';
 import { BitflexOpenApi } from '../../../_helpers/BitflexOpenApi';
-import { DispacherBaseTypes } from '../../terminal';
+import { DispatcherActionTypes } from '../../terminal';
 import Moment from 'react-moment';
 import { StaticPagesLayout } from '../../staticpages/StaticPagesLayout';
 import { Store } from '../../../store';
@@ -38,11 +38,11 @@ export default function ActiveOrders({
     const [myOrders, dispatch_myorders] = useReducer((orders: Array<ApiGetOrders>, { type, value }): Array<ApiGetOrders> => {
         const index = orders.findIndex((item) => item.id === value.id);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 setisLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) return [...orders, value];
                 else {
                     const newOrders = [...orders];
@@ -50,7 +50,7 @@ export default function ActiveOrders({
                     return newOrders;
                 }
 
-            case DispacherBaseTypes.DELETE:
+            case DispatcherActionTypes.DELETE:
                 return orders.filter((_, index) => index !== orders.findIndex((x) => x.id === value.id),);
             default: return orders;
         }
@@ -61,7 +61,7 @@ export default function ActiveOrders({
         if (!isSignedIn || !globalPairName || !BitflexOpenApi.UserApi)
             return;
 
-        BitflexOpenApi.UserApi.apiVversionUserOrdersGet("1.0", globalPairName).then(response => dispatch_myorders({ type: DispacherBaseTypes.INIT_LOAD, value: response.data.openOrders }));
+        BitflexOpenApi.UserApi.apiVversionUserOrdersGet("1.0", globalPairName).then(response => dispatch_myorders({ type: DispatcherActionTypes.INIT_LOAD, value: response.data.openOrders }));
 
     }, [globalPairName, isSignedIn, dispatch_myorders]);
 
@@ -71,12 +71,12 @@ export default function ActiveOrders({
                 case "Add":
                 case "Update":
                     console.log("terminalHubConnection.on('userOrdersUpdate') ADD OR UPDATE", order)
-                    dispatch_myorders({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: order as ApiGetOrders });
+                    dispatch_myorders({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: order as ApiGetOrders });
                     break;
 
                 case "Remove":
                     console.log("terminalHubConnection.on('userOrdersUpdate') REMOVE", order)
-                    dispatch_myorders({ type: DispacherBaseTypes.DELETE, value: order });
+                    dispatch_myorders({ type: DispatcherActionTypes.DELETE, value: order });
                     break;
             }
         });
@@ -85,7 +85,7 @@ export default function ActiveOrders({
     function CancelOrder(order) {
         BitflexOpenApi.OrdersApi.apiVversionOrdersCancelPost("1.0", order.id).then(result => {
             if (result.data.result)
-                dispatch_myorders({ type: DispacherBaseTypes.DELETE, value: order })
+                dispatch_myorders({ type: DispatcherActionTypes.DELETE, value: order })
             else
                 alert("[ActiveOrders]Error order cancel: " + result.data.reason)
         })

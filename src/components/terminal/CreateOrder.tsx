@@ -4,7 +4,7 @@ import 'react-dropdown/style.css';
 
 import { ApiTickers, GetBalanceRequestModel, OrderTypes, OrderViewModel, PostOrdersRequest, TradeType, Type } from '../../api-wrapper/api';
 import { BFInput, BFInputType } from '../html/BFInput';
-import { DispacherBaseTypes, ICurrentMarketState } from './index';
+import { DispatcherActionTypes, ICurrentMarketState } from './index';
 import { FaArrowAltCircleLeft, FaArrowAltCircleRight, FaArrowCircleLeft, FaArrowLeft, FaCheck, FaQuestionCircle } from 'react-icons/fa';
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react';
@@ -225,7 +225,7 @@ export function CreateOrder({
         if (!OnBalanceUpdate) return;
 
         OnBalanceUpdate((balance: GetBalanceRequestModel) => {
-            dispatch_balances({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: balance });
+            dispatch_balances({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: balance });
         })
     }, [OnBalanceUpdate])
 
@@ -266,7 +266,7 @@ export function CreateOrder({
                     toastSuccess(orderTyped.tradeType! + ' Order updated with Reason: ' + result.data.order?.orderState + ' at ' + result.data.order?.price?.toFixed(8))
                 }
                 else {
-                    dispatch_myOrders({ type: DispacherBaseTypes.ADD_OR_UPDATE, value: result.data.order })
+                    dispatch_myOrders({ type: DispatcherActionTypes.ADD_OR_UPDATE, value: result.data.order })
                     toastSuccess(orderTyped.tradeType! + ' Order successfully created!')
                 }
 

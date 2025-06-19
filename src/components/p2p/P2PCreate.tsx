@@ -15,7 +15,7 @@ import Dropdown from 'react-dropdown';
 import { Store } from "../../store";
 import React from "react";
 import { GetBalanceRequestModel } from "../../api-wrapper";
-import { DispacherBaseTypes } from "../terminal";
+import { DispatcherActionTypes } from "../terminal";
 
 
 export default function P2PCreate() {
@@ -62,7 +62,7 @@ export default function P2PCreate() {
         BitflexOpenApi.UserApi.apiVversionUserBalanceslistGet("1.0",)
             .then(response =>
                 dispatch_balances({
-                    type: DispacherBaseTypes.INIT_LOAD,
+                    type: DispatcherActionTypes.INIT_LOAD,
                     value: response.data.balances
                 }))
     }, [])
@@ -70,10 +70,10 @@ export default function P2PCreate() {
     const [balances, dispatch_balances] = useReducer((balances: Array<GetBalanceRequestModel>, { type, value }): Array<GetBalanceRequestModel> => {
         const index = balances.findIndex((item) => item.currency === value.currency);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) return [...balances, value];
                 else {
                     const newBalances = [...balances];

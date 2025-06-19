@@ -20,7 +20,7 @@ import { useCryptoKeys } from '../../../hooks/useCryptoKeys';
 import { RequestSettingsTokenOverlay } from '../../dashboard/settings/security/RequestSettingsTokenOverlay';
 import { useParams } from 'react-router-dom';
 import { ICurrency } from '../../../store/types';
-import { DispacherBaseTypes } from '../../terminal';
+import { DispatcherActionTypes } from '../../terminal';
 // import Moment from 'moment';
 // import { Tabs, TabList, Tab, TabPanel } from 'redoc/typings/common-elements';
 import Moment from 'react-moment';
@@ -67,7 +67,7 @@ export default function MerchantPanel() {
 
         BitflexOpenApi.MarketsApi.apiVversionMarketsCurrenciesGet("1.0").then(response => {
             localStorage.setItem('currencies', JSON.stringify(response.data));
-            dispatch_currencies({ type: DispacherBaseTypes.INIT_LOAD, value: response.data });
+            dispatch_currencies({ type: DispatcherActionTypes.INIT_LOAD, value: response.data });
         });
     }, []);
 
@@ -75,11 +75,11 @@ export default function MerchantPanel() {
     const [currencies, dispatch_currencies] = useReducer((currencies: Array<GetApiMarketsCurrenciesResponse>, { type, value }): Array<GetApiMarketsCurrenciesResponse> => {
         const index = currencies.findIndex((item) => item.name === value.name);
         switch (type) {
-            case DispacherBaseTypes.INIT_LOAD: {
+            case DispatcherActionTypes.INIT_LOAD: {
                 // setcurrenciesLoading(false)
                 return value;
             }
-            case DispacherBaseTypes.ADD_OR_UPDATE:
+            case DispatcherActionTypes.ADD_OR_UPDATE:
                 if (index === -1) return [...currencies, value];
                 else {
                     const newValue = [...currencies];
