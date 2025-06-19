@@ -59,15 +59,219 @@ interface ValidationState {
 }
 
 // ====================================================================================
+// STYLES - How everything should look (inline styles instead of Tailwind)
+// ====================================================================================
+
+const styles = {
+  // Main container styles
+  bodyLogin: {
+    display: 'flex' as const, // Fixed: was 'row', should be 'flex'
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  // Checkbox container styles
+  checkboxContainer: {
+    width: '100%',
+    cursor: 'pointer',
+    display: 'flex'
+  },
+
+  // Checkbox inner box styles
+  checkboxBox: (isChecked: boolean) => ({
+    margin: 4,
+    borderRadius: 6,
+    padding: 8,
+    paddingLeft: 20,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 14,
+    border: '1px solid',
+    background: isChecked ? Colors.bitFlexGreenColor : 'transparent',
+    borderStyle: isChecked ? 'solid' : 'dashed',
+    borderColor: isChecked ? Colors.bitFlexGreenColor : '#433C3C'
+  }),
+
+  // Checkbox text styles
+  checkboxText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)'
+  },
+
+  // Checkbox icon styles
+  checkboxIcon: (isChecked: boolean) => ({
+    fontSize: 20,
+    color: 'white',
+    margin: 10,
+    opacity: isChecked ? 1 : 0.1
+  }),
+
+  // Security badge container styles
+  securityBadgeContainer: {
+    textAlign: 'center' as const,
+    paddingTop: 0
+  },
+
+  // Security badge text styles
+  securityBadgeText: {
+    color: 'rgba(255, 255, 255, 0.8)'
+  },
+
+  // Security badge URL box styles
+  securityBadgeBox: {
+    border: '1px solid #9CA3AF',
+    borderRadius: 9999,
+    padding: 8,
+    margin: 4,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: 320,
+    textAlign: 'center' as const,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  // Security badge URL text styles
+  securityBadgeUrl: {
+    marginLeft: 8
+  },
+
+  // HTTPS text styles
+  httpsText: {
+    color: Colors.bitFlexGreenColor
+  },
+
+  // Form field container styles
+  fieldContainer: {
+    marginTop: 16
+  },
+
+  // Form field container with more spacing
+  fieldContainerSpaced: {
+    marginTop: 12
+  },
+
+  // Submit button container styles
+  submitContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 32,
+    marginLeft: 4,
+    marginRight: 4
+  },
+
+  // Copyright text container styles
+  copyrightContainer: {
+    textAlign: 'center' as const,
+    marginTop: 10
+  },
+
+  // Modal content styles
+  modalContent: {
+    padding: 16,
+    textAlign: 'center' as const
+  },
+
+  // Modal text styles
+  modalText: {
+    marginBottom: 16,
+    color: 'rgba(255, 255, 255, 0.8)'
+  },
+
+  // Modal email text styles
+  modalEmailText: {
+    marginBottom: 24,
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.6)'
+  },
+
+  // Modal email value styles
+  modalEmailValue: {
+    color: 'white'
+  },
+
+  // Modal button container styles
+  modalButtonContainer: {
+    display: 'flex',
+    gap: 12,
+    justifyContent: 'center'
+  },
+
+  // OTP input container styles
+  otpContainer: {
+    marginTop: 10,
+    marginBottom: 6
+  },
+
+  // Two factor form container styles
+  twoFactorContainer: {
+    textAlign: 'center' as const
+  },
+
+  // reCAPTCHA disclaimer container styles
+  recaptchaContainer: {
+    textAlign: 'center' as const,
+    opacity: 0.15,
+    fontSize: 12,
+    marginTop: 16
+  },
+
+  // Form title spacing
+  formTitleSpacing: {
+    position: 'relative' as const
+  }
+};
+
+// ====================================================================================
+// COMPONENT DEFINITIONS - Smaller pieces of UI (MOVED OUTSIDE TO PREVENT RE-CREATION)
+// ====================================================================================
+
+// Checkbox for "remember this device" - MEMOIZED to prevent re-renders
+const RememberDeviceCheckbox = React.memo<{
+  isChecked: boolean;   // Is it checked?
+  onToggle: () => void; // What to do when clicked
+  text: string;         // What text to show
+}>(({ isChecked, onToggle, text }) => (
+  <div
+    style={styles.checkboxContainer}
+    onClick={onToggle} // Click anywhere to toggle
+  >
+    <div style={styles.checkboxBox(isChecked)}>
+      <div style={styles.checkboxText}>{text}</div>
+      <FaCheck style={styles.checkboxIcon(isChecked)} />
+    </div>
+  </div>
+));
+
+// Security badge showing the URL - MEMOIZED to prevent re-renders
+const SecurityBadge = React.memo(() => (
+  <div style={styles.securityBadgeContainer}>
+    <p style={styles.securityBadgeText}>Ensure that you are visiting bcflex.com</p>
+    <div style={styles.securityBadgeBox}>
+      <FaLock color={Colors.bitFlexGreenColor} size={13} />
+      <span style={styles.securityBadgeUrl}>
+        <span style={styles.httpsText}>https://</span>
+        bcflex.com
+      </span>
+    </div>
+  </div>
+));
+
+// ====================================================================================
 // MAIN COMPONENT - The signin page
 // ====================================================================================
 
 const SignIn: React.FC = () => {
-  
+
   // ====================================================================================
   // HOOKS - Get functionality from other parts of the app
   // ====================================================================================
-  
+
   const { setSignIn } = useUserState();                    // For managing user login state
   const navigate = useNavigate();                          // For going to other pages
   const { t } = useTranslation();                          // For translating text
@@ -79,14 +283,14 @@ const SignIn: React.FC = () => {
   // ====================================================================================
   // REFS - For directly accessing DOM elements
   // ====================================================================================
-  
+
   // Reference to the notification component so we can show messages
   const notificationRef = useRef<IBFNotification>(null);
 
   // ====================================================================================
   // STATE - Data that can change and cause re-renders
   // ====================================================================================
-  
+
   // Form data - what the user types in
   const [formData, setFormData] = useState<FormData>({
     email: '',      // Start with empty email
@@ -112,14 +316,14 @@ const SignIn: React.FC = () => {
 
   // What type of 2FA the user has enabled
   const [twoStepVerificationType, setTwoStepVerificationType] = useState<TwoStepVerificationTypes>();
-  
+
   // Google reCAPTCHA token for spam protection
   const [recaptchaToken, setRecaptchaToken] = useState('');
 
   // ====================================================================================
   // EFFECT HOOKS - Code that runs when component mounts or data changes
   // ====================================================================================
-  
+
   // Initialize component when it first loads
   useEffect(() => {
     // Function to set up the component
@@ -171,7 +375,7 @@ const SignIn: React.FC = () => {
 
     // Add the event listener
     document.addEventListener("keydown", handleKeyPress);
-    
+
     // Cleanup function - remove the event listener when component unmounts
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, [formData]); // Run again when form data changes
@@ -179,29 +383,29 @@ const SignIn: React.FC = () => {
   // ====================================================================================
   // FORM HANDLERS - Functions that handle form interactions
   // ====================================================================================
-  
+
   // Function to update form data
-  const updateFormData = (field: keyof FormData) => (value: string) => {
+  const updateFormData = useCallback((field: keyof FormData) => (value: string) => {
     // Update the specific field with the new value
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // If there was an error before, clear it
     if (ui.isFault) {
       setUi(prev => ({ ...prev, isFault: false }));
     }
-  };
+  }, [ui.isFault]); // Only recreate when isFault changes
 
   // Function to update validation state
-  const updateValidation = (field: keyof ValidationState) => (isValid: boolean) => {
+  const updateValidation = useCallback((field: keyof ValidationState) => (isValid: boolean) => {
     // Update the specific validation field
     setValidation(prev => ({ ...prev, [field]: isValid }));
-  };
+  }, []); // No dependencies - this function never changes
 
   // Function to show notifications to the user
-  const showNotification = (title: string, message: string, type: BFNotificationType) => {
+  const showNotification = useCallback((title: string, message: string, type: BFNotificationType) => {
     // Use the notification component to show a message
     notificationRef.current?.Notify(t(title), t(message), type);
-  };
+  }, [t]); // Only recreate when translation function changes
 
   // Function to get a fresh reCAPTCHA token
   const getRecaptchaToken = useCallback(async (): Promise<string> => {
@@ -248,13 +452,13 @@ const SignIn: React.FC = () => {
       // Always stop the loading state
       setUi(prev => ({ ...prev, isResendLoading: false }));
     }
-  }, [formData.email]);
+  }, [formData.email, showNotification]);
 
   // Function to handle the response from sign-in API
   const handleSignInResponse = useCallback((result: any) => {
     // Check what the server said and act accordingly
     switch (result.data.result) {
-      
+
       // reCAPTCHA failed - probably a bot
       case SignInResponseResult.ReCaptchav3Failed:
         showNotification('Error', 'ReCaptcha failed, try again', BFNotificationType.Error);
@@ -266,12 +470,12 @@ const SignIn: React.FC = () => {
         if (result.data.authToken) {
           // Set up the API with the new token
           BitflexOpenApi.Init(result.data.authToken);
-          
+
           // Save the user's email if provided
           if (result.data.email) {
             localStorage.setItem("obfuscatedEmail", result.data.email);
           }
-          
+
           // Save remember device token if user chose to remember
           if (result.data.rememberDeviceToken && ui.rememberDevice) {
             localStorage.setItem("rememberDeviceId", result.data.rememberDeviceToken);
@@ -319,7 +523,7 @@ const SignIn: React.FC = () => {
       default:
         showNotification('Error', 'Unknown error occurred', BFNotificationType.Error);
     }
-  }, [navigate, setSignIn, ui.rememberDevice]);
+  }, [navigate, setSignIn, ui.rememberDevice, showNotification]);
 
   // Main submit function - handles the login attempt
   const handleSubmit = useCallback(async () => {
@@ -335,7 +539,7 @@ const SignIn: React.FC = () => {
     try {
       // Get a fresh reCAPTCHA token
       const token = await getRecaptchaToken();
-      
+
       // Call the sign-in API
       const response = await BitflexOpenApi.SignApi.apiVversionSignSigninPost("1.0", {
         email: formData.email,
@@ -344,9 +548,9 @@ const SignIn: React.FC = () => {
         bitflexDeviceId: bitflexDeviceId,
         rememberedDeviceToken: localStorage.getItem("rememberDeviceId"),
         // If we need 2FA and have a code, include it
-        ...(ui.requireTfa && formData.otp && { 
+        ...(ui.requireTfa && formData.otp && {
           googleTfaCode: formData.otp,
-          rememberDevice: ui.rememberDevice 
+          rememberDevice: ui.rememberDevice
         })
       });
 
@@ -359,7 +563,7 @@ const SignIn: React.FC = () => {
       // Always stop the loading state
       setUi(prev => ({ ...prev, isLoading: false }));
     }
-  }, [formData, ui, bitflexDeviceId, getRecaptchaToken, handleSignInResponse]);
+  }, [formData, ui, bitflexDeviceId, getRecaptchaToken, handleSignInResponse, showNotification]);
 
   // Function to handle 2FA submission
   const handleTwoFactorSubmit = useCallback(async () => {
@@ -371,202 +575,31 @@ const SignIn: React.FC = () => {
 
     // Use the main submit function
     await handleSubmit();
-  }, [formData, handleSubmit]);
+  }, [formData, handleSubmit, showNotification]);
 
-  // ====================================================================================
-  // COMPONENT DEFINITIONS - Smaller pieces of UI
-  // ====================================================================================
-  
-  // Checkbox for "remember this device"
-  const RememberDeviceCheckbox: React.FC<{
-    isChecked: boolean;   // Is it checked?
-    onToggle: () => void; // What to do when clicked
-    text: string;         // What text to show
-  }> = ({ isChecked, onToggle, text }) => (
-    <div 
-      className="w-full cursor-pointer flex"
-      onClick={onToggle} // Click anywhere to toggle
-    >
-      <div 
-        className="m-1 rounded-md p-2 pl-5 flex justify-between items-center w-full mb-3.5 border"
-        style={{
-          // Change appearance based on checked state
-          background: isChecked ? Colors.bitFlexGreenColor : 'transparent',
-          borderStyle: isChecked ? 'solid' : 'dashed',
-          borderColor: isChecked ? Colors.bitFlexGreenColor : '#433C3C',
-        }}
-      >
-        <div className="text-sm text-white/80">{text}</div>
-        <FaCheck 
-          className="text-xl text-white m-2.5"
-          style={{ opacity: isChecked ? 1 : 0.1 }} // Show/hide checkmark
-        />
-      </div>
-    </div>
-  );
+  // Close modal handler - MEMOIZED to prevent re-creation
+  const handleCloseResendModal = useCallback(() => {
+    setUi(prev => ({ ...prev, showResendModal: false }));
+  }, []);
 
-  // Security badge showing the URL
-  const SecurityBadge: React.FC = () => (
-    <div className="text-center pt-0">
-      <p className="text-white/80">Ensure that you are visiting bcflex.com</p>
-      <div 
-        className="border border-gray-400 rounded-full p-2 m-1 mx-auto max-w-xs text-center flex justify-center items-center"
-      >
-        <FaLock color={Colors.bitFlexGreenColor} size={13} />
-        <span className="ml-2">
-          <span style={{ color: Colors.bitFlexGreenColor }}>https://</span>
-          bcflex.com
-        </span>
-      </div>
-    </div>
-  );
-
-  // Modal for resending email confirmation
-  const ResendEmailModal: React.FC = () => (
-    <BFModalWindow 
-      isOpen={ui.showResendModal}  // Show when state says to
-      title={t('Email Not Confirmed')} 
-      onClose={() => setUi(prev => ({ ...prev, showResendModal: false }))} // Close when X clicked
-    >
-      <BFNotification ref={notificationRef} />
-      <div className="p-4 text-center">
-        <p className="mb-4 text-white/80">
-          <Trans>Your email address has not been confirmed yet. Would you like us to resend the confirmation email?</Trans>
-        </p>
-        <p className="mb-6 text-sm text-white/60">
-          <Trans>Email:</Trans> <span className="text-white">{formData.email}</span>
-        </p>
-        
-        <div className="flex gap-3 justify-center">
-          {/* Cancel button */}
-          <BFGradientButton
-            buttonType={BFGradientButtonType.Destructive}
-            text={t('Cancel')}
-            onPress={() => setUi(prev => ({ ...prev, showResendModal: false }))}
-            width="120px"
-          />
-          {/* Resend button */}
-          <BFGradientButton
-            buttonType={BFGradientButtonType.Action}
-            text={t('Resend Email')}
-            isLoading={ui.isResendLoading} // Show spinner when loading
-            onPress={handleResendEmailConfirmation}
-            width="120px"
-          />
-        </div>
-      </div>
-    </BFModalWindow>
-  );
-
-  // Main login form
-  const LoginForm: React.FC = () => (
-    <div>
-      {/* Security badge at the top */}
-      <SecurityBadge />
-      
-      {/* Email input field */}
-      <div className="mt-4">
-        <label><Trans>Email</Trans></label>
-        <BFInput
-          onValidated={updateValidation('isEmailValid')} // Update validation when changed
-          type={BFInputType.Email}
-          placeholder={t('Email used at registration')}
-          onValue={updateFormData('email')} // Update form data when changed
-          isError={ui.isFault} // Show error styling if needed
-        />
-      </div>
-
-      {/* Password input field */}
-      <div className="mt-3">
-        <label><Trans>Password</Trans></label>
-        <BFInput
-          onValidated={updateValidation('isPasswordValid')} // Update validation when changed
-          type={BFInputType.Password}
-          placeholder={t('Password')}
-          onValue={updateFormData('password')} // Update form data when changed
-          isError={ui.isFault} // Show error styling if needed
-        />
-      </div>
-
-      {/* Submit button and forgot password link */}
-      <div className="flex justify-between items-center mt-8 mx-1">
-        <BFGradientButton 
-          isDisabled={!validation.isEmailValid || !validation.isPasswordValid} // Disable if invalid
-          isLoading={ui.isLoading} // Show spinner when loading
-          buttonType={BFGradientButtonType.Action} 
-          text={t('Submit')} 
-          onPress={handleSubmit} // Call submit function when clicked
-        />
-        <Link to="/signing/restore" className="dot">
-          Forgot Password?
-        </Link>
-      </div>
-
-      {/* Sign up link */}
-      <div className="create-acc">
-        <p>
-          <Link to="/signup">
-            Don't Have an Account? <span className="text-yellow-600">Sign up</span>
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-
-  // Two-factor authentication form
-  const TwoFactorForm: React.FC = () => (
-    <div className="text-center">
-      <h3 className="form-title">Account Secured</h3>
-      <p>Enter one-time-password from Authenticator App</p>
-      <img src={bf_shield} width="25%" alt="Security Shield" />
-      
-      {/* OTP input field */}
-      <div className="mt-2.5 mb-1.5">
-        <OTPInput
-          autoFocus // Focus this field automatically
-          isNumberInput // Only allow numbers
-          length={6} // 6 digits long
-          className="otpContainer"
-          inputClassName="otpInput"
-          onChangeOTP={(otp) => {
-            // When user enters 6 digits, save it
-            if (otp.length === 6) {
-              updateFormData('otp')(otp);
-            }
-          }}
-        />
-      </div>
-
-      {/* Remember device checkbox */}
-      <RememberDeviceCheckbox 
-        isChecked={ui.rememberDevice} 
-        onToggle={() => setUi(prev => ({ ...prev, rememberDevice: !prev.rememberDevice }))}
-        text={t('Remember this device?')} 
-      />
-
-      {/* Confirm button */}
-      <BFGradientButton 
-        buttonType={BFGradientButtonType.Action} 
-        width="98%" 
-        text={t('Confirm')} 
-        onPress={handleTwoFactorSubmit} // Call 2FA submit function
-      />
-    </div>
-  );
+  // Toggle remember device handler - MEMOIZED to prevent re-creation
+  const handleToggleRememberDevice = useCallback(() => {
+    setUi(prev => ({ ...prev, rememberDevice: !prev.rememberDevice }));
+  }, []);
 
   // ====================================================================================
   // MAIN RENDER - What actually gets shown on the page
   // ====================================================================================
-  
+
   return (
-    <div className="body-login login flex items-center justify-center" id="maindiv">
-      
+    <div className="body-login login" style={styles.bodyLogin} id="maindiv">
+
       {/* Logo at the top */}
       <div className="logo">
         <Link to="/terminal">
-          <img 
-            src={BitflexLogo} 
-            alt="Bitflex Logo" 
+          <img
+            src={BitflexLogo}
+            alt="Bitflex Logo"
             width={isMobile ? '80%' : 350} // Smaller on mobile
           />
         </Link>
@@ -575,19 +608,67 @@ const SignIn: React.FC = () => {
       {/* Main content area */}
       <div className="content">
         <BFNotification ref={notificationRef} />
-        
+
         <div className="box-login">
-          
+
           {/* Regular login form */}
-          <div id="stay-in-place" className="relative">
+          <div id="stay-in-place" style={styles.formTitleSpacing}>
             <h3 className="form-title"><Trans>Sign In</Trans></h3>
-            
+
             <div className={!ui.requireTfa ? '' : 'app-hover-disabled'}>
-              <LoginForm />
+              {/* Security badge at the top */}
+              <SecurityBadge />
+
+              {/* Email input field */}
+              <div style={styles.fieldContainer}>
+                <label><Trans>Email</Trans></label>
+                <BFInput
+                  onValidated={updateValidation('isEmailValid')} // Update validation when changed
+                  type={BFInputType.Email}
+                  placeholder={t('Email used at registration')}
+                  onValue={updateFormData('email')} // Update form data when changed
+                  isError={ui.isFault} // Show error styling if needed
+                />
+              </div>
+
+              {/* Password input field */}
+              <div style={styles.fieldContainerSpaced}>
+                <label><Trans>Password</Trans></label>
+                <BFInput
+                  onValidated={updateValidation('isPasswordValid')} // Update validation when changed
+                  type={BFInputType.Password}
+                  placeholder={t('Password')}
+                  onValue={updateFormData('password')} // Update form data when changed
+                  isError={ui.isFault} // Show error styling if needed
+                />
+              </div>
+
+              {/* Submit button and forgot password link */}
+              <div style={styles.submitContainer}>
+                <BFGradientButton
+                  isDisabled={!validation.isEmailValid || !validation.isPasswordValid} // Disable if invalid
+                  isLoading={ui.isLoading} // Show spinner when loading
+                  buttonType={BFGradientButtonType.Action}
+                  text={t('Submit')}
+                  onPress={handleSubmit} // Call submit function when clicked
+                />
+                <Link to="/signing/restore" className="dot">
+                  Forgot Password?
+                </Link>
+              </div>
+
+              {/* Sign up link */}
+              <div className="create-acc">
+                <p>
+                  <Link to="/signup">
+                    Don't Have an Account? <span style={{ color: '#cf8900' }}>Sign up</span>
+                  </Link>
+                </p>
+              </div>
             </div>
 
             {/* reCAPTCHA disclaimer */}
-            <div className="text-center opacity-15 text-xs mt-4">
+            <div style={styles.recaptchaContainer}>
               This site is protected by reCAPTCHA and the Google
               <a href="https://policies.google.com/privacy"> Privacy Policy</a> and
               <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
@@ -597,21 +678,90 @@ const SignIn: React.FC = () => {
           {/* Two-factor authentication form (shown when needed) */}
           <div className={`${!ui.requireTfa ? 'app-hover-disabled' : 'app-hover-disabled app-hover-active'}`}>
             {ui.requireTfa && twoStepVerificationType === TwoStepVerificationTypes.Google && (
-              <TwoFactorForm />
+              <div style={styles.twoFactorContainer}>
+                <h3 className="form-title">Account Secured</h3>
+                <p>Enter one-time-password from Authenticator App</p>
+                <img src={bf_shield} width="25%" alt="Security Shield" />
+
+                {/* OTP input field */}
+                <div style={styles.otpContainer}>
+                  <OTPInput
+                    autoFocus // Focus this field automatically
+                    isNumberInput // Only allow numbers
+                    length={6} // 6 digits long
+                    className="otpContainer"
+                    inputClassName="otpInput"
+                    onChangeOTP={(otp) => {
+                      // When user enters 6 digits, save it
+                      if (otp.length === 6) {
+                        updateFormData('otp')(otp);
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Remember device checkbox */}
+                <RememberDeviceCheckbox
+                  isChecked={ui.rememberDevice}
+                  onToggle={handleToggleRememberDevice}
+                  text={t('Remember this device?')}
+                />
+
+                {/* Confirm button */}
+                <BFGradientButton
+                  buttonType={BFGradientButtonType.Action}
+                  width="98%"
+                  text={t('Confirm')}
+                  onPress={handleTwoFactorSubmit} // Call 2FA submit function
+                />
+              </div>
             )}
           </div>
         </div>
       </div>
 
       {/* Copyright notice */}
-      <div className="text-center mt-2.5">
+      <div style={styles.copyrightContainer}>
         <p className="neon">
           Flex Technologies Limited. 2021-{new Date().getFullYear()}
         </p>
       </div>
 
-      {/* Email resend modal (shown when needed) */}
-      <ResendEmailModal />
+      {/* Email resend modal (shown when needed) - ONLY RENDER WHEN NEEDED */}
+      {ui.showResendModal && (
+        <BFModalWindow
+          isOpen={ui.showResendModal}
+          title={t('Email Not Confirmed')}
+          onClose={handleCloseResendModal}
+        >
+          <div style={styles.modalContent}>
+            <p style={styles.modalText}>
+              <Trans>Your email address has not been confirmed yet. Would you like us to resend the confirmation email?</Trans>
+            </p>
+            <p style={styles.modalEmailText}>
+              <Trans>Email:</Trans> <span style={styles.modalEmailValue}>{formData.email}</span>
+            </p>
+
+            <div style={styles.modalButtonContainer}>
+              {/* Cancel button */}
+              <BFGradientButton
+                buttonType={BFGradientButtonType.Destructive}
+                text={t('Cancel')}
+                onPress={handleCloseResendModal}
+                width="120px"
+              />
+              {/* Resend button */}
+              <BFGradientButton
+                buttonType={BFGradientButtonType.Action}
+                text={t('Resend Email')}
+                isLoading={ui.isResendLoading} // Show spinner when loading
+                onPress={handleResendEmailConfirmation}
+                width="120px"
+              />
+            </div>
+          </div>
+        </BFModalWindow>
+      )}
     </div>
   );
 };

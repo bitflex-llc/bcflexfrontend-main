@@ -19,18 +19,6 @@ import { sign } from 'crypto';
 
 export default function Signup() {
 
-    let fxProps = {
-        count: 2,
-        interval: 2000,
-        colors: [Colors.bitFlexGoldenColor, Colors.bitflexGolderColor2, Colors.bitFlexBloodRed],
-        particleTimeout: 1000,
-        calc: (props, i) => ({
-            ...props,
-            x: (i + 1) * (window.innerWidth / 3) - (i + 1) * 100 + 150,
-            y: 200 + 150 + Math.random() * 100 - 50 + (i === 2 ? -80 : 0)
-        })
-    }
-
     const [accountCreated, setaccountCreated] = useState(false);
 
     const [isFault, setisFault] = React.useState(false);

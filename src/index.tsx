@@ -10,6 +10,8 @@ import React from "react";
 import { Buffer } from 'buffer';
 const baseName = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 
+
+
 // @ts-ignore
 window.Buffer = Buffer;
 
