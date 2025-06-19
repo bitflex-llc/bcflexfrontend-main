@@ -1,255 +1,336 @@
-﻿import { BFGradientButton, BFGradientButtonType } from '../../html/BFGradientButton';
-import { DeviceType, GetApiMarketsCurrenciesResponse, GetBalanceRequestModel } from '../../../api-wrapper';
+﻿import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isMobile, isSafari } from 'react-device-detect';
-import { useEffect, useReducer, useState } from 'react';
-
-import { BFModalWindow } from '../../html/BFModalWindow';
-import { BitflexOpenApi } from '../../../_helpers/BitflexOpenApi';
-import { DepositModal } from './deposit';
-import { DispatcherActionTypes } from '../../terminal';
-import { StaticPagesLayout } from '../../staticpages/StaticPagesLayout';
-import { WithdrawModal } from './WithdrawModal';
-import { useBitflexDeviceId } from '../../../hooks/useBitflexDeviceId';
-import { useCallback } from 'react';
-import { useCryptoKeys } from '../../../hooks/useCryptoKeys';
+import { isMobile } from 'react-device-detect';
 import { useLocation } from 'react-router-dom';
+import useSWR from 'swr';
+
+import { BFGradientButton, BFGradientButtonType } from '../../html/BFGradientButton';
+import { BFModalWindow } from '../../html/BFModalWindow';
+import { StaticPagesLayout } from '../../staticpages/StaticPagesLayout';
+import { DepositModal } from './deposit';
+import { WithdrawModal } from './WithdrawModal';
 import { DepositINRModal } from './depositinr';
 import { WithdrawInr } from './withdrawInr';
+// import NotificationSetup from './NotificationSetup';
 
+import { BitflexOpenApi } from '../../../_helpers/BitflexOpenApi';
+import { useBitflexDeviceId } from '../../../hooks/useBitflexDeviceId';
+import { useCryptoKeys } from '../../../hooks/useCryptoKeys';
 
-interface StateType {
-    requireSetPush: boolean
+import { 
+  GetApiMarketsCurrenciesResponse, 
+  GetBalanceRequestModel 
+} from '../../../api-wrapper';
+import NotificationSetup from './NotificationSetup';
+
+// ====================================================================================
+// TYPES
+// ====================================================================================
+
+interface BalanceRowData {
+  currency: string;
+  name: string;
+  available: number;
+  image: string;
 }
 
-export default function MyAssets() {
+// ====================================================================================
+// CONSTANTS
+// ====================================================================================
 
-    const location = useLocation();
+const SWR_CONFIG = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: true,
+  refreshInterval: 30000,
+  errorRetryCount: 3,
+  errorRetryInterval: 5000
+} as const;
 
-    const [isDepositModalActive, setisDepositModalActive] = useState(false);
-    const [currencyToDeposit, setcurrencyToDeposit] = useState<string>();
+// ====================================================================================
+// FETCHERS
+// ====================================================================================
 
-    const [isWithdrawModalActive, setisWithdrawModalActive] = useState(false);
-    const [currencyToWithdraw, setcurrencyToWithdraw] = useState<string>();
+const fetchBalances = async (): Promise<GetBalanceRequestModel[]> => {
+  const response = await BitflexOpenApi.UserApi.apiVversionUserBalanceslistGet("1.0");
+  return response.data.balances || [];
+};
 
-    const { bitflexDeviceId } = useBitflexDeviceId();
+const fetchCurrencies = async (): Promise<GetApiMarketsCurrenciesResponse[]> => {
+  const response = await BitflexOpenApi.MarketsApi.apiVversionMarketsCurrenciesGet("1.0");
+  const currencies = response.data || [];
+  
+  try {
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  } catch (error) {
+    console.warn('Failed to cache currencies:', error);
+  }
+  
+  return currencies;
+};
 
-    const [balancesLoading, setbalancesLoading] = useState(true);
-    const [currenciesLoading, setcurrenciesLoading] = useState(true);
+// ====================================================================================
+// COMPONENTS
+// ====================================================================================
 
-    const { t } = useTranslation();
+const BalanceRow: React.FC<{
+  balance: BalanceRowData;
+  onDeposit: (currency: string) => void;
+  onWithdraw: (currency: string) => void;
+}> = React.memo(({ balance, onDeposit, onWithdraw }) => {
+  const { t } = useTranslation();
 
+  const handleDeposit = useCallback(() => {
+    onDeposit(balance.currency);
+  }, [balance.currency, onDeposit]);
 
-    const { publicKey } = useCryptoKeys();
+  const handleWithdraw = useCallback(() => {
+    onWithdraw(balance.currency);
+  }, [balance.currency, onWithdraw]);
 
-    const checkRemotePermission = async function (permissionData) {
-        if (isMobile) return;
-        if (permissionData.permission === 'default') {
-            // This is a new web service URL and its validity is unknown.
-            const result = window.safari.pushNotification.requestPermission(
-                'https://bcflex.com/push', // The web service URL.
-                'web.com.bit-flex',     // The Website Push ID.
-                { deviceId: bitflexDeviceId }, // Data that you choose to send to your server to help you identify the user.
-                checkRemotePermission         // The callback function.
-            );
+  return (
+    <tr style={{ fontSize: 12, height: 30, alignItems: 'center' }}>
+      <td className="tdFix tdFix-left">
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <img 
+            alt={balance.currency}
+            style={{ maxHeight: 18, marginTop: 4, marginRight: 5 }}
+            src={balance.image}
+            loading="lazy"
+          />
+          <div>
+            {!isMobile && `${balance.name} | `}
+            {balance.currency}
+          </div>
+        </div>
+      </td>
+      
+      <td className="tdFix">
+        {balance.available.toFixed(4)}
+      </td>
+      
+      <td 
+        className="tdFix"
+        style={{
+          cursor: 'pointer',
+          display: 'inline-flex',
+          textAlign: 'center',
+          width: isMobile ? '100%' : '95%',
+          placeContent: 'space-evenly'
+        }}
+      >
+        <BFGradientButton
+          text={t('Deposit')}
+          buttonType={isMobile ? BFGradientButtonType.GoldenBorderActionSmall : BFGradientButtonType.GoldenBorder}
+          width={isMobile ? 'unset' : 95}
+          onPress={handleDeposit}
+        />
+        
+        <BFGradientButton
+          text={t('Withdraw')}
+          buttonType={isMobile ? BFGradientButtonType.GoldenBorderActionSmall : BFGradientButtonType.GoldenBorder}
+          width={isMobile ? 'unset' : 95}
+          onPress={handleWithdraw}
+        />
+      </td>
+    </tr>
+  );
+});
 
-            console.log("result", result)
-        }
-        else if (permissionData.permission === 'denied') {
-            // The user said no.
-        }
-        else if (permissionData.permission === 'granted') {
-            BitflexOpenApi.ApplicationApi.apiVversionApplicationSetpushtokenPost("1.0", {
-                pushToken: permissionData.deviceToken,
-                description: "Test Safari Browser Data",
-                device: DeviceType.Safari,
-                publicKey: publicKey
-            }).catch(error => console.warn("ApplicationApi.apiVversionApplicationSetpushtokenPost", error))
-        }
-    };
+const BalanceTable: React.FC<{
+  data: BalanceRowData[];
+  onDeposit: (currency: string) => void;
+  onWithdraw: (currency: string) => void;
+}> = React.memo(({ data, onDeposit, onWithdraw }) => (
+  <div style={{ overflowX: 'auto' }}>
+    <table className="table table-striped" style={{ overflow: 'scroll' }}>
+      <thead>
+        <tr>
+          <th className="thFix stickyHeader tdFix-left noborder">
+            {!isMobile ? "Coin / Token / Asset" : "Currency"}
+          </th>
+          <th className="thFix stickyHeader noborder">Available</th>
+          <th className="thFix stickyHeader noborder">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((balance) => (
+          <BalanceRow
+            key={balance.currency}
+            balance={balance}
+            onDeposit={onDeposit}
+            onWithdraw={onWithdraw}
+          />
+        ))}
+      </tbody>
+    </table>
+  </div>
+));
 
-    useEffect(() => {
-        LoadData();
-    }, [])
+// ====================================================================================
+// MAIN COMPONENT
+// ====================================================================================
 
-    async function LoadData() {
-        setcurrenciesLoading(true)
-        BitflexOpenApi.UserApi.apiVversionUserBalanceslistGet("1.0",)
-            .then(response =>
-                dispatch_balances({
-                    type: DispatcherActionTypes.INIT_LOAD,
-                    value: response.data.balances
-                }))
-            .finally(() => setcurrenciesLoading(false))
+const MyAssets: React.FC = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const { bitflexDeviceId } = useBitflexDeviceId();
+  const { publicKey } = useCryptoKeys();
 
+  // Modal states
+  const [depositModal, setDepositModal] = useState<{
+    isOpen: boolean;
+    currency?: string;
+  }>({ isOpen: false });
 
-        BitflexOpenApi.MarketsApi.apiVversionMarketsCurrenciesGet("1.0").then(response => {
-            localStorage.setItem('currencies', JSON.stringify(response.data));
-            dispatch_currencies({ type: DispatcherActionTypes.INIT_LOAD, value: response.data });
-        });
-    }
+  const [withdrawModal, setWithdrawModal] = useState<{
+    isOpen: boolean;
+    currency?: string;
+  }>({ isOpen: false });
 
+  const [showNotificationSetup, setShowNotificationSetup] = useState(false);
 
-    const [currencies, dispatch_currencies] = useReducer((currencies: Array<GetApiMarketsCurrenciesResponse>, { type, value }): Array<GetApiMarketsCurrenciesResponse> => {
-        const index = currencies.findIndex((item) => item.name === value.name);
-        switch (type) {
-            case DispatcherActionTypes.INIT_LOAD: {
-                setcurrenciesLoading(false)
-                return value;
-            }
-            case DispatcherActionTypes.ADD_OR_UPDATE:
-                if (index === -1) return [...currencies, value];
-                else {
-                    const newValue = [...currencies];
-                    newValue[index] = value;
-                    return newValue;
-                }
-            default: return currencies;
-        }
-    }, []);
+  // SWR hooks for data fetching
+  const { 
+    data: balances = [], 
+    isLoading: balancesLoading,
+    mutate: mutateBalances 
+  } = useSWR('balances', fetchBalances, SWR_CONFIG);
 
-    const [balances, dispatch_balances] = useReducer((balances: Array<GetBalanceRequestModel>, { type, value }): Array<GetBalanceRequestModel> => {
-        const index = balances.findIndex((item) => item.currency === value.currency);
-        switch (type) {
-            case DispatcherActionTypes.INIT_LOAD: {
-                setbalancesLoading(false)
-                return value;
-            }
-            case DispatcherActionTypes.ADD_OR_UPDATE:
-                if (index === -1) return [...balances, value];
-                else {
-                    const newBalances = [...balances];
-                    newBalances[index] = value;
-                    return newBalances;
-                }
-            default: return balances;
-        }
-    }, []);
+  const { 
+    data: currencies = [], 
+    isLoading: currenciesLoading 
+  } = useSWR('currencies', fetchCurrencies, SWR_CONFIG);
 
+  // Computed data
+  const balanceData = useMemo((): BalanceRowData[] => {
+    if (!balances.length || !currencies.length) return [];
 
-    useEffect(() => {
-        if (isMobile) return;
-        if (location.state && location.state.requireSetPush) {
-            BitflexOpenApi.ApplicationApi.apiVversionApplicationPublicKeyPut("1.0", {
-                bitflexDeviceId: bitflexDeviceId,
-                deviceType: isSafari ? DeviceType.Safari : DeviceType.Chrome,
-                publicKeyPEM: publicKey
-            });
-        }
-    }, [bitflexDeviceId, location, publicKey]);
+    return balances
+      .map(balance => {
+        const currency = currencies.find(c => c.symbol === balance.currency);
+        if (!currency) return null;
 
-    const RenderBalanceList = useCallback(() => {
-        if (!balances || !currencies || balances.length === 0 || currencies.length === 0) return;
-        // setisLoading(false)
-        return balances.map(coinBalance => {
-            var symbol = currencies.find(x => x.symbol === coinBalance.currency);
+        return {
+          currency: balance.currency!,
+          name: currency.name!,
+          available: balance.available || 0,
+          image: currency.imageBase64!
+        };
+      })
+      .filter((item): item is BalanceRowData => item !== null);
+  }, [balances, currencies]);
 
-            if (!symbol) return <></>;
+  // Check if we need to show notification setup
+  useEffect(() => {
+    const shouldShowSetup = location.state?.requireSetPush && publicKey && bitflexDeviceId;
+    setShowNotificationSetup(!!shouldShowSetup);
+  }, [location.state, publicKey, bitflexDeviceId]);
 
-            var image = symbol.imageBase64;
-            return (
-                <>
-                    <tr style={{ fontSize: 12, height: 30, alignItems: 'center' }}>
-                        <td className='tdFix tdFix-left'>
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <div><img alt="image1" style={{ maxHeight: 18, marginTop: 4, marginRight: 5 }} src={image!} /></div>
-                                <div>{!isMobile && symbol.name + " |"} {coinBalance.currency}</div>
-                            </div>
-                        </td>
-                        <td className='tdFix'>{coinBalance.available?.toFixed(4)}</td>
-                        {/* {!isMobile && <td className='tdFix'>{coinBalance.onOrders?.toFixed(4)}</td>} */}
-                        {/* <td className='tdFix'>{coinBalance.total?.toFixed(4)}</td> */}
-                        <td className='tdFix' style={{ cursor: 'pointer', display: 'inline-flex', textAlign: 'center', width: isMobile ? '100%' : '95%', placeContent: 'space-evenly' }} onClick={() => {
+  // Event handlers
+  const handleOpenDeposit = useCallback((currency: string) => {
+    setDepositModal({ isOpen: true, currency });
+  }, []);
 
-                        }}>
+  const handleCloseDeposit = useCallback(() => {
+    setDepositModal({ isOpen: false });
+    setTimeout(() => setDepositModal({ isOpen: false, currency: undefined }), 100);
+  }, []);
 
-                            <BFGradientButton text={t('Deposit')} buttonType={isMobile ? BFGradientButtonType.GoldenBorderActionSmall : BFGradientButtonType.GoldenBorder} width={isMobile ? 'unset' : 95} onPress={() => {
-                                setcurrencyToDeposit(coinBalance.currency!);
-                                setisDepositModalActive(true)
-                            }} />
+  const handleOpenWithdraw = useCallback((currency: string) => {
+    setWithdrawModal({ isOpen: true, currency });
+  }, []);
 
-                            <BFGradientButton text={t('Withdraw')} buttonType={isMobile ? BFGradientButtonType.GoldenBorderActionSmall : BFGradientButtonType.GoldenBorder} width={isMobile ? 'unset' : 95} onPress={() => {
-                                setcurrencyToWithdraw(coinBalance.currency!);
-                                setisWithdrawModalActive(true)
-                            }} />
+  const handleCloseWithdraw = useCallback(() => {
+    setWithdrawModal({ isOpen: false });
+    setTimeout(() => {
+      setWithdrawModal({ isOpen: false, currency: undefined });
+      mutateBalances();
+    }, 100);
+  }, [mutateBalances]);
 
+  const handleNotificationSuccess = useCallback(() => {
+    setShowNotificationSetup(false);
+    // Could show a success message here
+  }, []);
 
+  const handleNotificationError = useCallback((error: string) => {
+    console.error('Notification setup error:', error);
+    // Could show an error message here
+  }, []);
 
+  const isLoading = balancesLoading || currenciesLoading;
 
-                        </td>
-                        <br />
-                    </tr>
+  return (
+    <StaticPagesLayout isDashboard={true} isLoading={isLoading}>
+      <>
+        {/* Notification Setup */}
+        {showNotificationSetup && (
+          <NotificationSetup
+            bitflexDeviceId={bitflexDeviceId}
+            publicKey={publicKey}
+            onSuccess={handleNotificationSuccess}
+            onError={handleNotificationError}
+          />
+        )}
 
-                </>
-            )
-        })
-    }, [balances, currencies, t]);
+        {/* Deposit Modal */}
+        <BFModalWindow
+          title={`Deposit ${depositModal.currency || ''}`}
+          isOpen={depositModal.isOpen}
+          onClose={handleCloseDeposit}
+        >
+          {depositModal.currency === "INR" ? (
+            <DepositINRModal
+              currency={depositModal.currency}
+              onClose={handleCloseDeposit}
+            />
+          ) : (
+            <DepositModal
+              currency={depositModal.currency!}
+              onClose={handleCloseDeposit}
+            />
+          )}
+        </BFModalWindow>
 
-    return (
-        <StaticPagesLayout isDashboard={true} isLoading={(balancesLoading || currenciesLoading)}>
-            <>
-                <BFModalWindow title={'Deposit ' + currencyToDeposit} isOpen={isDepositModalActive} onClose={() => {
-                    setisDepositModalActive(false)
-                    setTimeout(() => setcurrencyToDeposit(undefined), 100)
-                }}>
-                    {currencyToDeposit === "INR" ?
-                        <DepositINRModal currency={currencyToDeposit!} onClose={() => {
-                            setisDepositModalActive(false)
-                            setTimeout(() => setcurrencyToWithdraw(undefined), 100)
-                     
-                        }} />
-                        :
-                        <DepositModal currency={currencyToDeposit!} onClose={() => {
-                            setisDepositModalActive(false)
-                            setTimeout(() => setcurrencyToWithdraw(undefined), 100)
-                        }} />
+        {/* Withdraw Modal */}
+        <BFModalWindow
+          title={`Withdraw ${withdrawModal.currency || ''}`}
+          keepBlurred={true}
+          isOpen={withdrawModal.isOpen}
+          onClose={handleCloseWithdraw}
+        >
+          {withdrawModal.currency === "INR" ? (
+            <WithdrawInr
+              currency={withdrawModal.currency}
+              onClose={handleCloseWithdraw}
+            />
+          ) : (
+            <WithdrawModal
+              currency={withdrawModal.currency!}
+              onClose={handleCloseWithdraw}
+            />
+          )}
+        </BFModalWindow>
 
-                    }
-                </BFModalWindow>
+        {/* Main Content */}
+        <div className="bf-dash-header">
+          <h1 className="bf-dashboard-title">My Assets</h1>
+        </div>
 
-                <BFModalWindow title={'Withdraw ' + currencyToWithdraw} keepBlurred={true} isOpen={isWithdrawModalActive} onClose={() => {
-                    setisWithdrawModalActive(false)
-                    setTimeout(() => setcurrencyToWithdraw(undefined), 100)
-                    LoadData()
-                }}>
-                    {currencyToWithdraw === "INR" ?
-                        <WithdrawInr currency={currencyToWithdraw!} onClose={() => {
-                            setisWithdrawModalActive(false)
-                            setTimeout(() => setcurrencyToWithdraw(undefined), 100)
-                            LoadData()
-                        }} />
-                        :
-                        <WithdrawModal currency={currencyToWithdraw!} onClose={() => {
-                            setisWithdrawModalActive(false)
-                            setTimeout(() => setcurrencyToWithdraw(undefined), 100)
-                            LoadData()
-                        }} />
+        {balanceData.length > 0 ? (
+          <BalanceTable
+            data={balanceData}
+            onDeposit={handleOpenDeposit}
+            onWithdraw={handleOpenWithdraw}
+          />
+        ) : !isLoading ? (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
+            {t('No assets found')}
+          </div>
+        ) : null}
+      </>
+    </StaticPagesLayout>
+  );
+};
 
-                    }
-
-
-                </BFModalWindow>
-
-                <div className={'bf-dash-header'}>
-                    <h1 className={'bf-dashboard-title'}>My Assets</h1>
-                </div>
-                <div style={{ overflowX: 'auto' }}>
-                    <table className="table table-striped" style={{ overflow: 'scroll' }}>
-                        <thead>
-                            <tr>
-                                <th className='thFix stickyHeader tdFix-left noborder'>{!isMobile ? "Coin / Token / Asset" : "Currency"}</th>
-                                <th className='thFix stickyHeader noborder'>Available</th>
-                                {/* {!isMobile && <th className='thFix stickyHeader noborder'>On Orders</th>}
-                                <th className='thFix stickyHeader noborder'>Total</th> */}
-                                <th className='thFix stickyHeader noborder'>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {RenderBalanceList()}
-                        </tbody>
-                    </table>
-                </div>
-            </>
-        </StaticPagesLayout>
-    );
-}
+export default MyAssets;

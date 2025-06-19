@@ -101,6 +101,7 @@
     "semver": "^7.5.4",
     "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.3",
+    "swr": "^2.3.3",
     "terser-webpack-plugin": "^5.3.9",
     "typescript": "^5.2.2",
     "uuid": "^9.0.0",
