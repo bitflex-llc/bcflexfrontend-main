@@ -222,7 +222,7 @@ const SignIn: React.FC = () => {
     requireTfa: false,
     isLoading: false,
     rememberDevice: false,
-    showResendModal: true,
+    showResendModal: false,
     isResendLoading: false
   });
 
