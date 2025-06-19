@@ -1,7 +1,7 @@
 import * as blockies from 'blockies-ts';
 
 import { BFNotificationType, IBFNotification } from './BFNotification';
-import { ChangePasswordRequest, GuardActionType, PostWithdrawRequest, TwoStepVerificationTypes, WithdrawErrorCode } from '../../api-wrapper/api';
+import { ChangePasswordRequest, GuardActionType, PostWithdrawRequest, TwoStepVerificationTypes } from '../../api-wrapper/api';
 import React, { RefObject, useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 
@@ -278,25 +278,25 @@ export const BFGradientButton = ({
                         onPress={() => {
 
                             switch (verificationAction) {
-                                case GuardActionType.Withdraw: {
+                                // case GuardActionType.Withdraw: {
 
-                                    const insideWithdrawRequest: PostWithdrawRequest = postWithdrawRequest!;
-                                    insideWithdrawRequest.googleAuthenticatorCode = OTP;
+                                //     const insideWithdrawRequest: PostWithdrawRequest = postWithdrawRequest!;
+                                //     insideWithdrawRequest.googleAuthenticatorCode = OTP;
 
-                                    BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", insideWithdrawRequest)
-                                        .then(response => {
-                                            if (!response.data.success && response.data.withdrawErrorCode) {
-                                                BFNotificationRef?.Notify("Withdraw Error", "Status Code: " + WithdrawErrorCode[response.data.withdrawErrorCode], BFNotificationType.Error);
-                                            }
-                                            else if (response.data.success) {
-                                                setisWithdrawSuccess(true)
-                                            }
-                                            else {
-                                                BFNotificationRef?.Notify("Withdraw Error", "Unknown status code", BFNotificationType.Error);
-                                            }
-                                        })
-                                    break;
-                                }
+                                //     BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", insideWithdrawRequest)
+                                //         .then(response => {
+                                //             if (!response.data.success && response.data.withdrawErrorCode) {
+                                //                 BFNotificationRef?.Notify("Withdraw Error", "Status Code: " + WithdrawErrorCode[response.data.withdrawErrorCode], BFNotificationType.Error);
+                                //             }
+                                //             else if (response.data.success) {
+                                //                 setisWithdrawSuccess(true)
+                                //             }
+                                //             else {
+                                //                 BFNotificationRef?.Notify("Withdraw Error", "Unknown status code", BFNotificationType.Error);
+                                //             }
+                                //         })
+                                //     break;
+                                // }
                             }
                         }}
 
@@ -309,13 +309,13 @@ export const BFGradientButton = ({
     }, [OTP, RenderAdditionalVerificationList, isAddressChecked, isAmountChecked, isWithdrawSuccess, postWithdrawRequest, verificationAction]);
 
     const GuardAdditionalDataRenderSwitch = useCallback(() => {
-        var currencyIn = currencies.find(x => x.name.toLowerCase() === postWithdrawRequest?.currency.toLowerCase()) as ICurrency;
+        var currencyIn = currencies.find(x => x.name.toLowerCase() === postWithdrawRequest?.currency?.toLowerCase()) as ICurrency;
 
         switch (verificationAction) {
             case GuardActionType.Withdraw: {
                 return (postWithdrawRequest && currencyIn) && <>
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', border: '1.5px dashed ' + Colors.bitFlexGoldenColor, borderRadius: 4, padding: 25, margin: 15 }}>
-                        <div><img width={64} src={blockies.create({ seed: postWithdrawRequest?.address, size: 8, scale: 8 }).toDataURL()} alt="blockie" /></div>
+                        <div><img width={64} src={blockies.create({ seed: postWithdrawRequest?.address!, size: 8, scale: 8 }).toDataURL()} alt="blockie" /></div>
                         <div style={{ marginLeft: 20, overflowWrap: 'anywhere' }}>
                             <div style={{ fontSize: 23 }}>CHECK THE ADDRESS</div>
                             <div style={{ fontSize: 20 }}>{postWithdrawRequest?.address}</div>
@@ -376,52 +376,52 @@ export const BFGradientButton = ({
             if (onTwoStepActive)
                 onTwoStepActive();
 
-            if (twoStepType === TwoStepVerificationTypes.Bitflex) {
-                switch (verificationAction) {
+            // if (twoStepType === TwoStepVerificationTypes.Bitflex) {
+            //     switch (verificationAction) {
 
-                    case GuardActionType.Withdraw:
-                        BitflexOpenApi.BalanceApi.apiBalancePrewithdrawPost(postWithdrawRequest).then(preWithdrawResponse => {
-                            if (!preWithdrawResponse.data.success) {
-                                BFNotificationRef?.Notify("Withdraw Error", "Error Status Code: " + preWithdrawResponse.data.errorCode, BFNotificationType.Error);
-                                return;
-                            }
+            //         case GuardActionType.Withdraw:
+            //             BitflexOpenApi.BalanceApi.apiBalancePrewithdrawPost(postWithdrawRequest).then(preWithdrawResponse => {
+            //                 if (!preWithdrawResponse.data.success) {
+            //                     BFNotificationRef?.Notify("Withdraw Error", "Error Status Code: " + preWithdrawResponse.data.errorCode, BFNotificationType.Error);
+            //                     return;
+            //                 }
 
-                            setisLoadingInside(true)
-                            BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
-                                withdrawRequestModel: {
-                                    address: postWithdrawRequest?.address!,
-                                    amount: postWithdrawRequest?.amount!,
-                                    currency: postWithdrawRequest?.currency!
-                                }
-                            })
-                                .then(response => response.data.success && setisBitflexGuardModalActive(true))
-                                .finally(() => setisLoadingInside(false))
-                        })
-                        break;
+            //                 setisLoadingInside(true)
+            //                 BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
+            //                     withdrawRequestModel: {
+            //                         address: postWithdrawRequest?.address!,
+            //                         amount: postWithdrawRequest?.amount!,
+            //                         currency: postWithdrawRequest?.currency!
+            //                     }
+            //                 })
+            //                     .then(response => response.data.success && setisBitflexGuardModalActive(true))
+            //                     .finally(() => setisLoadingInside(false))
+            //             })
+            //             break;
 
-                    case GuardActionType.ChangePassword:
-                        BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
-                            changePasswordRequestModel: {
-                                oldPassword: changePasswordRequestData?.oldPassword!,
-                                newPassword: changePasswordRequestData?.newPassword!
-                            }
-                        })
-                            .then(response => {
-                                if (response.data.success) {
-                                    twoStepOverlayDiv?.current?.classList.add("invisible")
-                                    setisBitflexGuardModalActive(true)
-                                }
-                            })
-                            .finally(() =>
-                                setisLoadingInside(false)
-                            )
-                        break;
+            //         case GuardActionType.ChangePassword:
+            //             BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
+            //                 changePasswordRequestModel: {
+            //                     oldPassword: changePasswordRequestData?.oldPassword!,
+            //                     newPassword: changePasswordRequestData?.newPassword!
+            //                 }
+            //             })
+            //                 .then(response => {
+            //                     if (response.data.success) {
+            //                         twoStepOverlayDiv?.current?.classList.add("invisible")
+            //                         setisBitflexGuardModalActive(true)
+            //                     }
+            //                 })
+            //                 .finally(() =>
+            //                     setisLoadingInside(false)
+            //                 )
+            //             break;
 
-                    case GuardActionType.SignIn:
-                        break;
-                }
-            }
-            else
+            //         case GuardActionType.SignIn:
+            //             break;
+            //     }
+            // }
+            // else
                 setisGoogleModalActive(true)
         }
         else {

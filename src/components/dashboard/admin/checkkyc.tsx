@@ -72,11 +72,11 @@ export default function CheckKYC() {
                         </div>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Green} width={'100%'} text='Apply' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetKYCStatePost(guid, KYCRequestState.Verified).then(data => setKyc(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetKYCStatePost({guid: guid!, state: KYCRequestState.Verified}).then(data => setKyc(data.data))
                         }}></BFGradientButton>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Destructive} width={'100%'} text='Reject' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetKYCStatePost(guid, KYCRequestState.Rejected).then(data => setKyc(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetKYCStatePost({guid: guid!, state: KYCRequestState.Rejected}).then(data => setKyc(data.data))
                         }}></BFGradientButton>
                     </div>
                 </div>

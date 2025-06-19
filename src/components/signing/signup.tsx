@@ -15,6 +15,7 @@ import { isMobile } from 'react-device-detect';
 import loading_png from '../../images/loading.svg';
 import { useCallback } from 'react';
 import { BFNotification, BFNotificationType, IBFNotification } from '../html/BFNotification';
+import { sign } from 'crypto';
 
 export default function Signup() {
 
@@ -92,6 +93,12 @@ export default function Signup() {
                     case SignUpResponseResult.SuccessEmailSent:
                         localStorage.removeItem("refId");
                         setaccountCreated(true)
+                        break;
+
+                    case SignUpResponseResult.AlreadyExists:
+                        BFNotifictionRef.current?.Notify(t("Account already exists"), t("Please try to sign in"), BFNotificationType.Error);
+                        setisFault(true)
+                        setfaultMessage(t("Account already exists"));
                         break;
                 }
             })

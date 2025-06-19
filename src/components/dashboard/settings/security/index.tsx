@@ -1,293 +1,456 @@
-import { BFGradientButton, BFGradientButtonType } from '../../../html/BFGradientButton';
-import { BFInput, BFInputType } from '../../../html/BFInput';
-import { ParameterType, TwoStepVerificationTypes } from '../../../../api-wrapper/api';
-/* eslint-disable jsx-a11y/alt-text */
-import React, { CSSProperties, useEffect, useState } from 'react';
+// ====================================================================================
+// IMPORTS - All the stuff we need from other files
+// ====================================================================================
+
+// React stuff - the basic building blocks
+import React, { CSSProperties, useCallback, useContext, useEffect, useState } from 'react';
+
+// Translation stuff - for multiple languages
 import { Trans, useTranslation } from 'react-i18next';
 
-import { ActionType } from '../../../../store/actionTypes';
-import { BFModalWindow } from '../../../html/BFModalWindow';
-import { BitflexOpenApi } from '../../../../_helpers/BitflexOpenApi';
-import { ChangePasswordModal } from './ChangePasswordModal';
-import Colors from '../../../../Colors';
-import { DisableTwoFactorModal } from './DisableTwoFactorModal';
-// import { EnableTwoFactor } from './EnableTwoFactor';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { IState } from '../../../../store/types';
-import { RequestSettingsTokenOverlay } from './RequestSettingsTokenOverlay';
-import { RequestSettingsTokenResponseModel } from '../../../../api-wrapper';
-import SecureLS from 'secure-ls';
-import { SetBlur } from '../../../../store/actions';
-import { StaticPagesLayout } from '../../../staticpages/StaticPagesLayout';
-import { Store } from '../../../../store';
+// Device detection - to know if user is on mobile
 import { isMobile } from 'react-device-detect';
-import { useBitflexDeviceId } from '../../../../hooks/useBitflexDeviceId';
-import { useCallback } from 'react';
+
+// Icons - pretty symbols
+import { FaExclamationTriangle } from 'react-icons/fa';
+
+// Our custom components - reusable UI pieces
+import { BFGradientButton, BFGradientButtonType } from '../../../html/BFGradientButton';
+import { BFInput, BFInputType } from '../../../html/BFInput';
+import { BFModalWindow } from '../../../html/BFModalWindow';
+import { StaticPagesLayout } from '../../../staticpages/StaticPagesLayout';
+
+// Security-specific components
+import { ChangePasswordModal } from './ChangePasswordModal';
+import { DisableTwoFactorModal } from './DisableTwoFactorModal';
+import { RequestSettingsTokenOverlay } from './RequestSettingsTokenOverlay';
 import EnableTwoFactor from './EnableTwoFactor';
 
+// API stuff - for talking to the server
+import { BitflexOpenApi } from '../../../../_helpers/BitflexOpenApi';
+import { ParameterType, TwoStepVerificationTypes } from '../../../../api-wrapper/api';
+
+// Store stuff - for managing app state
+import { Store } from '../../../../store';
+import { ActionType } from '../../../../store/actionTypes';
+import { IState } from '../../../../store/types';
+import { SetBlur } from '../../../../store/actions';
+
+// Hooks - reusable logic pieces
+import { useBitflexDeviceId } from '../../../../hooks/useBitflexDeviceId';
+
+// Utilities and styles
+import SecureLS from 'secure-ls';
+import Colors from '../../../../Colors';
+
+// ====================================================================================
+// TYPE DEFINITIONS - What shape our data should have
+// ====================================================================================
+
+// Interface for CSS styles dictionary
 export interface StylesDictionary {
     [Key: string]: CSSProperties;
 }
 
+// Interface for UI state
+interface UIState {
+    isLoading: boolean;                           // Is the page loading?
+    isPasswordChangeModalActive: boolean;         // Should we show password change modal?
+    isEnableTwoStepModalActive: boolean;          // Should we show enable 2FA modal?
+    isDisableTwoStepModalActive: boolean;         // Should we show disable 2FA modal?
+    isSessionLifetimeChangingActive: boolean;     // Is user changing session lifetime?
+    isTfaButtonLoading: boolean;                  // Is 2FA button in loading state?
+    modalTitle: string;                           // What title to show in modal
+}
+
+// ====================================================================================
+// MAIN COMPONENT - The security settings page
+// ====================================================================================
+
 export default function Security() {
-    const {
-        state: { },
-        dispatch
-    } = React.useContext(Store);
 
-    const {
-        settings
-    } = React.useContext(Store).state as IState;
+    // ====================================================================================
+    // HOOKS - Get functionality from other parts of the app
+    // ====================================================================================
 
-    const [isLoading, setisLoading] = useState(false);
+    // Get app state and dispatch function from store
+    const { state, dispatch } = useContext(Store);
+    const { settings } = state as IState;
 
-    const { bitflexDeviceId } = useBitflexDeviceId();
-
-    const [ls] = useState(new SecureLS({ encodingType: 'rc4', isCompression: false }));
-
+    // Get translation function
     const { t } = useTranslation();
 
-    const [isPasswordChangeModalActive, setisPasswordChangeModalActive] = useState(false);
-    const [modalTitle, setmodalTitle] = useState('');
-    const [isEnableTwoStepModalActive, setisEnableTwoStepModalActive] = useState(false);
+    // Get device ID for security
+    const { bitflexDeviceId } = useBitflexDeviceId();
 
-    const [isDisableTwoStepModalActive, setisDisableTwoStepModalActive] = useState(false);
+    // ====================================================================================
+    // STATE - Data that can change and cause re-renders
+    // ====================================================================================
 
+    // UI state - controls what the user sees
+    const [uiState, setUiState] = useState<UIState>({
+        isLoading: false,
+        isPasswordChangeModalActive: false,
+        isEnableTwoStepModalActive: false,
+        isDisableTwoStepModalActive: false,
+        isSessionLifetimeChangingActive: false,
+        isTfaButtonLoading: false,
+        modalTitle: ''
+    });
 
-    const [isSessionLifetimeChangingActive, setisSessionLifetimeChangingActive] = useState(false);
+    // Secure local storage for sensitive data
+    const [secureStorage] = useState(new SecureLS({
+        encodingType: 'rc4',
+        isCompression: false
+    }));
 
+    // ====================================================================================
+    // COMPUTED VALUES - Derived from other data
+    // ====================================================================================
 
-    const [isTfaButtonLoading, setisTfaButtonLoading] = useState(false);
+    // Check if settings overlay should be shown (when token expired)
+    const isOverlayActive = settings == null || settings?.expiration! < Math.floor(Date.now() / 1000);
 
+    // ====================================================================================
+    // EFFECT HOOKS - Code that runs when component mounts or data changes
+    // ====================================================================================
 
-
+    // Handle blur effect when modals are open
     useEffect(() => {
-        if (dispatch)
-            SetBlur(isEnableTwoStepModalActive, dispatch)
-    }, [dispatch, isEnableTwoStepModalActive]);
+        if (dispatch) {
+            SetBlur(uiState.isEnableTwoStepModalActive, dispatch);
+        }
+    }, [dispatch, uiState.isEnableTwoStepModalActive]);
 
-    useEffect(() => {
-        SetBlur(isEnableTwoStepModalActive, dispatch);
-    }, [dispatch, isEnableTwoStepModalActive])
+    // ====================================================================================
+    // UI STATE HANDLERS - Functions to update UI state
+    // ====================================================================================
 
-    let isOverlayActive = settings == null || settings?.expiration! < Math.floor(Date.now() / 1000);
+    // Update a specific part of UI state
+    const updateUIState = useCallback((updates: Partial<UIState>) => {
+        setUiState(prev => ({ ...prev, ...updates }));
+    }, []);
 
+    // Handle loading state changes
+    const handleLoadingStart = useCallback((loading: boolean) => {
+        updateUIState({ isLoading: loading });
+    }, [updateUIState]);
 
+    // Handle token receive from overlay
+    const handleTokenReceive = useCallback((token: any) => {
+        if (dispatch) {
+            dispatch({
+                type: ActionType.SET_ACCOUNT_SETTINGS,
+                payload: token
+            });
+        }
+    }, [dispatch]);
 
-    const tfaButtonSwitchRender = useCallback((type: TwoStepVerificationTypes) => {
+    // ====================================================================================
+    // MODAL HANDLERS - Functions to open/close modals
+    // ====================================================================================
+
+    // Handle password change modal
+    const handlePasswordChangeModal = useCallback((isActive: boolean) => {
+        updateUIState({ isPasswordChangeModalActive: isActive });
+    }, [updateUIState]);
+
+    // Handle enable 2FA modal
+    const handleEnableTwoStepModal = useCallback((isActive: boolean, title: string = '') => {
+        updateUIState({
+            isEnableTwoStepModalActive: isActive,
+            modalTitle: title
+        });
+    }, [updateUIState]);
+
+    // Handle disable 2FA modal
+    const handleDisableTwoStepModal = useCallback((isActive: boolean, title: string = '') => {
+        updateUIState({
+            isDisableTwoStepModalActive: isActive,
+            modalTitle: title
+        });
+    }, [updateUIState]);
+
+    // ====================================================================================
+    // SESSION LIFETIME HANDLERS - Functions for session management
+    // ====================================================================================
+
+    // Handle session lifetime changes
+    const handleSessionLifetimeChange = useCallback((value: number) => {
+        if (value > 0 && settings?.token) {
+            BitflexOpenApi.UserApi.apiUserSetparametersPost(
+                ParameterType.SessionLifetime,
+                settings.token,
+                value
+            )
+                .then(settingsToken => {
+                    if (dispatch) {
+                        dispatch({
+                            type: ActionType.SET_ACCOUNT_SETTINGS,
+                            payload: settingsToken.data
+                        });
+                    }
+                })
+                .catch((error) => {
+                    alert(`Settings not saved. Wrong token? ${error}`);
+                });
+        }
+    }, [settings?.token, dispatch]);
+
+    // Toggle session lifetime editing mode
+    const toggleSessionLifetimeEditing = useCallback((isActive: boolean) => {
+        updateUIState({ isSessionLifetimeChangingActive: isActive });
+    }, [updateUIState]);
+
+    // ====================================================================================
+    // TWO-FACTOR AUTHENTICATION HANDLERS
+    // ====================================================================================
+
+    // Render appropriate button based on 2FA status
+    const renderTfaButton = useCallback((type: TwoStepVerificationTypes) => {
+        const buttonProps = {
+            isLoading: uiState.isTfaButtonLoading,
+            width: 130
+        };
+
         switch (type) {
             case TwoStepVerificationTypes.Bitflex:
-                return <BFGradientButton isLoading={isTfaButtonLoading} buttonType={BFGradientButtonType.Destructive} text={t('Disable Guard')} width={130} onPress={() => setisDisableTwoStepModalActive(true)} />
+                return (
+                    <BFGradientButton
+                        {...buttonProps}
+                        buttonType={BFGradientButtonType.Destructive}
+                        text={t('Disable Guard')}
+                        onPress={() => handleDisableTwoStepModal(true)}
+                    />
+                );
+
             case TwoStepVerificationTypes.Google:
-                return <BFGradientButton isLoading={isTfaButtonLoading} buttonType={BFGradientButtonType.Destructive} text={t('Disable OTP')} width={130} onPress={() => setisDisableTwoStepModalActive(true)} />
+                return (
+                    <BFGradientButton
+                        {...buttonProps}
+                        buttonType={BFGradientButtonType.Destructive}
+                        text={t('Disable OTP')}
+                        onPress={() => handleDisableTwoStepModal(true)}
+                    />
+                );
+
             default:
-                return isOverlayActive ? <></> : <BFGradientButton isLoading={isTfaButtonLoading} buttonType={BFGradientButtonType.Green} onPress={() => setisEnableTwoStepModalActive(true)} text={t('SETUP TFA')} />
+                return isOverlayActive ? null : (
+                    <BFGradientButton
+                        {...buttonProps}
+                        buttonType={BFGradientButtonType.Green}
+                        text={t('SETUP TFA')}
+                        onPress={() => handleEnableTwoStepModal(true)}
+                    />
+                );
         }
-    }, [isOverlayActive, isTfaButtonLoading, t]);
+    }, [
+        isOverlayActive,
+        uiState.isTfaButtonLoading,
+        t,
+        handleDisableTwoStepModal,
+        handleEnableTwoStepModal
+    ]);
 
+    // Get 2FA status text and color
+    const getTfaStatusInfo = useCallback(() => {
+        if (!settings?.verificationTypes) {
+            return { text: 'Disabled', color: 'red' };
+        }
 
+        const type = settings.verificationTypes === TwoStepVerificationTypes.Bitflex
+            ? 'BCFLEX Guard'
+            : 'Google Authenticator';
 
-    // const lockButtonSwitchRender = () => {
+        return {
+            text: `Enabled ${type}`,
+            color: 'green'
+        };
+    }, [settings?.verificationTypes]);
 
-    //     var lsTimeValue = ls.get('terminalLockoutTime');
+    // ====================================================================================
+    // RENDER COMPONENTS - Individual UI pieces
+    // ====================================================================================
 
-    //     console.log("ls.get('terminalLockoutTime')", lsTimeValue)
-
-    //     if (!lsTimeValue) {
-    //         return <BFGradientButton buttonType={BFGradientButtonType.Green} text={t('ENABLE')} width={130} onPress={() => {
-
-    //             ls.set('terminalLockoutTime', 10)
-
-
-    //         }} />
-    //     }
-    //     else {
-    //         return <BFGradientButton buttonType={BFGradientButtonType.Action} text={t('CHANGE')} width={130} onPress={() => {
-
-    //             ls.remove('terminalLockoutTime')
-    //         }} />
-    //     }
-
-
-    //     // if(!isLockoutTimeEnabled)
-
-
-    //     //     case TwoStepVerificationTypes.Google:
-    //     //         return <BFGradientButton buttonType={BFGradientButtonType.Destructive} text={t('Disable OTP')} width={130} />
-    //     //     default:
-    //     //         return isOverlayActive ? <></> : <BFGradientButton buttonType={BFGradientButtonType.Green} onPress={() => setisEnableTwoStepModalActive(true)} text={t('SETUP TFA')} />
-    //     // }
-    // }
-
-
-    const sesstionLifeTimeRender = useCallback(() => {
-        return <div style={styles.lastRow}>
+    // Password settings row
+    const PasswordRow: React.FC = () => (
+        <div style={styles.rowStyle}>
             <div>
                 <div style={styles.headerStyle}>
-                    Session Lifetime
+                    <Trans>Password</Trans>
                 </div>
-                <div style={styles.headerInformation}>Set lifetime (in Minutes) for Access Token. Without <span style={{ color: '#cf8900' }}> BCFLEX Guard</span> will take effect only after current Token expired. </div>
+                <div style={styles.headerInformation}>
+                    <Trans>Update your password</Trans>
+                </div>
             </div>
             <div style={styles.subHeaderStyle}>
-                {isSessionLifetimeChangingActive
-                    ? <div style={{ fontSize: 15, display: 'inline-flex', justifyContent: 'space-around', marginTop: 1, width: 130 }}>
-                        <BFInput type={BFInputType.Int} setValue={settings?.sessionLifeTimeMinutes} onDebouncedValue={(value: number) => {
-                            if (value > 0)
-                                BitflexOpenApi.UserApi.apiUserSetparametersPost(ParameterType.SessionLifetime, settings?.token!, value)
-                                    .then(settingsToken => {
-                                        dispatch({
-                                            type: ActionType.SET_ACCOUNT_SETTINGS,
-                                            payload: settingsToken.data
-                                        });
-                                   })
-                                    .catch((error) => alert("Settings not saved. Wrong token? " + error))
-                        }} />
-                        <div style={{ margin: 1, marginLeft: 7 }}>
-                            <BFGradientButton buttonType={BFGradientButtonType.FormSaveSquare} width={42} onPress={() => setisSessionLifetimeChangingActive(false)} />
-                        </div>
-                    </div>
-                    : <BFGradientButton
-                        buttonType={BFGradientButtonType.Action}
-                        text={'CHANGE'}
-                        onPress={() => {
-                            setisSessionLifetimeChangingActive(true)
-                        }}
-                    />
-                }
+                <BFGradientButton
+                    buttonType={BFGradientButtonType.Action}
+                    text={t('CHANGE')}
+                    onPress={() => handlePasswordChangeModal(true)}
+                    width={130}
+                />
             </div>
         </div>
-    }, [dispatch, isSessionLifetimeChangingActive, settings])
+    );
 
+    // Support code row
+    const SupportCodeRow: React.FC = () => (
+        <div style={styles.rowStyle}>
+            <div>
+                <div style={styles.headerStyle}>
+                    {t('Support Code')}
+                </div>
+                <div style={styles.headerInformation}>
+                    {t('We will ask you for this code on Support Request.')}
+                </div>
+            </div>
+            <div style={styles.subHeaderStyle}>
+                <div style={{ width: 130, textAlign: 'right' }}>
+                    {settings?.supportPIN! > 0 ? settings?.supportPIN : '****'}
+                </div>
+            </div>
+        </div>
+    );
 
-    // const lockoutTerminalTimer = useCallback(() => {
-    //     return <div style={styles.lastRow}>
-    //         <div>
-    //             <div style={styles.headerStyle}>
-    //                 Session Lifetime
-    //             </div>
-    //             <div style={styles.headerInformation}>Set lifetime for Access Token. Without <span style={{ color: '#cf8900' }}> BCFLEX Guard</span> will take effect only after current Token expired. </div>
-    //         </div>
-    //         <div style={styles.subHeaderStyle}>
-    //             {isSessionLifetimeChangingActive
-    //                 ? <div style={{ fontSize: 15, display: 'inline-flex', justifyContent: 'space-around', marginTop: 1 }}>
-    //                     <BFInput type={BFInputType.Int} leftsideSymbol={'Minutes'} setValue={settings?.sessionLifeTimeMinutes} onDebouncedValue={(value: number) => {
-    //                         if (value > 0)
-    //                             BitflexOpenApi.UserApi.apiUserSetparametersPost(ParameterType.SessionLifetime, settings?.token!, value)
-    //                                 .then(settingsToken => {
-    //                                     console.log("YOP")
-    //                                     dispatch({
-    //                                         type: ActionType.SET_ACCOUNT_SETTINGS,
-    //                                         payload: settingsToken.data
-    //                                     });
-    //                                 })
-    //                                 .catch((error) => alert("Settings not saved. Wrong token? " + error))
-    //                     }} />
-    //                     <div style={{ margin: 1, marginLeft: 7 }}>
-    //                         <BFGradientButton buttonType={BFGradientButtonType.FormSaveSquare} width={42} onPress={() => setisSessionLifetimeChangingActive(false)} />
-    //                     </div>
-    //                 </div>
-    //                 : <BFGradientButton
-    //                     buttonType={BFGradientButtonType.Action}
-    //                     text={'CHANGE'}
-    //                     onPress={() => setisSessionLifetimeChangingActive(true)}
-    //                 />
-    //             }
-    //         </div>
-    //     </div>
-    // }, [dispatch, isSessionLifetimeChangingActive, settings])
+    // Two-factor authentication row
+    const TwoFactorRow: React.FC = () => {
+        const statusInfo = getTfaStatusInfo();
+
+        return (
+            <div style={styles.rowStyle}>
+                <div>
+                    <div style={styles.headerStyle}>
+                        {t('2-Step Verification')}
+                    </div>
+                    <div style={styles.headerInformation}>
+                        {t('Protect your funds and account with Two Step Authentication.')}
+                        <br />
+                        {t('Status')}: <span style={{ color: statusInfo.color }}>
+                            {t(statusInfo.text)}
+                        </span>
+                    </div>
+                </div>
+                <div style={styles.subHeaderStyle}>
+                    {renderTfaButton(settings?.verificationTypes!)}
+                </div>
+            </div>
+        );
+    };
+
+    // Session lifetime settings row
+    const SessionLifetimeRow: React.FC = () => (
+        <div style={styles.lastRow}>
+            <div>
+                <div style={styles.headerStyle}>
+                    {t('Session Lifetime')}
+                </div>
+                <div style={styles.headerInformation}>
+                    {t('Set lifetime (in Minutes) for Access Token. Without')}
+                    <span style={{ color: Colors.bitFlexGoldenColor }}> BCFLEX Guard</span>
+                    {t(' will take effect only after current Token expired.')}
+                </div>
+            </div>
+            <div style={styles.subHeaderStyle}>
+                {uiState.isSessionLifetimeChangingActive ? (
+                    <div style={styles.sessionLifetimeEditor}>
+                        <BFInput
+                            type={BFInputType.Int}
+                            setValue={settings?.sessionLifeTimeMinutes}
+                            onDebouncedValue={handleSessionLifetimeChange}
+                        />
+                        <div style={styles.saveButtonContainer}>
+                            <BFGradientButton
+                                buttonType={BFGradientButtonType.FormSaveSquare}
+                                width={42}
+                                onPress={() => toggleSessionLifetimeEditing(false)}
+                            />
+                        </div>
+                    </div>
+                ) : (
+                    <BFGradientButton
+                        buttonType={BFGradientButtonType.Action}
+                        text={t('CHANGE')}
+                        width={130}
+                        onPress={() => toggleSessionLifetimeEditing(true)}
+                    />
+                )}
+            </div>
+        </div>
+    );
+
+    // ====================================================================================
+    // MAIN RENDER - What actually gets shown on the page
+    // ====================================================================================
 
     return (
         <StaticPagesLayout
             isDashboard={true}
-            isLoading={isLoading}
-            overlayElement={<RequestSettingsTokenOverlay onLoadingStart={setisLoading} onTokenReceive={token => {
-                dispatch({
-                    type: ActionType.SET_ACCOUNT_SETTINGS,
-                    payload: token
-                });
-            }} />}
+            isLoading={uiState.isLoading}
+            overlayElement={
+                <RequestSettingsTokenOverlay
+                    onLoadingStart={handleLoadingStart}
+                    onTokenReceive={handleTokenReceive}
+                />
+            }
             isOverlayActive={isOverlayActive}
         >
-            <BFModalWindow title={modalTitle} isOpen={isEnableTwoStepModalActive} onClose={() => setisEnableTwoStepModalActive(false)}>
-                <EnableTwoFactor isDash={true} onClose={() => setisEnableTwoStepModalActive(false)} onTitleChange={setmodalTitle} />
+            {/* Enable Two-Factor Modal */}
+            <BFModalWindow
+                title={uiState.modalTitle}
+                isOpen={uiState.isEnableTwoStepModalActive}
+                onClose={() => handleEnableTwoStepModal(false)}
+            >
+                <EnableTwoFactor
+                    isDash={true}
+                    onClose={() => handleEnableTwoStepModal(false)}
+                    onTitleChange={(title) => updateUIState({ modalTitle: title })}
+                />
             </BFModalWindow>
 
-            <BFModalWindow title={modalTitle} isOpen={isDisableTwoStepModalActive} onClose={() => setisDisableTwoStepModalActive(false)}>
-                <DisableTwoFactorModal isDash={true} onClose={() => setisDisableTwoStepModalActive(false)} onTitleChange={setmodalTitle} />
+            {/* Disable Two-Factor Modal */}
+            <BFModalWindow
+                title={uiState.modalTitle}
+                isOpen={uiState.isDisableTwoStepModalActive}
+                onClose={() => handleDisableTwoStepModal(false)}
+            >
+                <DisableTwoFactorModal
+                    isDash={true}
+                    onClose={() => handleDisableTwoStepModal(false)}
+                    onTitleChange={(title) => updateUIState({ modalTitle: title })}
+                />
             </BFModalWindow>
 
-            <ChangePasswordModal isActive={isPasswordChangeModalActive} onCancel={() => setisPasswordChangeModalActive(false)} />
+            {/* Change Password Modal */}
+            <ChangePasswordModal
+                isActive={uiState.isPasswordChangeModalActive}
+                onCancel={() => handlePasswordChangeModal(false)}
+            />
 
-            <div className={'bf-dash-header'}>
-                <h1 className={'bf-dashboard-title'}><Trans>Security Settings</Trans></h1>
+            {/* Page Header */}
+            <div className="bf-dash-header">
+                <h1 className="bf-dashboard-title">
+                    <Trans>Security Settings</Trans>
+                </h1>
             </div>
 
+            {/* Settings Content */}
             <div>
-                <div style={styles.rowStyle}>
-                    <div>
-                        <div style={styles.headerStyle}>
-                            <Trans>Password</Trans>
-                        </div>
-                        <div style={styles.headerInformation}><Trans>Update your password</Trans></div>
-                    </div>
-                    <div style={styles.subHeaderStyle}>
-                        <BFGradientButton
-                            buttonType={BFGradientButtonType.Action}
-                            text={'CHANGE'}
-                            onPress={() => setisPasswordChangeModalActive(true)}
-                            width={130}
-                        />
-                    </div>
-                </div>
-
-                <div style={styles.rowStyle}>
-                    <div>
-                        <div style={styles.headerStyle}>
-                            Support Code
-                        </div>
-                        <div style={styles.headerInformation}>We will ask you for this code on Support Request.</div>
-                    </div>
-                    <div style={styles.subHeaderStyle}>
-                        <div style={{ width: 130, textAlign: 'right' }}> {settings?.supportPIN! > 0 ? settings?.supportPIN : '****'}</div>
-
-                    </div>
-                </div>
-
-                <div style={styles.rowStyle}>
-                    <div>
-                        <div style={styles.headerStyle}>
-                            2-Step Verification
-                        </div>
-                        <div style={styles.headerInformation}>
-                            Protect your funds and account with Two Step Authentication.
-                            Status: {settings?.verificationTypes ? <span style={{ color: 'green' }}>Enabled {settings?.verificationTypes === TwoStepVerificationTypes.Bitflex ? <> BCFLEX Guard</> : <>Google Authenticator</>}</span> : <span style={{ color: 'red' }}>Disabled</span>}</div>
-                    </div>
-                    <div style={styles.subHeaderStyle}>
-                        {tfaButtonSwitchRender(settings?.verificationTypes!)}
-                    </div>
-                </div>
-
-                {sesstionLifeTimeRender()}
-
-                {/* <div style={styles.lastRow}>
-                    <div>
-                        <div style={styles.headerStyle}>
-                            Auto Lockout
-                        </div>
-                        <div style={styles.headerInformation}>Lock Trading Terminal after idle period on current device. Type '0' to turn off.</div>
-                    </div>
-                    <div style={styles.subHeaderStyle}>
-                        {lockButtonSwitchRender()}
-                    </div>
-                </div> */}
-
-
+                <PasswordRow />
+                <SupportCodeRow />
+                <TwoFactorRow />
+                <SessionLifetimeRow />
             </div>
         </StaticPagesLayout>
     );
 }
 
+// ====================================================================================
+// STYLES - How everything should look
+// ====================================================================================
+
 const styles: StylesDictionary = {
+    // Row without border at bottom
     rowStyleNoBorder: {
         display: 'flex',
         color: 'white',
@@ -300,6 +463,7 @@ const styles: StylesDictionary = {
         cursor: 'pointer'
     },
 
+    // Standard row with dashed border at bottom
     rowStyle: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -313,6 +477,7 @@ const styles: StylesDictionary = {
         paddingBottom: isMobile ? 15 : 35
     },
 
+    // Last row without border
     lastRow: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -323,13 +488,41 @@ const styles: StylesDictionary = {
         paddingBottom: isMobile ? 15 : 35,
         borderBottomWidth: 0
     },
+
+    // Main header text style
     headerStyle: {
-        color: 'white', fontWeight: 400, fontSize: 21
+        color: 'white',
+        fontWeight: 400,
+        fontSize: 21
     },
+
+    // Sub header text style (usually for buttons/actions)
     subHeaderStyle: {
-        color: '#cf8900', fontWeight: 500, fontSize: 22
+        color: Colors.bitFlexGoldenColor,
+        fontWeight: 500,
+        fontSize: 22
     },
+
+    // Information text style
     headerInformation: {
-        paddingRight: 15
+        paddingRight: 15,
+        color: '#bdbdbd',
+        fontSize: 14,
+        marginTop: 5
+    },
+
+    // Session lifetime editor container
+    sessionLifetimeEditor: {
+        fontSize: 15,
+        display: 'inline-flex',
+        justifyContent: 'space-around',
+        marginTop: 1,
+        width: 130
+    },
+
+    // Save button container in session lifetime editor
+    saveButtonContainer: {
+        margin: 1,
+        marginLeft: 7
     }
-}
+};

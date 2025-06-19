@@ -86,11 +86,11 @@ export default function VerifyManualwithdraw() {
                         </div>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Green} width={'100%'} text='Apply' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetManualWithdrawStatePost(guid, ManualWithdrawStatus.Paid, amount).then(data => setwithdraw(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetManualWithdrawStatePost({guid: guid!,status: ManualWithdrawStatus.Paid, amount}).then(data => setwithdraw(data.data))
                         }}></BFGradientButton>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Destructive} width={'100%'} text='Reject' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetManualWithdrawStatePost(guid, ManualWithdrawStatus.Declined).then(data => setwithdraw(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetManualWithdrawStatePost({guid: guid!,status: ManualWithdrawStatus.Declined, amount}).then(data => setwithdraw(data.data))
                         }}></BFGradientButton>
                     </div>
                 </div>

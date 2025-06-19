@@ -61,11 +61,11 @@ export default function VerifyManualDeposit() {
                         </div>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Green} width={'100%'} text='Apply' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetManualDepositStatePost(guid, ManualDepositStatus.Paid, amount).then(data => setdeposit(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetManualDepositStatePost({guid: guid!, status: ManualDepositStatus.Paid, amount}).then(data => setdeposit(data.data))
                         }}></BFGradientButton>
                         <div style={{ margin: 10 }}></div>
                         <BFGradientButton buttonType={BFGradientButtonType.Destructive} width={'100%'} text='Reject' onPress={() => {
-                            BitflexOpenApi.AdminApi.apiAdminSetManualDepositStatePost(guid, ManualDepositStatus.Declined).then(data => setdeposit(data.data))
+                            BitflexOpenApi.AdminApi.apiAdminSetManualDepositStatePost({guid: guid!, status: ManualDepositStatus.Declined, amount}).then(data => setdeposit(data.data))
                         }}></BFGradientButton>
                     </div>
                 </div>
