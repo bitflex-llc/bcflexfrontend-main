@@ -1268,25 +1268,13 @@ export interface CoinTokenAddRequest {
      * @type {string}
      * @memberof CoinTokenAddRequest
      */
-    'cmcUrl'?: string | null;
+    'cmcUrl': string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof CoinTokenAddRequest
      */
-    'contractAddress'?: string | null;
-    /**
-     * 
-     * @type {Type}
-     * @memberof CoinTokenAddRequest
-     */
-    'currencyType'?: Type;
-    /**
-     * 
-     * @type {string}
-     * @memberof CoinTokenAddRequest
-     */
-    'explolerUrl'?: string | null;
+    'currencyType'?: number | null;
     /**
      * 
      * @type {number}
@@ -1304,13 +1292,19 @@ export interface CoinTokenAddRequest {
      * @type {number}
      * @memberof CoinTokenAddRequest
      */
-    'confirmationCount'?: number | null;
+    'decimals'?: number | null;
     /**
      * 
      * @type {number}
      * @memberof CoinTokenAddRequest
      */
-    'decimals'?: number | null;
+    'confirmationCount'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CoinTokenAddRequest
+     */
+    'explorerUrl'?: string | null;
     /**
      * 
      * @type {string}
@@ -1322,7 +1316,7 @@ export interface CoinTokenAddRequest {
      * @type {string}
      * @memberof CoinTokenAddRequest
      */
-    'rpcPort'?: string | null;
+    'rpcPassword'?: string | null;
     /**
      * 
      * @type {string}
@@ -1334,10 +1328,51 @@ export interface CoinTokenAddRequest {
      * @type {string}
      * @memberof CoinTokenAddRequest
      */
-    'rpcPassword'?: string | null;
+    'rpcPort'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CoinTokenAddRequest
+     */
+    'contractAddress'?: string | null;
 }
-
-
+/**
+ * 
+ * @export
+ * @interface CoinTokenResponse
+ */
+export interface CoinTokenResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof CoinTokenResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CoinTokenResponse
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CoinTokenResponse
+     */
+    'symbol'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CoinTokenResponse
+     */
+    'type'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CoinTokenResponse
+     */
+    'coinMarketCapId'?: number;
+}
 /**
  * 
  * @export
@@ -2635,6 +2670,19 @@ export interface GetTradeHistoryResponse {
 /**
  * 
  * @export
+ * @interface GetUserDataRequest
+ */
+export interface GetUserDataRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GetUserDataRequest
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
  * @interface GetVerificationLevelResponse
  */
 export interface GetVerificationLevelResponse {
@@ -2650,6 +2698,31 @@ export interface GetVerificationLevelResponse {
      * @memberof GetVerificationLevelResponse
      */
     'withdrawLimits'?: { [key: string]: number; } | null;
+}
+/**
+ * 
+ * @export
+ * @interface GetVerificationsResponse
+ */
+export interface GetVerificationsResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GetVerificationsResponse
+     */
+    'emailVerificated'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GetVerificationsResponse
+     */
+    'smsVerificated'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GetVerificationsResponse
+     */
+    'twoFactorEnabled'?: boolean;
 }
 /**
  * 
@@ -3099,57 +3172,6 @@ export interface ListingRequest {
 /**
  * 
  * @export
- * @interface ManualBankWithdrawRequest
- */
-export interface ManualBankWithdrawRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'bankName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'bankAccountNumber'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'ifscCode'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'upiid'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'currencyId'?: number;
-    /**
-     * 
-     * @type {INRBanks}
-     * @memberof ManualBankWithdrawRequest
-     */
-    'bankType'?: INRBanks;
-}
-
-
-/**
- * 
- * @export
  * @interface ManualDepositRequest
  */
 export interface ManualDepositRequest {
@@ -3532,6 +3554,21 @@ export interface MerchantWithdrawStatusResponse {
      */
     'transaction'?: Transaction;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const Nullable1 = {
+    Applied: 'Applied',
+    Verified: 'Verified',
+    Rejected: 'Rejected'
+} as const;
+
+export type Nullable1 = typeof Nullable1[keyof typeof Nullable1];
+
+
 /**
  * 
  * @export
@@ -4060,6 +4097,19 @@ export interface PostOrdersRequest {
 /**
  * 
  * @export
+ * @interface PostResendEmailConfirmationRequest
+ */
+export interface PostResendEmailConfirmationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResendEmailConfirmationRequest
+     */
+    'email': string | null;
+}
+/**
+ * 
+ * @export
  * @interface PostResetPasswordRequest
  */
 export interface PostResetPasswordRequest {
@@ -4262,50 +4312,6 @@ export interface PostVefirySms {
 /**
  * 
  * @export
- * @interface PostWithdrawGuardResponse
- */
-export interface PostWithdrawGuardResponse {
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PostWithdrawGuardResponse
-     */
-    'success'?: boolean;
-    /**
-     * 
-     * @type {PostWithdrawGuardResponseErrorCode}
-     * @memberof PostWithdrawGuardResponse
-     */
-    'errorCode'?: PostWithdrawGuardResponseErrorCode;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostWithdrawGuardResponse
-     */
-    'withdrawId'?: string | null;
-}
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const PostWithdrawGuardResponseErrorCode = {
-    WrongAmount: 'WrongAmount',
-    VerificationTypeError: 'VerificationTypeError',
-    WrongCurrency: 'WrongCurrency',
-    InsufficentBalance: 'InsufficentBalance',
-    WrongGuardId: 'WrongGuardId'
-} as const;
-
-export type PostWithdrawGuardResponseErrorCode = typeof PostWithdrawGuardResponseErrorCode[keyof typeof PostWithdrawGuardResponseErrorCode];
-
-
-/**
- * 
- * @export
  * @interface PostWithdrawRequest
  */
 export interface PostWithdrawRequest {
@@ -4314,19 +4320,19 @@ export interface PostWithdrawRequest {
      * @type {number}
      * @memberof PostWithdrawRequest
      */
-    'amount': number;
+    'amount'?: number;
     /**
      * 
      * @type {string}
      * @memberof PostWithdrawRequest
      */
-    'currency': string;
+    'currency'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof PostWithdrawRequest
      */
-    'address': string;
+    'address'?: string | null;
     /**
      * 
      * @type {string}
@@ -4360,10 +4366,10 @@ export interface PostWithdrawRequestResult {
     'success'?: boolean;
     /**
      * 
-     * @type {WithdrawErrorCode}
+     * @type {WithdrawErrorCodes}
      * @memberof PostWithdrawRequestResult
      */
-    'withdrawErrorCode'?: WithdrawErrorCode;
+    'withdrawErrorCode'?: WithdrawErrorCodes;
     /**
      * 
      * @type {string}
@@ -4460,6 +4466,45 @@ export type PriceAlertCreateStatus = typeof PriceAlertCreateStatus[keyof typeof 
 /**
  * 
  * @export
+ * @interface ProblemDetails
+ */
+export interface ProblemDetails {
+    [key: string]: any;
+
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'type'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProblemDetails
+     */
+    'status'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'detail'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'instance'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface ProcessFaceImageRequest
  */
 export interface ProcessFaceImageRequest {
@@ -4469,6 +4514,43 @@ export interface ProcessFaceImageRequest {
      * @memberof ProcessFaceImageRequest
      */
     'containerUUID'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface QuoteDto
+ */
+export interface QuoteDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof QuoteDto
+     */
+    'time'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof QuoteDto
+     */
+    'open'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof QuoteDto
+     */
+    'high'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof QuoteDto
+     */
+    'low'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof QuoteDto
+     */
+    'close'?: number;
 }
 /**
  * 
@@ -4525,12 +4607,6 @@ export interface RequestSettingsTokenResponseModel {
      * @memberof RequestSettingsTokenResponseModel
      */
     'supportPIN'?: number;
-    /**
-     * 
-     * @type {TwoStepVerificationTypes}
-     * @memberof RequestSettingsTokenResponseModel
-     */
-    'verificationTypes'?: TwoStepVerificationTypes;
     /**
      * 
      * @type {number}
@@ -4680,6 +4756,81 @@ export const ServerLocation = {
 } as const;
 
 export type ServerLocation = typeof ServerLocation[keyof typeof ServerLocation];
+
+
+/**
+ * 
+ * @export
+ * @interface SetKycStateRequest
+ */
+export interface SetKycStateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SetKycStateRequest
+     */
+    'guid': string;
+    /**
+     * 
+     * @type {KYCRequestState}
+     * @memberof SetKycStateRequest
+     */
+    'state': KYCRequestState;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SetManualDepositStateRequest
+ */
+export interface SetManualDepositStateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SetManualDepositStateRequest
+     */
+    'guid': string;
+    /**
+     * 
+     * @type {ManualDepositStatus}
+     * @memberof SetManualDepositStateRequest
+     */
+    'status': ManualDepositStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof SetManualDepositStateRequest
+     */
+    'amount'?: number | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SetManualWithdrawStateRequest
+ */
+export interface SetManualWithdrawStateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SetManualWithdrawStateRequest
+     */
+    'guid': string;
+    /**
+     * 
+     * @type {ManualWithdrawStatus}
+     * @memberof SetManualWithdrawStateRequest
+     */
+    'status': ManualWithdrawStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof SetManualWithdrawStateRequest
+     */
+    'amount'?: number | null;
+}
 
 
 /**
@@ -5356,7 +5507,8 @@ export interface Tuple3 {
 
 export const TwoStepVerificationTypes = {
     Bitflex: 'BITFLEX',
-    Google: 'Google'
+    Google: 'Google',
+    No: 'NO'
 } as const;
 
 export type TwoStepVerificationTypes = typeof TwoStepVerificationTypes[keyof typeof TwoStepVerificationTypes];
@@ -5464,6 +5616,27 @@ export interface UserAgent {
      */
     'patch'?: string | null;
 }
+/**
+ * 
+ * @export
+ * @interface UserCommandRequest
+ */
+export interface UserCommandRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserCommandRequest
+     */
+    'email': string;
+    /**
+     * 
+     * @type {UserAdminCommand}
+     * @memberof UserCommandRequest
+     */
+    'command': UserAdminCommand;
+}
+
+
 /**
  * 
  * @export
@@ -5656,7 +5829,7 @@ export interface VerifyResult {
  * @enum {string}
  */
 
-export const WithdrawErrorCode = {
+export const WithdrawErrorCodes = {
     InvalidCurrency: 'InvalidCurrency',
     InvalidAmount: 'InvalidAmount',
     InvalidAddress: 'InvalidAddress',
@@ -5664,7 +5837,7 @@ export const WithdrawErrorCode = {
     TwoStepFailed: 'TwoStepFailed'
 } as const;
 
-export type WithdrawErrorCode = typeof WithdrawErrorCode[keyof typeof WithdrawErrorCode];
+export type WithdrawErrorCodes = typeof WithdrawErrorCodes[keyof typeof WithdrawErrorCodes];
 
 
 /**
@@ -5820,11 +5993,13 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetManualDepositInformationGet: async (guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminGetManualDepositInformationGet: async (guid: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiAdminGetManualDepositInformationGet', 'guid', guid)
             const localVarPath = `/api/Admin/GetManualDepositInformation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5861,11 +6036,13 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetManualWithdrawInformationGet: async (guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminGetManualWithdrawInformationGet: async (guid: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiAdminGetManualWithdrawInformationGet', 'guid', guid)
             const localVarPath = `/api/Admin/GetManualWithdrawInformation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5902,11 +6079,13 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetkycbyguidGet: async (guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminGetkycbyguidGet: async (guid: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiAdminGetkycbyguidGet', 'guid', guid)
             const localVarPath = `/api/Admin/getkycbyguid`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5943,11 +6122,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetuserdataPost: async (email?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminGetuserdataPost: async (getUserDataRequest?: GetUserDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/getuserdata`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5967,15 +6146,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getUserDataRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5984,11 +6162,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetusertradedataPost: async (email?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminGetusertradedataPost: async (getUserDataRequest?: GetUserDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/getusertradedata`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6008,15 +6186,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getUserDataRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6025,11 +6202,13 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [searchString] 
+         * @param {string} searchString 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSearchuserGet: async (searchString?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminSearchuserGet: async (searchString: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'searchString' is not null or undefined
+            assertParamExists('apiAdminSearchuserGet', 'searchString', searchString)
             const localVarPath = `/api/Admin/searchuser`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6066,12 +6245,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetKYCStatePost: async (guid?: string, state?: KYCRequestState, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminSetKYCStatePost: async (setKycStateRequest?: SetKycStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/SetKYCState`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6091,19 +6269,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (state !== undefined) {
-                localVarQueryParameter['state'] = state;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setKycStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6112,13 +6285,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetManualDepositStatePost: async (guid?: string, status?: ManualDepositStatus, amount?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminSetManualDepositStatePost: async (setManualDepositStateRequest?: SetManualDepositStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/SetManualDepositState`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6138,23 +6309,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (status !== undefined) {
-                localVarQueryParameter['status'] = status;
-            }
-
-            if (amount !== undefined) {
-                localVarQueryParameter['amount'] = amount;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setManualDepositStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6163,13 +6325,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetManualWithdrawStatePost: async (guid?: string, status?: ManualWithdrawStatus, amount?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminSetManualWithdrawStatePost: async (setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/SetManualWithdrawState`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6189,23 +6349,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (status !== undefined) {
-                localVarQueryParameter['status'] = status;
-            }
-
-            if (amount !== undefined) {
-                localVarQueryParameter['amount'] = amount;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setManualWithdrawStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6214,12 +6365,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminUsercommandPost: async (email?: string, command?: UserAdminCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiAdminUsercommandPost: async (userCommandRequest?: UserCommandRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Admin/usercommand`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6239,19 +6389,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
-            if (command !== undefined) {
-                localVarQueryParameter['command'] = command;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userCommandRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6304,12 +6449,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetManualDepositInformationGet: async (version: string, guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminGetManualDepositInformationGet: async (guid: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiVversionAdminGetManualDepositInformationGet', 'guid', guid)
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminGetManualDepositInformationGet', 'version', version)
             const localVarPath = `/api/v{version}/Admin/GetManualDepositInformation`
@@ -6349,12 +6496,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetManualWithdrawInformationGet: async (version: string, guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminGetManualWithdrawInformationGet: async (guid: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiVversionAdminGetManualWithdrawInformationGet', 'guid', guid)
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminGetManualWithdrawInformationGet', 'version', version)
             const localVarPath = `/api/v{version}/Admin/GetManualWithdrawInformation`
@@ -6394,12 +6543,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetkycbyguidGet: async (version: string, guid?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminGetkycbyguidGet: async (guid: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'guid' is not null or undefined
+            assertParamExists('apiVversionAdminGetkycbyguidGet', 'guid', guid)
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminGetkycbyguidGet', 'version', version)
             const localVarPath = `/api/v{version}/Admin/getkycbyguid`
@@ -6440,11 +6591,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetuserdataPost: async (version: string, email?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminGetuserdataPost: async (version: string, getUserDataRequest?: GetUserDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminGetuserdataPost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/getuserdata`
@@ -6467,15 +6618,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getUserDataRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6485,11 +6635,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetusertradedataPost: async (version: string, email?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminGetusertradedataPost: async (version: string, getUserDataRequest?: GetUserDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminGetusertradedataPost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/getusertradedata`
@@ -6512,15 +6662,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getUserDataRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6529,12 +6678,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} searchString 
          * @param {string} version 
-         * @param {string} [searchString] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSearchuserGet: async (version: string, searchString?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminSearchuserGet: async (searchString: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'searchString' is not null or undefined
+            assertParamExists('apiVversionAdminSearchuserGet', 'searchString', searchString)
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminSearchuserGet', 'version', version)
             const localVarPath = `/api/v{version}/Admin/searchuser`
@@ -6575,12 +6726,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSetKYCStatePost: async (version: string, guid?: string, state?: KYCRequestState, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminSetKYCStatePost: async (version: string, setKycStateRequest?: SetKycStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminSetKYCStatePost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/SetKYCState`
@@ -6603,19 +6753,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (state !== undefined) {
-                localVarQueryParameter['state'] = state;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setKycStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6625,13 +6770,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSetManualDepositStatePost: async (version: string, guid?: string, status?: ManualDepositStatus, amount?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminSetManualDepositStatePost: async (version: string, setManualDepositStateRequest?: SetManualDepositStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminSetManualDepositStatePost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/SetManualDepositState`
@@ -6654,23 +6797,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (status !== undefined) {
-                localVarQueryParameter['status'] = status;
-            }
-
-            if (amount !== undefined) {
-                localVarQueryParameter['amount'] = amount;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setManualDepositStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6680,13 +6814,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSetManualWithdrawStatePost: async (version: string, guid?: string, status?: ManualWithdrawStatus, amount?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminSetManualWithdrawStatePost: async (version: string, setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminSetManualWithdrawStatePost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/SetManualWithdrawState`
@@ -6709,23 +6841,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (guid !== undefined) {
-                localVarQueryParameter['guid'] = guid;
-            }
-
-            if (status !== undefined) {
-                localVarQueryParameter['status'] = status;
-            }
-
-            if (amount !== undefined) {
-                localVarQueryParameter['amount'] = amount;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setManualWithdrawStateRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6735,12 +6858,11 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminUsercommandPost: async (version: string, email?: string, command?: UserAdminCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionAdminUsercommandPost: async (version: string, userCommandRequest?: UserCommandRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionAdminUsercommandPost', 'version', version)
             const localVarPath = `/api/v{version}/Admin/usercommand`
@@ -6763,19 +6885,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (email !== undefined) {
-                localVarQueryParameter['email'] = email;
-            }
-
-            if (command !== undefined) {
-                localVarQueryParameter['command'] = command;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userCommandRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6798,7 +6915,7 @@ export const AdminApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminAddcointokenPost(coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CryptoCurrency>> {
+        async apiAdminAddcointokenPost(coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoinTokenResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminAddcointokenPost(coinTokenAddRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminAddcointokenPost']?.[localVarOperationServerIndex]?.url;
@@ -6806,11 +6923,11 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminGetManualDepositInformationGet(guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
+        async apiAdminGetManualDepositInformationGet(guid: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetManualDepositInformationGet(guid, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminGetManualDepositInformationGet']?.[localVarOperationServerIndex]?.url;
@@ -6818,11 +6935,11 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminGetManualWithdrawInformationGet(guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
+        async apiAdminGetManualWithdrawInformationGet(guid: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetManualWithdrawInformationGet(guid, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminGetManualWithdrawInformationGet']?.[localVarOperationServerIndex]?.url;
@@ -6830,11 +6947,11 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminGetkycbyguidGet(guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
+        async apiAdminGetkycbyguidGet(guid: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetkycbyguidGet(guid, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminGetkycbyguidGet']?.[localVarOperationServerIndex]?.url;
@@ -6842,35 +6959,35 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminGetuserdataPost(email?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetuserdataPost(email, options);
+        async apiAdminGetuserdataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetuserdataPost(getUserDataRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminGetuserdataPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminGetusertradedataPost(email?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TradeData>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetusertradedataPost(email, options);
+        async apiAdminGetusertradedataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TradeData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminGetusertradedataPost(getUserDataRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminGetusertradedataPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [searchString] 
+         * @param {string} searchString 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminSearchuserGet(searchString?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+        async apiAdminSearchuserGet(searchString: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSearchuserGet(searchString, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminSearchuserGet']?.[localVarOperationServerIndex]?.url;
@@ -6878,54 +6995,48 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminSetKYCStatePost(guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetKYCStatePost(guid, state, options);
+        async apiAdminSetKYCStatePost(setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetKYCStatePost(setKycStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminSetKYCStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminSetManualDepositStatePost(guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetManualDepositStatePost(guid, status, amount, options);
+        async apiAdminSetManualDepositStatePost(setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetManualDepositStatePost(setManualDepositStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminSetManualDepositStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminSetManualWithdrawStatePost(guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetManualWithdrawStatePost(guid, status, amount, options);
+        async apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminSetManualWithdrawStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAdminUsercommandPost(email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminUsercommandPost(email, command, options);
+        async apiAdminUsercommandPost(userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAdminUsercommandPost(userCommandRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiAdminUsercommandPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -6937,7 +7048,7 @@ export const AdminApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminAddcointokenPost(version: string, coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CryptoCurrency>> {
+        async apiVversionAdminAddcointokenPost(version: string, coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoinTokenResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminAddcointokenPost(version, coinTokenAddRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminAddcointokenPost']?.[localVarOperationServerIndex]?.url;
@@ -6945,39 +7056,39 @@ export const AdminApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminGetManualDepositInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetManualDepositInformationGet(version, guid, options);
+        async apiVversionAdminGetManualDepositInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetManualDepositInformationGet(guid, version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminGetManualDepositInformationGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminGetManualWithdrawInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetManualWithdrawInformationGet(version, guid, options);
+        async apiVversionAdminGetManualWithdrawInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetManualWithdrawInformationGet(guid, version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminGetManualWithdrawInformationGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminGetkycbyguidGet(version: string, guid?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetkycbyguidGet(version, guid, options);
+        async apiVversionAdminGetkycbyguidGet(guid: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetkycbyguidGet(guid, version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminGetkycbyguidGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -6985,12 +7096,12 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminGetuserdataPost(version: string, email?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetuserdataPost(version, email, options);
+        async apiVversionAdminGetuserdataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetuserdataPost(version, getUserDataRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminGetuserdataPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -6998,25 +7109,25 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminGetusertradedataPost(version: string, email?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TradeData>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetusertradedataPost(version, email, options);
+        async apiVversionAdminGetusertradedataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TradeData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminGetusertradedataPost(version, getUserDataRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminGetusertradedataPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
+         * @param {string} searchString 
          * @param {string} version 
-         * @param {string} [searchString] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminSearchuserGet(version: string, searchString?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSearchuserGet(version, searchString, options);
+        async apiVversionAdminSearchuserGet(searchString: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSearchuserGet(searchString, version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminSearchuserGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7024,13 +7135,12 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminSetKYCStatePost(version: string, guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetKYCStatePost(version, guid, state, options);
+        async apiVversionAdminSetKYCStatePost(version: string, setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetKYCStatePost(version, setKycStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminSetKYCStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7038,14 +7148,12 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminSetManualDepositStatePost(version: string, guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetManualDepositStatePost(version, guid, status, amount, options);
+        async apiVversionAdminSetManualDepositStatePost(version: string, setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetManualDepositStatePost(version, setManualDepositStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminSetManualDepositStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7053,14 +7161,12 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminSetManualWithdrawStatePost(version: string, guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetManualWithdrawStatePost(version, guid, status, amount, options);
+        async apiVversionAdminSetManualWithdrawStatePost(version: string, setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualWithdrawRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminSetManualWithdrawStatePost(version, setManualWithdrawStateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminSetManualWithdrawStatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7068,13 +7174,12 @@ export const AdminApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionAdminUsercommandPost(version: string, email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminUsercommandPost(version, email, command, options);
+        async apiVversionAdminUsercommandPost(version: string, userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionAdminUsercommandPost(version, userCommandRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminApi.apiVversionAdminUsercommandPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7095,104 +7200,98 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminAddcointokenPost(coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<CryptoCurrency> {
+        apiAdminAddcointokenPost(coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<CoinTokenResponse> {
             return localVarFp.apiAdminAddcointokenPost(coinTokenAddRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetManualDepositInformationGet(guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
+        apiAdminGetManualDepositInformationGet(guid: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
             return localVarFp.apiAdminGetManualDepositInformationGet(guid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetManualWithdrawInformationGet(guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
+        apiAdminGetManualWithdrawInformationGet(guid: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
             return localVarFp.apiAdminGetManualWithdrawInformationGet(guid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
+         * @param {string} guid 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetkycbyguidGet(guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
+        apiAdminGetkycbyguidGet(guid: string, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
             return localVarFp.apiAdminGetkycbyguidGet(guid, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetuserdataPost(email?: string, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationUser> {
-            return localVarFp.apiAdminGetuserdataPost(email, options).then((request) => request(axios, basePath));
+        apiAdminGetuserdataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationUser> {
+            return localVarFp.apiAdminGetuserdataPost(getUserDataRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [email] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminGetusertradedataPost(email?: string, options?: RawAxiosRequestConfig): AxiosPromise<TradeData> {
-            return localVarFp.apiAdminGetusertradedataPost(email, options).then((request) => request(axios, basePath));
+        apiAdminGetusertradedataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): AxiosPromise<TradeData> {
+            return localVarFp.apiAdminGetusertradedataPost(getUserDataRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [searchString] 
+         * @param {string} searchString 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSearchuserGet(searchString?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
+        apiAdminSearchuserGet(searchString: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
             return localVarFp.apiAdminSearchuserGet(searchString, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetKYCStatePost(guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
-            return localVarFp.apiAdminSetKYCStatePost(guid, state, options).then((request) => request(axios, basePath));
+        apiAdminSetKYCStatePost(setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
+            return localVarFp.apiAdminSetKYCStatePost(setKycStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetManualDepositStatePost(guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
-            return localVarFp.apiAdminSetManualDepositStatePost(guid, status, amount, options).then((request) => request(axios, basePath));
+        apiAdminSetManualDepositStatePost(setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
+            return localVarFp.apiAdminSetManualDepositStatePost(setManualDepositStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminSetManualWithdrawStatePost(guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
-            return localVarFp.apiAdminSetManualWithdrawStatePost(guid, status, amount, options).then((request) => request(axios, basePath));
+        apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
+            return localVarFp.apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAdminUsercommandPost(email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiAdminUsercommandPost(email, command, options).then((request) => request(axios, basePath));
+        apiAdminUsercommandPost(userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiAdminUsercommandPost(userCommandRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7201,114 +7300,108 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminAddcointokenPost(version: string, coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<CryptoCurrency> {
+        apiVversionAdminAddcointokenPost(version: string, coinTokenAddRequest?: CoinTokenAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<CoinTokenResponse> {
             return localVarFp.apiVversionAdminAddcointokenPost(version, coinTokenAddRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
+         * @param {string} guid 
          * @param {string} version 
-         * @param {string} [guid] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetManualDepositInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
-            return localVarFp.apiVversionAdminGetManualDepositInformationGet(version, guid, options).then((request) => request(axios, basePath));
+        apiVversionAdminGetManualDepositInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
+            return localVarFp.apiVversionAdminGetManualDepositInformationGet(guid, version, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} guid 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionAdminGetManualWithdrawInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
+            return localVarFp.apiVversionAdminGetManualWithdrawInformationGet(guid, version, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} guid 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionAdminGetkycbyguidGet(guid: string, version: string, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
+            return localVarFp.apiVversionAdminGetkycbyguidGet(guid, version, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetManualWithdrawInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
-            return localVarFp.apiVversionAdminGetManualWithdrawInformationGet(version, guid, options).then((request) => request(axios, basePath));
+        apiVversionAdminGetuserdataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationUser> {
+            return localVarFp.apiVversionAdminGetuserdataPost(version, getUserDataRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
+         * @param {GetUserDataRequest} [getUserDataRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetkycbyguidGet(version: string, guid?: string, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
-            return localVarFp.apiVversionAdminGetkycbyguidGet(version, guid, options).then((request) => request(axios, basePath));
+        apiVversionAdminGetusertradedataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig): AxiosPromise<TradeData> {
+            return localVarFp.apiVversionAdminGetusertradedataPost(version, getUserDataRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} searchString 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionAdminSearchuserGet(searchString: string, version: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
+            return localVarFp.apiVversionAdminSearchuserGet(searchString, version, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {SetKycStateRequest} [setKycStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetuserdataPost(version: string, email?: string, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationUser> {
-            return localVarFp.apiVversionAdminGetuserdataPost(version, email, options).then((request) => request(axios, basePath));
+        apiVversionAdminSetKYCStatePost(version: string, setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
+            return localVarFp.apiVversionAdminSetKYCStatePost(version, setKycStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [email] 
+         * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminGetusertradedataPost(version: string, email?: string, options?: RawAxiosRequestConfig): AxiosPromise<TradeData> {
-            return localVarFp.apiVversionAdminGetusertradedataPost(version, email, options).then((request) => request(axios, basePath));
+        apiVversionAdminSetManualDepositStatePost(version: string, setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
+            return localVarFp.apiVversionAdminSetManualDepositStatePost(version, setManualDepositStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [searchString] 
+         * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSearchuserGet(version: string, searchString?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
-            return localVarFp.apiVversionAdminSearchuserGet(version, searchString, options).then((request) => request(axios, basePath));
+        apiVversionAdminSetManualWithdrawStatePost(version: string, setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
+            return localVarFp.apiVversionAdminSetManualWithdrawStatePost(version, setManualWithdrawStateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [guid] 
-         * @param {KYCRequestState} [state] 
+         * @param {UserCommandRequest} [userCommandRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionAdminSetKYCStatePost(version: string, guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequest> {
-            return localVarFp.apiVversionAdminSetKYCStatePost(version, guid, state, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualDepositStatus} [status] 
-         * @param {number} [amount] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionAdminSetManualDepositStatePost(version: string, guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
-            return localVarFp.apiVversionAdminSetManualDepositStatePost(version, guid, status, amount, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [guid] 
-         * @param {ManualWithdrawStatus} [status] 
-         * @param {number} [amount] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionAdminSetManualWithdrawStatePost(version: string, guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig): AxiosPromise<ManualWithdrawRequest> {
-            return localVarFp.apiVversionAdminSetManualWithdrawStatePost(version, guid, status, amount, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [email] 
-         * @param {UserAdminCommand} [command] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionAdminUsercommandPost(version: string, email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiVversionAdminUsercommandPost(version, email, command, options).then((request) => request(axios, basePath));
+        apiVversionAdminUsercommandPost(version: string, userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiVversionAdminUsercommandPost(version, userCommandRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7333,118 +7426,112 @@ export class AdminApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} [guid] 
+     * @param {string} guid 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminGetManualDepositInformationGet(guid?: string, options?: RawAxiosRequestConfig) {
+    public apiAdminGetManualDepositInformationGet(guid: string, options?: RawAxiosRequestConfig) {
         return AdminApiFp(this.configuration).apiAdminGetManualDepositInformationGet(guid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [guid] 
+     * @param {string} guid 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminGetManualWithdrawInformationGet(guid?: string, options?: RawAxiosRequestConfig) {
+    public apiAdminGetManualWithdrawInformationGet(guid: string, options?: RawAxiosRequestConfig) {
         return AdminApiFp(this.configuration).apiAdminGetManualWithdrawInformationGet(guid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [guid] 
+     * @param {string} guid 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminGetkycbyguidGet(guid?: string, options?: RawAxiosRequestConfig) {
+    public apiAdminGetkycbyguidGet(guid: string, options?: RawAxiosRequestConfig) {
         return AdminApiFp(this.configuration).apiAdminGetkycbyguidGet(guid, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [email] 
+     * @param {GetUserDataRequest} [getUserDataRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminGetuserdataPost(email?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminGetuserdataPost(email, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminGetuserdataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminGetuserdataPost(getUserDataRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [email] 
+     * @param {GetUserDataRequest} [getUserDataRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminGetusertradedataPost(email?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminGetusertradedataPost(email, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminGetusertradedataPost(getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminGetusertradedataPost(getUserDataRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [searchString] 
+     * @param {string} searchString 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminSearchuserGet(searchString?: string, options?: RawAxiosRequestConfig) {
+    public apiAdminSearchuserGet(searchString: string, options?: RawAxiosRequestConfig) {
         return AdminApiFp(this.configuration).apiAdminSearchuserGet(searchString, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [guid] 
-     * @param {KYCRequestState} [state] 
+     * @param {SetKycStateRequest} [setKycStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminSetKYCStatePost(guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminSetKYCStatePost(guid, state, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminSetKYCStatePost(setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminSetKYCStatePost(setKycStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [guid] 
-     * @param {ManualDepositStatus} [status] 
-     * @param {number} [amount] 
+     * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminSetManualDepositStatePost(guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminSetManualDepositStatePost(guid, status, amount, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminSetManualDepositStatePost(setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminSetManualDepositStatePost(setManualDepositStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [guid] 
-     * @param {ManualWithdrawStatus} [status] 
-     * @param {number} [amount] 
+     * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminSetManualWithdrawStatePost(guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminSetManualWithdrawStatePost(guid, status, amount, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminSetManualWithdrawStatePost(setManualWithdrawStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [email] 
-     * @param {UserAdminCommand} [command] 
+     * @param {UserCommandRequest} [userCommandRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiAdminUsercommandPost(email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiAdminUsercommandPost(email, command, options).then((request) => request(this.axios, this.basePath));
+    public apiAdminUsercommandPost(userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiAdminUsercommandPost(userCommandRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7461,128 +7548,122 @@ export class AdminApi extends BaseAPI {
 
     /**
      * 
+     * @param {string} guid 
      * @param {string} version 
-     * @param {string} [guid] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminGetManualDepositInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminGetManualDepositInformationGet(version, guid, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminGetManualDepositInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminGetManualDepositInformationGet(guid, version, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} guid 
+     * @param {string} version 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public apiVversionAdminGetManualWithdrawInformationGet(guid: string, version: string, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminGetManualWithdrawInformationGet(guid, version, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} guid 
+     * @param {string} version 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public apiVversionAdminGetkycbyguidGet(guid: string, version: string, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminGetkycbyguidGet(guid, version, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [guid] 
+     * @param {GetUserDataRequest} [getUserDataRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminGetManualWithdrawInformationGet(version: string, guid?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminGetManualWithdrawInformationGet(version, guid, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminGetuserdataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminGetuserdataPost(version, getUserDataRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [guid] 
+     * @param {GetUserDataRequest} [getUserDataRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminGetkycbyguidGet(version: string, guid?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminGetkycbyguidGet(version, guid, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminGetusertradedataPost(version: string, getUserDataRequest?: GetUserDataRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminGetusertradedataPost(version, getUserDataRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} searchString 
+     * @param {string} version 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public apiVversionAdminSearchuserGet(searchString: string, version: string, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminSearchuserGet(searchString, version, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [email] 
+     * @param {SetKycStateRequest} [setKycStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminGetuserdataPost(version: string, email?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminGetuserdataPost(version, email, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminSetKYCStatePost(version: string, setKycStateRequest?: SetKycStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminSetKYCStatePost(version, setKycStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [email] 
+     * @param {SetManualDepositStateRequest} [setManualDepositStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminGetusertradedataPost(version: string, email?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminGetusertradedataPost(version, email, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminSetManualDepositStatePost(version: string, setManualDepositStateRequest?: SetManualDepositStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminSetManualDepositStatePost(version, setManualDepositStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [searchString] 
+     * @param {SetManualWithdrawStateRequest} [setManualWithdrawStateRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminSearchuserGet(version: string, searchString?: string, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminSearchuserGet(version, searchString, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminSetManualWithdrawStatePost(version: string, setManualWithdrawStateRequest?: SetManualWithdrawStateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminSetManualWithdrawStatePost(version, setManualWithdrawStateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [guid] 
-     * @param {KYCRequestState} [state] 
+     * @param {UserCommandRequest} [userCommandRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminApi
      */
-    public apiVversionAdminSetKYCStatePost(version: string, guid?: string, state?: KYCRequestState, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminSetKYCStatePost(version, guid, state, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {string} [guid] 
-     * @param {ManualDepositStatus} [status] 
-     * @param {number} [amount] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApi
-     */
-    public apiVversionAdminSetManualDepositStatePost(version: string, guid?: string, status?: ManualDepositStatus, amount?: number, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminSetManualDepositStatePost(version, guid, status, amount, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {string} [guid] 
-     * @param {ManualWithdrawStatus} [status] 
-     * @param {number} [amount] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApi
-     */
-    public apiVversionAdminSetManualWithdrawStatePost(version: string, guid?: string, status?: ManualWithdrawStatus, amount?: number, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminSetManualWithdrawStatePost(version, guid, status, amount, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {string} [email] 
-     * @param {UserAdminCommand} [command] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AdminApi
-     */
-    public apiVversionAdminUsercommandPost(version: string, email?: string, command?: UserAdminCommand, options?: RawAxiosRequestConfig) {
-        return AdminApiFp(this.configuration).apiVversionAdminUsercommandPost(version, email, command, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionAdminUsercommandPost(version: string, userCommandRequest?: UserCommandRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).apiVversionAdminUsercommandPost(version, userCommandRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -9580,187 +9661,6 @@ export const BalanceApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceGetAvailaleBanksGet: async (currencyId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Balance/GetAvailaleBanks`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (currencyId !== undefined) {
-                localVarQueryParameter['currencyId'] = currencyId;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceManualDepositPost: async (amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Balance/ManualDeposit`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (amount !== undefined) { 
-                localVarFormParams.append('Amount', amount as any);
-            }
-    
-            if (transactionID !== undefined) { 
-                localVarFormParams.append('TransactionID', transactionID as any);
-            }
-    
-            if (currencyId !== undefined) { 
-                localVarFormParams.append('CurrencyId', currencyId as any);
-            }
-    
-            if (recieptPhoto !== undefined) { 
-                localVarFormParams.append('RecieptPhoto', recieptPhoto as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceManualWithdrawRequestPost: async (manualBankWithdrawRequest?: ManualBankWithdrawRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Balance/ManualWithdrawRequest`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(manualBankWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalancePrewithdrawPost: async (postWithdrawRequest?: PostWithdrawRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Balance/prewithdraw`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9833,47 +9733,6 @@ export const BalanceApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(postWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceWithdrawguardPost: async (guardRequestId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Balance/withdrawguard`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (guardRequestId !== undefined) {
-                localVarQueryParameter['guardRequestId'] = guardRequestId;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10100,203 +9959,6 @@ export const BalanceApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {string} version 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceGetAvailaleBanksGet: async (version: string, currencyId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('apiVversionBalanceGetAvailaleBanksGet', 'version', version)
-            const localVarPath = `/api/v{version}/Balance/GetAvailaleBanks`
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (currencyId !== undefined) {
-                localVarQueryParameter['currencyId'] = currencyId;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceManualDepositPost: async (version: string, amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('apiVversionBalanceManualDepositPost', 'version', version)
-            const localVarPath = `/api/v{version}/Balance/ManualDeposit`
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (amount !== undefined) { 
-                localVarFormParams.append('Amount', amount as any);
-            }
-    
-            if (transactionID !== undefined) { 
-                localVarFormParams.append('TransactionID', transactionID as any);
-            }
-    
-            if (currencyId !== undefined) { 
-                localVarFormParams.append('CurrencyId', currencyId as any);
-            }
-    
-            if (recieptPhoto !== undefined) { 
-                localVarFormParams.append('RecieptPhoto', recieptPhoto as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceManualWithdrawRequestPost: async (version: string, manualBankWithdrawRequest?: ManualBankWithdrawRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('apiVversionBalanceManualWithdrawRequestPost', 'version', version)
-            const localVarPath = `/api/v{version}/Balance/ManualWithdrawRequest`
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(manualBankWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalancePrewithdrawPost: async (version: string, postWithdrawRequest?: PostWithdrawRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('apiVversionBalancePrewithdrawPost', 'version', version)
-            const localVarPath = `/api/v{version}/Balance/prewithdraw`
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {string} version 
          * @param {*} [options] Override http request option.
@@ -10377,51 +10039,6 @@ export const BalanceApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(postWithdrawRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceWithdrawguardPost: async (version: string, guardRequestId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('apiVversionBalanceWithdrawguardPost', 'version', version)
-            const localVarPath = `/api/v{version}/Balance/withdrawguard`
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication X-BF-API-KEY required
-            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (guardRequestId !== undefined) {
-                localVarQueryParameter['guardRequestId'] = guardRequestId;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10533,57 +10150,6 @@ export const BalanceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiBalanceGetAvailaleBanksGet(currencyId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<INRBanks>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalanceGetAvailaleBanksGet(currencyId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalanceGetAvailaleBanksGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiBalanceManualDepositPost(amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalanceManualDepositPost(amount, transactionID, currencyId, recieptPhoto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalanceManualDepositPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalanceManualWithdrawRequestPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiBalancePrewithdrawPost(postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalancePrewithdrawPost(postWithdrawRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalancePrewithdrawPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -10604,18 +10170,6 @@ export const BalanceApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalanceWithdrawPost(postWithdrawRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalanceWithdrawPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiBalanceWithdrawguardPost(guardRequestId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBalanceWithdrawguardPost(guardRequestId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiBalanceWithdrawguardPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -10684,61 +10238,6 @@ export const BalanceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} version 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVversionBalanceGetAvailaleBanksGet(version: string, currencyId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<INRBanks>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalanceGetAvailaleBanksGet(version, currencyId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalanceGetAvailaleBanksGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVversionBalanceManualDepositPost(version: string, amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ManualDepositRequest>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalanceManualDepositPost(version, amount, transactionID, currencyId, recieptPhoto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalanceManualDepositPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVversionBalanceManualWithdrawRequestPost(version: string, manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalanceManualWithdrawRequestPost(version, manualBankWithdrawRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalanceManualWithdrawRequestPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVversionBalancePrewithdrawPost(version: string, postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalancePrewithdrawPost(version, postWithdrawRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalancePrewithdrawPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {string} version 
          * @param {*} [options] Override http request option.
@@ -10761,19 +10260,6 @@ export const BalanceApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalanceWithdrawPost(version, postWithdrawRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalanceWithdrawPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVversionBalanceWithdrawguardPost(version: string, guardRequestId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostWithdrawGuardResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionBalanceWithdrawguardPost(version, guardRequestId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BalanceApi.apiVversionBalanceWithdrawguardPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -10837,45 +10323,6 @@ export const BalanceApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceGetAvailaleBanksGet(currencyId?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<INRBanks>> {
-            return localVarFp.apiBalanceGetAvailaleBanksGet(currencyId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceManualDepositPost(amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
-            return localVarFp.apiBalanceManualDepositPost(amount, transactionID, currencyId, recieptPhoto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalancePrewithdrawPost(postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiBalancePrewithdrawPost(postWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -10891,15 +10338,6 @@ export const BalanceApiFactory = function (configuration?: Configuration, basePa
          */
         apiBalanceWithdrawPost(postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawRequestResult> {
             return localVarFp.apiBalanceWithdrawPost(postWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiBalanceWithdrawguardPost(guardRequestId?: string, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiBalanceWithdrawguardPost(guardRequestId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10952,49 +10390,6 @@ export const BalanceApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {string} version 
-         * @param {string} [currencyId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceGetAvailaleBanksGet(version: string, currencyId?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<INRBanks>> {
-            return localVarFp.apiVversionBalanceGetAvailaleBanksGet(version, currencyId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {number} [amount] 
-         * @param {string} [transactionID] 
-         * @param {number} [currencyId] 
-         * @param {File} [recieptPhoto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceManualDepositPost(version: string, amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig): AxiosPromise<ManualDepositRequest> {
-            return localVarFp.apiVversionBalanceManualDepositPost(version, amount, transactionID, currencyId, recieptPhoto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceManualWithdrawRequestPost(version: string, manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiVversionBalanceManualWithdrawRequestPost(version, manualBankWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {PostWithdrawRequest} [postWithdrawRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalancePrewithdrawPost(version: string, postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiVversionBalancePrewithdrawPost(version, postWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {string} currency 
          * @param {string} version 
          * @param {*} [options] Override http request option.
@@ -11012,16 +10407,6 @@ export const BalanceApiFactory = function (configuration?: Configuration, basePa
          */
         apiVversionBalanceWithdrawPost(version: string, postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawRequestResult> {
             return localVarFp.apiVversionBalanceWithdrawPost(version, postWithdrawRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} version 
-         * @param {string} [guardRequestId] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVversionBalanceWithdrawguardPost(version: string, guardRequestId?: string, options?: RawAxiosRequestConfig): AxiosPromise<PostWithdrawGuardResponse> {
-            return localVarFp.apiVversionBalanceWithdrawguardPost(version, guardRequestId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11089,53 +10474,6 @@ export class BalanceApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} [currencyId] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiBalanceGetAvailaleBanksGet(currencyId?: string, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiBalanceGetAvailaleBanksGet(currencyId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {number} [amount] 
-     * @param {string} [transactionID] 
-     * @param {number} [currencyId] 
-     * @param {File} [recieptPhoto] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiBalanceManualDepositPost(amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiBalanceManualDepositPost(amount, transactionID, currencyId, recieptPhoto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiBalanceManualWithdrawRequestPost(manualBankWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {PostWithdrawRequest} [postWithdrawRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiBalancePrewithdrawPost(postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiBalancePrewithdrawPost(postWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {string} currency 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -11154,17 +10492,6 @@ export class BalanceApi extends BaseAPI {
      */
     public apiBalanceWithdrawPost(postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig) {
         return BalanceApiFp(this.configuration).apiBalanceWithdrawPost(postWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} [guardRequestId] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiBalanceWithdrawguardPost(guardRequestId?: string, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiBalanceWithdrawguardPost(guardRequestId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11228,57 +10555,6 @@ export class BalanceApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} version 
-     * @param {string} [currencyId] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiVversionBalanceGetAvailaleBanksGet(version: string, currencyId?: string, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiVversionBalanceGetAvailaleBanksGet(version, currencyId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {number} [amount] 
-     * @param {string} [transactionID] 
-     * @param {number} [currencyId] 
-     * @param {File} [recieptPhoto] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiVversionBalanceManualDepositPost(version: string, amount?: number, transactionID?: string, currencyId?: number, recieptPhoto?: File, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiVversionBalanceManualDepositPost(version, amount, transactionID, currencyId, recieptPhoto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {ManualBankWithdrawRequest} [manualBankWithdrawRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiVversionBalanceManualWithdrawRequestPost(version: string, manualBankWithdrawRequest?: ManualBankWithdrawRequest, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiVversionBalanceManualWithdrawRequestPost(version, manualBankWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {PostWithdrawRequest} [postWithdrawRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiVversionBalancePrewithdrawPost(version: string, postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiVversionBalancePrewithdrawPost(version, postWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {string} currency 
      * @param {string} version 
      * @param {*} [options] Override http request option.
@@ -11299,18 +10575,6 @@ export class BalanceApi extends BaseAPI {
      */
     public apiVversionBalanceWithdrawPost(version: string, postWithdrawRequest?: PostWithdrawRequest, options?: RawAxiosRequestConfig) {
         return BalanceApiFp(this.configuration).apiVversionBalanceWithdrawPost(version, postWithdrawRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} version 
-     * @param {string} [guardRequestId] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BalanceApi
-     */
-    public apiVversionBalanceWithdrawguardPost(version: string, guardRequestId?: string, options?: RawAxiosRequestConfig) {
-        return BalanceApiFp(this.configuration).apiVversionBalanceWithdrawguardPost(version, guardRequestId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -14733,6 +13997,42 @@ export const MarketsApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiMarketsFixblockGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Markets/Fixblock`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} [fingerprint] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15266,6 +14566,46 @@ export const MarketsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionMarketsFixblockGet: async (version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('apiVversionMarketsFixblockGet', 'version', version)
+            const localVarPath = `/api/v{version}/Markets/Fixblock`
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} version 
          * @param {string} [fingerprint] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15756,6 +15096,17 @@ export const MarketsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiMarketsFixblockGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiMarketsFixblockGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MarketsApi.apiMarketsFixblockGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} [fingerprint] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15909,6 +15260,18 @@ export const MarketsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionMarketsCurrencyInfoGet(version, currency, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MarketsApi.apiVversionMarketsCurrencyInfoGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiVversionMarketsFixblockGet(version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionMarketsFixblockGet(version, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MarketsApi.apiVversionMarketsFixblockGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -16078,6 +15441,14 @@ export const MarketsApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiMarketsFixblockGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiMarketsFixblockGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} [fingerprint] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -16193,6 +15564,15 @@ export const MarketsApiFactory = function (configuration?: Configuration, basePa
          */
         apiVversionMarketsCurrencyInfoGet(version: string, currency?: string, options?: RawAxiosRequestConfig): AxiosPromise<CryptoCurrency> {
             return localVarFp.apiVversionMarketsCurrencyInfoGet(version, currency, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionMarketsFixblockGet(version: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiVversionMarketsFixblockGet(version, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -16337,6 +15717,16 @@ export class MarketsApi extends BaseAPI {
 
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MarketsApi
+     */
+    public apiMarketsFixblockGet(options?: RawAxiosRequestConfig) {
+        return MarketsApiFp(this.configuration).apiMarketsFixblockGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {string} [fingerprint] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -16477,6 +15867,17 @@ export class MarketsApi extends BaseAPI {
      */
     public apiVversionMarketsCurrencyInfoGet(version: string, currency?: string, options?: RawAxiosRequestConfig) {
         return MarketsApiFp(this.configuration).apiVversionMarketsCurrencyInfoGet(version, currency, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} version 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MarketsApi
+     */
+    public apiVversionMarketsFixblockGet(version: string, options?: RawAxiosRequestConfig) {
+        return MarketsApiFp(this.configuration).apiVversionMarketsFixblockGet(version, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -18093,6 +17494,196 @@ export class P2PApi extends BaseAPI {
 
 
 /**
+ * QuotesApi - axios parameter creator
+ * @export
+ */
+export const QuotesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiQuotesPairNameGet: async (pairName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'pairName' is not null or undefined
+            assertParamExists('apiQuotesPairNameGet', 'pairName', pairName)
+            const localVarPath = `/api/Quotes/{pairName}`
+                .replace(`{${"pairName"}}`, encodeURIComponent(String(pairName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionQuotesPairNameGet: async (pairName: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'pairName' is not null or undefined
+            assertParamExists('apiVversionQuotesPairNameGet', 'pairName', pairName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('apiVversionQuotesPairNameGet', 'version', version)
+            const localVarPath = `/api/v{version}/Quotes/{pairName}`
+                .replace(`{${"pairName"}}`, encodeURIComponent(String(pairName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * QuotesApi - functional programming interface
+ * @export
+ */
+export const QuotesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = QuotesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiQuotesPairNameGet(pairName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<QuoteDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiQuotesPairNameGet(pairName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['QuotesApi.apiQuotesPairNameGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiVversionQuotesPairNameGet(pairName: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<QuoteDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionQuotesPairNameGet(pairName, version, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['QuotesApi.apiVversionQuotesPairNameGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * QuotesApi - factory interface
+ * @export
+ */
+export const QuotesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = QuotesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiQuotesPairNameGet(pairName: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<QuoteDto>> {
+            return localVarFp.apiQuotesPairNameGet(pairName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} pairName 
+         * @param {string} version 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionQuotesPairNameGet(pairName: string, version: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<QuoteDto>> {
+            return localVarFp.apiVversionQuotesPairNameGet(pairName, version, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * QuotesApi - object-oriented interface
+ * @export
+ * @class QuotesApi
+ * @extends {BaseAPI}
+ */
+export class QuotesApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} pairName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QuotesApi
+     */
+    public apiQuotesPairNameGet(pairName: string, options?: RawAxiosRequestConfig) {
+        return QuotesApiFp(this.configuration).apiQuotesPairNameGet(pairName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} pairName 
+     * @param {string} version 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QuotesApi
+     */
+    public apiVversionQuotesPairNameGet(pairName: string, version: string, options?: RawAxiosRequestConfig) {
+        return QuotesApiFp(this.configuration).apiVversionQuotesPairNameGet(pairName, version, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * SignApi - axios parameter creator
  * @export
  */
@@ -18451,6 +18042,46 @@ export const SignApiAxiosParamCreator = function (configuration?: Configuration)
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(postMobileConfirmationRequestModel, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiSignResendemailconfirmationPost: async (postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Sign/resendemailconfirmation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postResendEmailConfirmationRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19183,6 +18814,50 @@ export const SignApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} version 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionSignResendemailconfirmationPost: async (version: string, postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('apiVversionSignResendemailconfirmationPost', 'version', version)
+            const localVarPath = `/api/v{version}/Sign/resendemailconfirmation`
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication X-BF-API-KEY required
+            await setApiKeyToObject(localVarHeaderParameter, "X-BF-API-KEY", configuration)
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postResendEmailConfirmationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} version 
          * @param {PostResetPasswordRequest} [postResetPasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -19659,6 +19334,18 @@ export const SignApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SignApi.apiSignResendemailconfirmationPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {PostResetPasswordRequest} [postResetPasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -19873,6 +19560,19 @@ export const SignApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiVversionSignResendemailconfirmationPost(version: string, postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionSignResendemailconfirmationPost(version, postResendEmailConfirmationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SignApi.apiVversionSignResendemailconfirmationPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} version 
          * @param {PostResetPasswordRequest} [postResetPasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -20067,6 +19767,15 @@ export const SignApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {PostResetPasswordRequest} [postResetPasswordRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -20226,6 +19935,16 @@ export const SignApiFactory = function (configuration?: Configuration, basePath?
          */
         apiVversionSignMobileConfirmationRequestPost(version: string, postMobileConfirmationRequestModel?: PostMobileConfirmationRequestModel, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.apiVversionSignMobileConfirmationRequestPost(version, postMobileConfirmationRequestModel, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} version 
+         * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiVversionSignResendemailconfirmationPost(version: string, postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiVversionSignResendemailconfirmationPost(version, postResendEmailConfirmationRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -20414,6 +20133,17 @@ export class SignApi extends BaseAPI {
      */
     public apiSignMobileConfirmationRequestPost(postMobileConfirmationRequestModel?: PostMobileConfirmationRequestModel, options?: RawAxiosRequestConfig) {
         return SignApiFp(this.configuration).apiSignMobileConfirmationRequestPost(postMobileConfirmationRequestModel, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SignApi
+     */
+    public apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig) {
+        return SignApiFp(this.configuration).apiSignResendemailconfirmationPost(postResendEmailConfirmationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20610,6 +20340,18 @@ export class SignApi extends BaseAPI {
      */
     public apiVversionSignMobileConfirmationRequestPost(version: string, postMobileConfirmationRequestModel?: PostMobileConfirmationRequestModel, options?: RawAxiosRequestConfig) {
         return SignApiFp(this.configuration).apiVversionSignMobileConfirmationRequestPost(version, postMobileConfirmationRequestModel, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} version 
+     * @param {PostResendEmailConfirmationRequest} [postResendEmailConfirmationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SignApi
+     */
+    public apiVversionSignResendemailconfirmationPost(version: string, postResendEmailConfirmationRequest?: PostResendEmailConfirmationRequest, options?: RawAxiosRequestConfig) {
+        return SignApiFp(this.configuration).apiVversionSignResendemailconfirmationPost(version, postResendEmailConfirmationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -21476,11 +21218,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserDisableGoogleAuthenticatorDelete: async (gcode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserDisableGoogleAuthenticatorDelete: async (body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/User/DisableGoogleAuthenticator`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21500,15 +21242,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (gcode !== undefined) {
-                localVarQueryParameter['gcode'] = gcode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21517,11 +21258,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserDisableGoogleAuthenticatorWithBackupCodeDelete: async (backupCode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserDisableGoogleAuthenticatorWithBackupCodeDelete: async (body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/User/DisableGoogleAuthenticatorWithBackupCode`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21541,15 +21282,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (backupCode !== undefined) {
-                localVarQueryParameter['backupCode'] = backupCode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -22062,11 +21802,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserVerifyGoogleAuthenticatorSetupCodePost: async (gcode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserVerifyGoogleAuthenticatorSetupCodePost: async (body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/User/VerifyGoogleAuthenticatorSetupCode`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -22086,15 +21826,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (gcode !== undefined) {
-                localVarQueryParameter['gcode'] = gcode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -22555,11 +22294,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserDisableGoogleAuthenticatorDelete: async (version: string, gcode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionUserDisableGoogleAuthenticatorDelete: async (version: string, body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionUserDisableGoogleAuthenticatorDelete', 'version', version)
             const localVarPath = `/api/v{version}/User/DisableGoogleAuthenticator`
@@ -22582,15 +22321,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (gcode !== undefined) {
-                localVarQueryParameter['gcode'] = gcode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -22600,11 +22338,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} version 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete: async (version: string, backupCode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete: async (version: string, body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete', 'version', version)
             const localVarPath = `/api/v{version}/User/DisableGoogleAuthenticatorWithBackupCode`
@@ -22627,15 +22365,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (backupCode !== undefined) {
-                localVarQueryParameter['backupCode'] = backupCode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -23201,11 +22938,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserVerifyGoogleAuthenticatorSetupCodePost: async (version: string, gcode?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiVversionUserVerifyGoogleAuthenticatorSetupCodePost: async (version: string, body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'version' is not null or undefined
             assertParamExists('apiVversionUserVerifyGoogleAuthenticatorSetupCodePost', 'version', version)
             const localVarPath = `/api/v{version}/User/VerifyGoogleAuthenticatorSetupCode`
@@ -23228,15 +22965,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (gcode !== undefined) {
-                localVarQueryParameter['gcode'] = gcode;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json-patch+json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -23441,24 +23177,24 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserDisableGoogleAuthenticatorDelete(gcode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserDisableGoogleAuthenticatorDelete(gcode, options);
+        async apiUserDisableGoogleAuthenticatorDelete(body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserDisableGoogleAuthenticatorDelete(body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiUserDisableGoogleAuthenticatorDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode, options);
+        async apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiUserDisableGoogleAuthenticatorWithBackupCodeDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23524,7 +23260,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserKycstateGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequestState>> {
+        async apiUserKycstateGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Nullable1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserKycstateGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiUserKycstateGet']?.[localVarOperationServerIndex]?.url;
@@ -23597,7 +23333,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserVerificationsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async apiUserVerificationsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetVerificationsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserVerificationsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiUserVerificationsGet']?.[localVarOperationServerIndex]?.url;
@@ -23616,12 +23352,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode, options);
+        async apiUserVerifyGoogleAuthenticatorSetupCodePost(body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserVerifyGoogleAuthenticatorSetupCodePost(body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiUserVerifyGoogleAuthenticatorSetupCodePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23758,12 +23494,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionUserDisableGoogleAuthenticatorDelete(version: string, gcode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserDisableGoogleAuthenticatorDelete(version, gcode, options);
+        async apiVversionUserDisableGoogleAuthenticatorDelete(version: string, body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserDisableGoogleAuthenticatorDelete(version, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiVversionUserDisableGoogleAuthenticatorDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23771,12 +23507,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, backupCode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, backupCode, options);
+        async apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23848,7 +23584,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionUserKycstateGet(version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<KYCRequestState>> {
+        async apiVversionUserKycstateGet(version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Nullable1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserKycstateGet(version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiVversionUserKycstateGet']?.[localVarOperationServerIndex]?.url;
@@ -23927,7 +23663,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionUserVerificationsGet(version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async apiVversionUserVerificationsGet(version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetVerificationsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserVerificationsGet(version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiVversionUserVerificationsGet']?.[localVarOperationServerIndex]?.url;
@@ -23948,12 +23684,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, gcode?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, gcode, options);
+        async apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BitflexApiResponseBase>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.apiVversionUserVerifyGoogleAuthenticatorSetupCodePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -24069,21 +23805,21 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserDisableGoogleAuthenticatorDelete(gcode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiUserDisableGoogleAuthenticatorDelete(gcode, options).then((request) => request(axios, basePath));
+        apiUserDisableGoogleAuthenticatorDelete(body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiUserDisableGoogleAuthenticatorDelete(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode, options).then((request) => request(axios, basePath));
+        apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -24131,7 +23867,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserKycstateGet(options?: RawAxiosRequestConfig): AxiosPromise<KYCRequestState> {
+        apiUserKycstateGet(options?: RawAxiosRequestConfig): AxiosPromise<Nullable1> {
             return localVarFp.apiUserKycstateGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -24186,7 +23922,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserVerificationsGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        apiUserVerificationsGet(options?: RawAxiosRequestConfig): AxiosPromise<GetVerificationsResponse> {
             return localVarFp.apiUserVerificationsGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -24199,12 +23935,12 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode, options).then((request) => request(axios, basePath));
+        apiUserVerifyGoogleAuthenticatorSetupCodePost(body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiUserVerifyGoogleAuthenticatorSetupCodePost(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -24308,22 +24044,22 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserDisableGoogleAuthenticatorDelete(version: string, gcode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiVversionUserDisableGoogleAuthenticatorDelete(version, gcode, options).then((request) => request(axios, basePath));
+        apiVversionUserDisableGoogleAuthenticatorDelete(version: string, body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiVversionUserDisableGoogleAuthenticatorDelete(version, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {string} version 
-         * @param {string} [backupCode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, backupCode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, backupCode, options).then((request) => request(axios, basePath));
+        apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -24377,7 +24113,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserKycstateGet(version: string, options?: RawAxiosRequestConfig): AxiosPromise<KYCRequestState> {
+        apiVversionUserKycstateGet(version: string, options?: RawAxiosRequestConfig): AxiosPromise<Nullable1> {
             return localVarFp.apiVversionUserKycstateGet(version, options).then((request) => request(axios, basePath));
         },
         /**
@@ -24438,7 +24174,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserVerificationsGet(version: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        apiVversionUserVerificationsGet(version: string, options?: RawAxiosRequestConfig): AxiosPromise<GetVerificationsResponse> {
             return localVarFp.apiVversionUserVerificationsGet(version, options).then((request) => request(axios, basePath));
         },
         /**
@@ -24453,12 +24189,12 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @param {string} version 
-         * @param {string} [gcode] 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, gcode?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
-            return localVarFp.apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, gcode, options).then((request) => request(axios, basePath));
+        apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, body?: string, options?: RawAxiosRequestConfig): AxiosPromise<BitflexApiResponseBase> {
+            return localVarFp.apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -24581,24 +24317,24 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} [gcode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserDisableGoogleAuthenticatorDelete(gcode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserDisableGoogleAuthenticatorDelete(gcode, options).then((request) => request(this.axios, this.basePath));
+    public apiUserDisableGoogleAuthenticatorDelete(body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserDisableGoogleAuthenticatorDelete(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} [backupCode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(backupCode, options).then((request) => request(this.axios, this.basePath));
+    public apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserDisableGoogleAuthenticatorWithBackupCodeDelete(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -24741,13 +24477,13 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} [gcode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserVerifyGoogleAuthenticatorSetupCodePost(gcode, options).then((request) => request(this.axios, this.basePath));
+    public apiUserVerifyGoogleAuthenticatorSetupCodePost(body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserVerifyGoogleAuthenticatorSetupCodePost(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -24872,25 +24608,25 @@ export class UserApi extends BaseAPI {
     /**
      * 
      * @param {string} version 
-     * @param {string} [gcode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiVversionUserDisableGoogleAuthenticatorDelete(version: string, gcode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiVversionUserDisableGoogleAuthenticatorDelete(version, gcode, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionUserDisableGoogleAuthenticatorDelete(version: string, body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiVversionUserDisableGoogleAuthenticatorDelete(version, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @param {string} version 
-     * @param {string} [backupCode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, backupCode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, backupCode, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version: string, body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiVversionUserDisableGoogleAuthenticatorWithBackupCodeDelete(version, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -25047,13 +24783,13 @@ export class UserApi extends BaseAPI {
     /**
      * 
      * @param {string} version 
-     * @param {string} [gcode] 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, gcode?: string, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, gcode, options).then((request) => request(this.axios, this.basePath));
+    public apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version: string, body?: string, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiVversionUserVerifyGoogleAuthenticatorSetupCodePost(version, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

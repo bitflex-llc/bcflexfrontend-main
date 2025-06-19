@@ -1,346 +1,475 @@
-﻿/* eslint-disable jsx-a11y/alt-text */
-import '../../css/signlayout.css';
+﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
+import { isMobile } from 'react-device-detect';
+import { FaCheck, FaLock } from 'react-icons/fa';
 
+// Components
 import { BFGradientButton, BFGradientButtonType } from '../html/BFGradientButton';
 import { BFInput, BFInputType } from '../html/BFInput';
 import { BFNotification, BFNotificationType, IBFNotification } from '../html/BFNotification';
-import { DevicePermissionRequestType, SignInResponseResult } from '../../api-wrapper';
-import { Link, useNavigate } from 'react-router-dom';
-import React, { useEffect, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
-import BitflexLogo from '../../images/bitflex-logo.svg';
-import { BitflexOpenApi } from '../../_helpers/BitflexOpenApi';
-import Colors from '../../Colors';
-import { FaCheck, FaLock } from 'react-icons/fa';
+import { BFModalWindow } from '../html/BFModalWindow';
 import OTPInput from '../html/BFOTPInput';
-import { TwoStepVerificationTypes } from '../../api-wrapper/api';
-import google_auth from '../../images/google-authenticator-2.svg'
-import bf_shield from '../../images/shield.svg'
-import { isMobile } from 'react-device-detect';
 
+// Hooks
 import { useBitflexDeviceId } from '../../hooks/useBitflexDeviceId';
-import { useCallback } from 'react';
 import { useCryptoKeys } from '../../hooks/useCryptoKeys';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useSignalR } from '../../hooks/useSignalR';
 import useUserState from '../../hooks/useUserState';
 
-export default function Signin() {
+// API & Types
+import { BitflexOpenApi } from '../../_helpers/BitflexOpenApi';
+import { SignInResponseResult, TwoStepVerificationTypes } from '../../api-wrapper';
 
-    const { setSignIn } = useUserState();
+// Assets & Styles
+import BitflexLogo from '../../images/bitflex-logo.svg';
+import bf_shield from '../../images/shield.svg';
+import Colors from '../../Colors';
+import '../../css/signlayout.css';
 
-    const history = useNavigate();
-    const [isFault, setIsFault] = React.useState(false);
-    const [requireTfa, setrequireTfa] = React.useState(false);
-    const [twoStepVerificationType, settwoStepVerificationType] = useState<TwoStepVerificationTypes>();
-
-    const [recaptchaToken, setrecaptchaToken] = useState('');
-    const { executeRecaptcha } = useGoogleReCaptcha();
-    const { t } = useTranslation();
-    const { GetTerminalConnectionId, Onweb_2step_confirmed } = useSignalR();
-    const [isLoading, setisLoading] = useState(false);
-    const { LoadKeys } = useCryptoKeys();
-
-    const [email, setemail] = useState<string>();
-    const [password, setpassword] = useState<string>();
-    const [isEmailValid, setisEmailValid] = useState(false);
-    const [isPassportValid, setisPassportValid] = useState(false);
-
-    const [OTP, setOTP] = useState("");
-
-    const [rememberDevice, setrememberDevice] = useState(false);
-
-    useEffect(() => {
-        BitflexOpenApi.SignApi.apiVversionSignSigninGet("1.0",).then(console.log)
-    }, [])
-
-    useEffect(() => {
-        LoadKeys();
-        Onweb_2step_confirmed((jwtToken, expiryTimestamp, obfuscatedEmail) => {
-            console.log(jwtToken, expiryTimestamp, obfuscatedEmail)
-            localStorage.setItem("obfuscatedEmail", obfuscatedEmail)
-            BitflexOpenApi.Init(jwtToken);
-            setSignIn(jwtToken, expiryTimestamp)
-            history('/wallet/assets');
-        })
-
-    }, [LoadKeys, Onweb_2step_confirmed, history, setSignIn]);
-
-    useEffect(() => {
-        if (executeRecaptcha)
-            executeRecaptcha("login_page").then(token => {
-                setrecaptchaToken(token)
-            })
-    }, [executeRecaptcha]);
-
-    const { bitflexDeviceId } = useBitflexDeviceId();
-
-    let BFNotifictionRef = useRef<IBFNotification>(null);
-
-    const onSubmit = useCallback(() => {
-        var recaptchaCurrent = recaptchaToken;
-        if (executeRecaptcha)
-            executeRecaptcha("login_page").then(token => {
-                setrecaptchaToken(token)
-            })
-
-        if (!email || !password) {
-            BFNotifictionRef.current?.Notify(t('Error'), t('Fill in all fields'), BFNotificationType.Error);
-            return;
-        }
-
-        setisLoading(true)
-        BitflexOpenApi.SignApi.apiVversionSignSigninPost("1.0", {
-            email: email,
-            password: password,
-            reCaptchav3Token: recaptchaCurrent,
-            bitflexDeviceId: bitflexDeviceId,
-            rememberedDeviceToken: localStorage.getItem("rememberDeviceId")
-        })
-            .then(result => {
-                console.log("apiVversionSignSigninPost", result.data);
-                switch (result.data.result) {
-
-                    case SignInResponseResult.ReCaptchav3Failed:
-                        window.location.reload();
-                        break;
-                    case SignInResponseResult.Success:
-                        if (result.data.authToken) {
-
-                            BitflexOpenApi.Init(result.data.authToken);
-
-                            if (result.data.email)
-                                localStorage.setItem("obfuscatedEmail", result.data.email)
-
-                            setSignIn(result.data.authToken, result.data.expiryTimestamp)
-
-                            history('/wallet/assets', {
-                                state: { requireSetPush: true }
-                            });
-                        } else {
-                            BFNotifictionRef.current?.Notify(t('Error'), t('Error on server side. Try again later'), BFNotificationType.Error);
-                        }
-
-                        break;
-                    case SignInResponseResult.WrongCredentials:
-                    case SignInResponseResult.WrongPassword:
-                        BFNotifictionRef.current?.Notify(t('Error'), t('Invalid email and/or password'), BFNotificationType.Error);
-                        setIsFault(true)
-                        break;
-
-                    case SignInResponseResult.EmailNotConfirmed:
-                        BFNotifictionRef.current?.Notify(t('Error'), t('Email not confirmed'), BFNotificationType.Error)
-                        break;
-
-                    case SignInResponseResult.RequireTwoFactor:
-                        setrequireTfa(true);
-                        settwoStepVerificationType(result.data.twoFactorType)
-
-                        // if (result.data.twoFactorType === TwoStepVerificationTypes.Bitflex)
-                        //     BitflexOpenApi.SignApi.apiVversionSignAskPermissionSignInPost("1.0", {
-                        //         type: DevicePermissionRequestType.ConfirmLogin,
-                        //         bitflexDeviceId: bitflexDeviceId,
-                        //         userId: result.data.userId,
-                        //         terminalSignalRConnectionId: GetTerminalConnectionId()
-                        //     }).then(payload => {
-                        //         console.log(payload)
-                        //     }).catch(error => console.warn('SignIn ->  BitflexOpenApi.SignApi.apiVversionSignAskForPermissionPost -> ', error))
-
-                        break;
-                    case SignInResponseResult.BitflexDeviceIdIsNotPresent:
-
-                        BFNotifictionRef.current?.Notify(t('Error'), t(' BCFLEX device generation Error, try to clear cache'), BFNotificationType.Error)
-                        break;
-                }
-            })
-            .finally(() => setisLoading(false))
-            .catch((e) => BFNotifictionRef.current?.Notify(t('Error'), t('Account is locked or unrecognized error appear. Contact support Telegram: @bitflex_exchange'), BFNotificationType.Error))
-
-    }, [GetTerminalConnectionId, bitflexDeviceId, email, executeRecaptcha, history, password, recaptchaToken, setSignIn, t]);
-
-    useEffect(() => {
-        const listener = event => {
-            if (event.code === "Enter" || event.code === "NumpadEnter") {
-                onSubmit();
-            }
-        };
-        document.addEventListener("keydown", listener);
-        return () => {
-            document.removeEventListener("keydown", listener);
-        };
-    }, [email, onSubmit, password]);
-
-    const RememberDeviceRow = useCallback(({ isChecked, setChecked, text }): JSX.Element => {
-        return <div style={{ width: '100%', cursor: 'pointer', display: 'flex' }} onClick={() => setChecked(!isChecked)}>
-            <div style={{
-                margin: 4, background: isChecked ? Colors.bitFlexGreenColor : 'transparent', borderRadius: 5,
-                padding: 2, paddingLeft: 20, justifyContent: 'space-between', display: 'flex',
-                flexDirection: 'row', width: '100%', alignItems: 'center',
-                borderWidth: 1, borderStyle: isChecked ? 'solid' : 'dashed',
-                borderColor: isChecked ? Colors.bitFlexGreenColor : '#433C3C',
-                marginBottom: 14
-            }}>
-                <div>
-                    <div style={{ fontSize: 14, color: 'rbga(255,255,255,0.8)' }}>{text}</div>
-                </div>
-                <div>
-                    <FaCheck style={{ fontSize: 20, color: 'white', margin: 10, opacity: isChecked ? 1 : 0.1 }} />
-                </div>
-            </div>
-        </div>
-    }, []);
-
-    return (
-        <div className="body-login login" id="maindiv" style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="logo">
-                <Link className="logo" to={'/terminal'}>
-                    <img src={BitflexLogo} alt="" width={isMobile ? '80%' : 350} />
-                </Link>
-            </div>
-            <div className="content">
-                <BFNotification ref={BFNotifictionRef} />
-                <div className='box-login'>
-                    <div id="stay-in-place" style={{ position: 'relative' }}>
-                        <h3 className="form-title"><Trans>Sign In</Trans></h3>
-                        <div className=''>
-                            <div>
-                                <p style={{ textAlign: 'center', paddingTop: 0, color: 'rgba(255,255,255,0.8)' }}>Ensure that you are visiting bcflex.com</p>
-                                <div style={{
-                                    borderWidth: 1, borderStyle: 'solid', borderColor: Colors.Graytext,
-                                    borderRadius: 30, padding: 7, margin: 3, marginLeft: '22%', marginRight: '22%', textAlign: 'center',
-                                    display: 'flex', flexDirection: 'row', justifyContent: 'center'
-                                }}>
-                                    <div style={{ lineHeight: '18px' }}><FaLock color={Colors.bitFlexGreenColor} size={13} /></div>
-                                    &nbsp;&nbsp;
-                                    <div style={{ lineHeight: '17px' }}><span style={{ color: Colors.bitFlexGreenColor }}>https://</span>bcflex.com</div>
-                                </div>
-                            </div>
-                            <div>
-                                <label><Trans>Email</Trans></label>
-                                <BFInput
-                                    onValidated={setisEmailValid}
-                                    type={BFInputType.Email}
-                                    placeholder={t('Email used at registration')}
-                                    onValue={setemail}
-                                    isError={isFault}
-                                />
-                            </div>
-                            <div style={{ marginTop: 12 }}>
-                                <label className="control-label"><Trans>Password</Trans></label>
-                                <BFInput
-                                    onValidated={setisPassportValid}
-                                    type={BFInputType.Password}
-                                    placeholder={t('Password')}
-                                    onValue={setpassword}
-                                    isError={isFault}
-                                />
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 30, marginLeft: 2, marginRight: 3 }}>
-                                <BFGradientButton isDisabled={!isEmailValid || !isPassportValid} isLoading={isLoading} buttonType={BFGradientButtonType.Action} text={t('Submit')} onPress={onSubmit} />
-                                <div><Link to="/signing/restore" className='dot'>Forgot Password?</Link></div>
-                            </div>
-                            <div className="create-acc">
-                                <p>
-                                    <Link to="/signup">Don't Have an Account? <span style={{ color: '#cf8900' }}>Sign up</span></Link>
-                                </p>
-                            </div>
-                        </div>
-                        <div style={{ textAlign: 'center', opacity: 0.15 }}>This site is protected by reCAPTCHA and the Google
-                            <a href="https://policies.google.com/privacy"> Privacy Policy</a> and
-                            <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
-                        </div>
-                    </div>
-
-                    <div className={!requireTfa ? 'app-hover-disabled' : 'app-hover-disabled app-hover-active'} style={{ textAlign: 'center' }}>
-                        {/* {twoStepVerificationType === TwoStepVerificationTypes.Bitflex && <>
-                            <h3 className="form-title">Verify Your Identity <FaLock style={{ color: '#cf8900' }} /></h3>
-                            <p>This account is protected with BCFLEX Guard</p>
-                            <img
-                                className="widget-thumb-icon"
-                                src={loading_png}
-                                alt="Loading"
-                                style={{ width: 160 }}
-                            />
-                            <div className="info-well warning-well">
-                                <h4 style={{ color: '#FFF', lineHeight: '22px' }}>Waiting for BCFLEX Application to complete challenge</h4>
-                            </div>
-                        </>
-                        } */}
-
-                        {twoStepVerificationType === TwoStepVerificationTypes.Google && <>
-                            <h3 className="form-title">Account Secured</h3>
-                            <p>Enter one-time-password from Authenticator App</p>
-                            <img src={bf_shield} width={'25%'} />
-                            <div style={{ marginTop: 10, marginBottom: 5 }}>
-                                <OTPInput
-                                    autoFocus
-                                    isNumberInput
-                                    length={6}
-                                    className="otpContainer"
-                                    inputClassName="otpInput"
-                                    onChangeOTP={(otp) => {
-                                        if (otp.length === 6)
-                                            setOTP(otp)
-                                    }}
-                                />
-                            </div>
-                            <RememberDeviceRow isChecked={rememberDevice} setChecked={setrememberDevice} text={t('Remember this device?')} />
-                            <BFGradientButton buttonType={BFGradientButtonType.Action} width={'98%'} text={t('Confirm')} onPress={() => {
-                                var recaptchaCurrent = recaptchaToken;
-                                if (executeRecaptcha)
-                                    executeRecaptcha("login_page").then(token => {
-                                        setrecaptchaToken(token)
-                                    })
-
-                                if (!email || !password || !OTP) {
-                                    BFNotifictionRef.current?.Notify(t('Error'), t('Fill in all fields'), BFNotificationType.Error);
-                                    return;
-                                }
-
-                                BitflexOpenApi.SignApi.apiVversionSignSigninPost("1.0", {
-                                    email: email,
-                                    password: password,
-                                    reCaptchav3Token: recaptchaCurrent,
-                                    bitflexDeviceId: bitflexDeviceId,
-                                    googleTfaCode: OTP,
-                                    rememberDevice: rememberDevice
-                                }).then(result => {
-                                    switch (result.data.result) {
-                                        case SignInResponseResult.GoogleTfaWrong:
-                                            BFNotifictionRef.current?.Notify(t('Error'), t('Wrong Code'), BFNotificationType.Error);
-                                            break;
-                                        case SignInResponseResult.Success:
-                                            if (result.data.authToken) {
-                                                BitflexOpenApi.Init(result.data.authToken);
-
-                                                if (result.data.email)
-                                                    localStorage.setItem("obfuscatedEmail", result.data.email)
-
-                                                if (result.data.rememberDeviceToken && rememberDevice) {
-                                                    localStorage.setItem("rememberDeviceId", result.data.rememberDeviceToken)
-                                                }
-
-                                                setSignIn(result.data.authToken, result.data.expiryTimestamp)
-
-                                                history('/wallet/assets', {
-                                                    state: { requireSetPush: true }
-                                                });
-                                            } else {
-                                                BFNotifictionRef.current?.Notify(t('Error'), t('Error on server side. Try again later'), BFNotificationType.Error);
-                                            }
-                                            break;
-                                    }
-                                })
-                            }} />
-                        </>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div style={{ textAlign: 'center', verticalAlign: 'middle', marginTop: 10 }}>
-                <p className="neon" >Flex Technologies Limited. 2021-{new Date().getFullYear()}</p>
-            </div>
-        </div>
-    );
+interface FormData {
+  email: string;
+  password: string;
+  otp: string;
 }
+
+interface ValidationState {
+  isEmailValid: boolean;
+  isPasswordValid: boolean;
+}
+
+const SignIn: React.FC = () => {
+  const { setSignIn } = useUserState();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { GetTerminalConnectionId, Onweb_2step_confirmed } = useSignalR();
+  const { LoadKeys } = useCryptoKeys();
+  const { bitflexDeviceId } = useBitflexDeviceId();
+
+  // Refs
+  const notificationRef = useRef<IBFNotification>(null);
+
+  // State
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+    otp: ''
+  });
+
+  const [validation, setValidation] = useState<ValidationState>({
+    isEmailValid: false,
+    isPasswordValid: false
+  });
+
+  const [ui, setUi] = useState({
+    isFault: false,
+    requireTfa: false,
+    isLoading: false,
+    rememberDevice: false,
+    showResendModal: false,
+    isResendLoading: false
+  });
+
+  const [twoStepVerificationType, setTwoStepVerificationType] = useState<TwoStepVerificationTypes>();
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+
+  // Initialize component
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await BitflexOpenApi.SignApi.apiVversionSignSigninGet("1.0");
+        LoadKeys();
+      } catch (error) {
+        console.error('Initialization error:', error);
+      }
+    };
+
+    initialize();
+
+    // Setup 2FA confirmation handler
+    Onweb_2step_confirmed((jwtToken, expiryTimestamp, obfuscatedEmail) => {
+      localStorage.setItem("obfuscatedEmail", obfuscatedEmail);
+      BitflexOpenApi.Init(jwtToken);
+      setSignIn(jwtToken, expiryTimestamp);
+      navigate('/wallet/assets');
+    });
+  }, [LoadKeys, Onweb_2step_confirmed, navigate, setSignIn]);
+
+  // Setup reCAPTCHA
+  useEffect(() => {
+    if (executeRecaptcha) {
+      executeRecaptcha("login_page").then(setRecaptchaToken);
+    }
+  }, [executeRecaptcha]);
+
+  // Keyboard event listener
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [formData]);
+
+  // Form handlers
+  const updateFormData = (field: keyof FormData) => (value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (ui.isFault) {
+      setUi(prev => ({ ...prev, isFault: false }));
+    }
+  };
+
+  const updateValidation = (field: keyof ValidationState) => (isValid: boolean) => {
+    setValidation(prev => ({ ...prev, [field]: isValid }));
+  };
+
+  const showNotification = (title: string, message: string, type: BFNotificationType) => {
+    notificationRef.current?.Notify(t(title), t(message), type);
+  };
+
+  const getRecaptchaToken = useCallback(async (): Promise<string> => {
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha("login_page");
+      setRecaptchaToken(token);
+      return token;
+    }
+    return recaptchaToken;
+  }, [executeRecaptcha, recaptchaToken]);
+
+  const handleResendEmailConfirmation = useCallback(async () => {
+    if (!formData.email) {
+      showNotification('Error', 'Email is required', BFNotificationType.Error);
+      return;
+    }
+
+    setUi(prev => ({ ...prev, isResendLoading: true }));
+
+    try {
+      const response = await BitflexOpenApi.SignApi.apiVversionSignResendemailconfirmationPost("1.0", {
+        email: formData.email
+      });
+
+      if (response.data.success) {
+        showNotification('Success', 'Email confirmation sent successfully', BFNotificationType.Success);
+        setUi(prev => ({ ...prev, showResendModal: false }));
+      } else {
+        showNotification('Error', 'Failed to send email confirmation', BFNotificationType.Error);
+      }
+    } catch (error) {
+      showNotification('Error', 'Error sending email confirmation. Please try again later', BFNotificationType.Error);
+    } finally {
+      setUi(prev => ({ ...prev, isResendLoading: false }));
+    }
+  }, [formData.email]);
+
+  const handleSignInResponse = useCallback((result: any) => {
+    switch (result.data.result) {
+      case SignInResponseResult.ReCaptchav3Failed:
+        showNotification('Error', 'ReCaptcha failed, try again', BFNotificationType.Error);
+        window.location.reload();
+        break;
+
+      case SignInResponseResult.Success:
+        if (result.data.authToken) {
+          BitflexOpenApi.Init(result.data.authToken);
+          
+          if (result.data.email) {
+            localStorage.setItem("obfuscatedEmail", result.data.email);
+          }
+          
+          if (result.data.rememberDeviceToken && ui.rememberDevice) {
+            localStorage.setItem("rememberDeviceId", result.data.rememberDeviceToken);
+          }
+
+          setSignIn(result.data.authToken, result.data.expiryTimestamp);
+          navigate('/wallet/assets', { state: { requireSetPush: true } });
+        } else {
+          showNotification('Error', 'Error on server side. Try again later', BFNotificationType.Error);
+        }
+        break;
+
+      case SignInResponseResult.WrongCredentials:
+      case SignInResponseResult.WrongPassword:
+        showNotification('Error', 'Invalid email and/or password', BFNotificationType.Error);
+        setUi(prev => ({ ...prev, isFault: true }));
+        break;
+
+      case SignInResponseResult.EmailNotConfirmed:
+        setUi(prev => ({ ...prev, showResendModal: true }));
+        break;
+
+      case SignInResponseResult.RequireTwoFactor:
+        showNotification('Two Step Verification', 'Please complete two step verification', BFNotificationType.Warning);
+        setUi(prev => ({ ...prev, requireTfa: true }));
+        setTwoStepVerificationType(result.data.twoFactorType);
+        break;
+
+      case SignInResponseResult.BitflexDeviceIdIsNotPresent:
+        showNotification('Error', 'BCFLEX device generation Error, try to clear cache', BFNotificationType.Error);
+        break;
+
+      case SignInResponseResult.GoogleTfaWrong:
+        showNotification('Error', 'Wrong Code', BFNotificationType.Error);
+        break;
+
+      default:
+        showNotification('Error', 'Unknown error occurred', BFNotificationType.Error);
+    }
+  }, [navigate, setSignIn, ui.rememberDevice]);
+
+  const handleSubmit = useCallback(async () => {
+    if (!formData.email || !formData.password) {
+      showNotification('Error', 'Fill in all fields', BFNotificationType.Error);
+      return;
+    }
+
+    setUi(prev => ({ ...prev, isLoading: true }));
+
+    try {
+      const token = await getRecaptchaToken();
+      
+      const response = await BitflexOpenApi.SignApi.apiVversionSignSigninPost("1.0", {
+        email: formData.email,
+        password: formData.password,
+        reCaptchav3Token: token,
+        bitflexDeviceId: bitflexDeviceId,
+        rememberedDeviceToken: localStorage.getItem("rememberDeviceId"),
+        ...(ui.requireTfa && formData.otp && { 
+          googleTfaCode: formData.otp,
+          rememberDevice: ui.rememberDevice 
+        })
+      });
+
+      handleSignInResponse(response);
+    } catch (error) {
+      showNotification('Error', 'Account is locked or unrecognized error appear. Contact support Telegram: @bitflex_exchange', BFNotificationType.Error);
+    } finally {
+      setUi(prev => ({ ...prev, isLoading: false }));
+    }
+  }, [formData, ui, bitflexDeviceId, getRecaptchaToken, handleSignInResponse]);
+
+  const handleTwoFactorSubmit = useCallback(async () => {
+    if (!formData.email || !formData.password || !formData.otp) {
+      showNotification('Error', 'Fill in all fields', BFNotificationType.Error);
+      return;
+    }
+
+    await handleSubmit();
+  }, [formData, handleSubmit]);
+
+  // Components
+  const RememberDeviceCheckbox: React.FC<{
+    isChecked: boolean;
+    onToggle: () => void;
+    text: string;
+  }> = ({ isChecked, onToggle, text }) => (
+    <div 
+      className="w-full cursor-pointer flex"
+      onClick={onToggle}
+    >
+      <div 
+        className="m-1 rounded-md p-2 pl-5 flex justify-between items-center w-full mb-3.5 border"
+        style={{
+          background: isChecked ? Colors.bitFlexGreenColor : 'transparent',
+          borderStyle: isChecked ? 'solid' : 'dashed',
+          borderColor: isChecked ? Colors.bitFlexGreenColor : '#433C3C',
+        }}
+      >
+        <div className="text-sm text-white/80">{text}</div>
+        <FaCheck 
+          className="text-xl text-white m-2.5"
+          style={{ opacity: isChecked ? 1 : 0.1 }}
+        />
+      </div>
+    </div>
+  );
+
+  const SecurityBadge: React.FC = () => (
+    <div className="text-center pt-0">
+      <p className="text-white/80">Ensure that you are visiting bcflex.com</p>
+      <div 
+        className="border border-gray-400 rounded-full p-2 m-1 mx-auto max-w-xs text-center flex justify-center items-center"
+      >
+        <FaLock color={Colors.bitFlexGreenColor} size={13} />
+        <span className="ml-2">
+          <span style={{ color: Colors.bitFlexGreenColor }}>https://</span>
+          bcflex.com
+        </span>
+      </div>
+    </div>
+  );
+
+  const ResendEmailModal: React.FC = () => (
+    <BFModalWindow 
+      isOpen={ui.showResendModal} 
+      title={t('Email Not Confirmed')} 
+      onClose={() => setUi(prev => ({ ...prev, showResendModal: false }))}
+    >
+      <BFNotification ref={notificationRef} />
+      <div className="p-4 text-center">
+        <p className="mb-4 text-white/80">
+          <Trans>Your email address has not been confirmed yet. Would you like us to resend the confirmation email?</Trans>
+        </p>
+        <p className="mb-6 text-sm text-white/60">
+          <Trans>Email:</Trans> <span className="text-white">{formData.email}</span>
+        </p>
+        
+        <div className="flex gap-3 justify-center">
+          <BFGradientButton
+            buttonType={BFGradientButtonType.Secondary}
+            text={t('Cancel')}
+            onPress={() => setUi(prev => ({ ...prev, showResendModal: false }))}
+            width="120px"
+          />
+          <BFGradientButton
+            buttonType={BFGradientButtonType.Action}
+            text={t('Resend Email')}
+            isLoading={ui.isResendLoading}
+            onPress={handleResendEmailConfirmation}
+            width="120px"
+          />
+        </div>
+      </div>
+    </BFModalWindow>
+  );
+
+  const LoginForm: React.FC = () => (
+    <div>
+      <SecurityBadge />
+      
+      <div className="mt-4">
+        <label><Trans>Email</Trans></label>
+        <BFInput
+          onValidated={updateValidation('isEmailValid')}
+          type={BFInputType.Email}
+          placeholder={t('Email used at registration')}
+          onValue={updateFormData('email')}
+          isError={ui.isFault}
+        />
+      </div>
+
+      <div className="mt-3">
+        <label><Trans>Password</Trans></label>
+        <BFInput
+          onValidated={updateValidation('isPasswordValid')}
+          type={BFInputType.Password}
+          placeholder={t('Password')}
+          onValue={updateFormData('password')}
+          isError={ui.isFault}
+        />
+      </div>
+
+      <div className="flex justify-between items-center mt-8 mx-1">
+        <BFGradientButton 
+          isDisabled={!validation.isEmailValid || !validation.isPasswordValid} 
+          isLoading={ui.isLoading} 
+          buttonType={BFGradientButtonType.Action} 
+          text={t('Submit')} 
+          onPress={handleSubmit} 
+        />
+        <Link to="/signing/restore" className="dot">
+          Forgot Password?
+        </Link>
+      </div>
+
+      <div className="create-acc">
+        <p>
+          <Link to="/signup">
+            Don't Have an Account? <span className="text-yellow-600">Sign up</span>
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+
+  const TwoFactorForm: React.FC = () => (
+    <div className="text-center">
+      <h3 className="form-title">Account Secured</h3>
+      <p>Enter one-time-password from Authenticator App</p>
+      <img src={bf_shield} width="25%" alt="Security Shield" />
+      
+      <div className="mt-2.5 mb-1.5">
+        <OTPInput
+          autoFocus
+          isNumberInput
+          length={6}
+          className="otpContainer"
+          inputClassName="otpInput"
+          onChangeOTP={(otp) => {
+            if (otp.length === 6) {
+              updateFormData('otp')(otp);
+            }
+          }}
+        />
+      </div>
+
+      <RememberDeviceCheckbox 
+        isChecked={ui.rememberDevice} 
+        onToggle={() => setUi(prev => ({ ...prev, rememberDevice: !prev.rememberDevice }))}
+        text={t('Remember this device?')} 
+      />
+
+      <BFGradientButton 
+        buttonType={BFGradientButtonType.Action} 
+        width="98%" 
+        text={t('Confirm')} 
+        onPress={handleTwoFactorSubmit} 
+      />
+    </div>
+  );
+
+  return (
+    <div className="body-login login flex items-center justify-center" id="maindiv">
+      <div className="logo">
+        <Link to="/terminal">
+          <img 
+            src={BitflexLogo} 
+            alt="Bitflex Logo" 
+            width={isMobile ? '80%' : 350} 
+          />
+        </Link>
+      </div>
+
+      <div className="content">
+        <BFNotification ref={notificationRef} />
+        
+        <div className="box-login">
+          <div id="stay-in-place" className="relative">
+            <h3 className="form-title"><Trans>Sign In</Trans></h3>
+            
+            <div className={!ui.requireTfa ? '' : 'app-hover-disabled'}>
+              <LoginForm />
+            </div>
+
+            <div className="text-center opacity-15 text-xs mt-4">
+              This site is protected by reCAPTCHA and the Google
+              <a href="https://policies.google.com/privacy"> Privacy Policy</a> and
+              <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
+            </div>
+          </div>
+
+          <div className={`${!ui.requireTfa ? 'app-hover-disabled' : 'app-hover-disabled app-hover-active'}`}>
+            {ui.requireTfa && twoStepVerificationType === TwoStepVerificationTypes.Google && (
+              <TwoFactorForm />
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="text-center mt-2.5">
+        <p className="neon">
+          Flex Technologies Limited. 2021-{new Date().getFullYear()}
+        </p>
+      </div>
+
+      <ResendEmailModal />
+    </div>
+  );
+};
+
+export default SignIn;
