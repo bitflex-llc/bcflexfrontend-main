@@ -222,8 +222,8 @@ const MyAssets: React.FC = () => {
 
   // Check if we need to show notification setup
   useEffect(() => {
-    const shouldShowSetup = location.state?.requireSetPush && publicKey && bitflexDeviceId;
-    setShowNotificationSetup(!!shouldShowSetup);
+    // const shouldShowSetup = location.state?.requireSetPush && publicKey && bitflexDeviceId;
+    // setShowNotificationSetup(!!shouldShowSetup);
   }, [location.state, publicKey, bitflexDeviceId]);
 
   // Event handlers
@@ -264,14 +264,14 @@ const MyAssets: React.FC = () => {
     <StaticPagesLayout isDashboard={true} isLoading={isLoading}>
       <>
         {/* Notification Setup */}
-        {showNotificationSetup && (
+        {/* {showNotificationSetup && (
           <NotificationSetup
             bitflexDeviceId={bitflexDeviceId}
             publicKey={publicKey}
             onSuccess={handleNotificationSuccess}
             onError={handleNotificationError}
           />
-        )}
+        )} */}
 
         {/* Deposit Modal */}
         <BFModalWindow
