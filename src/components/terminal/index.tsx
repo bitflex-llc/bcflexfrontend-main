@@ -63,7 +63,7 @@ export default function Terminal() {
 
     const { isSignedIn } = useUserState();
 
-    let { base_quote_pair = "PLUTO_INR" } = useParams<{ base_quote_pair: string }>();
+    let { base_quote_pair = "POPEYE_USDT" } = useParams<{ base_quote_pair: string }>();
 
     const { width } = useWindowDimensions();
 
