@@ -2,7 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { isMobile } from 'react-device-detect';
-import { FaCheck, FaLock, FaCheckCircle } from 'react-icons/fa';
+import { FaCheck, FaLock, FaCheckCircle, FaEye, FaEyeSlash, FaShieldAlt } from 'react-icons/fa';
 
 import { BFGradientButton, BFGradientButtonType } from '../html/BFGradientButton';
 import { BFNotification, BFNotificationType, IBFNotification } from '../html/BFNotification';
@@ -22,7 +22,10 @@ import BitflexLogo from '../../images/bitflex-logo.svg';
 import bf_shield from '../../images/shield.svg';
 import Colors from '../../Colors';
 import '../../css/signlayout.css';
-import { signInStyles } from './styles';
+
+// ====================================================================================
+// TYPES & INTERFACES
+// ====================================================================================
 
 interface FormData {
   email: string;
@@ -40,6 +43,379 @@ interface FieldErrors {
   password: string;
 }
 
+interface UIState {
+  isFault: boolean;
+  requireTfa: boolean;
+  isLoading: boolean;
+  rememberDevice: boolean;
+  showResendModal: boolean;
+  isResendLoading: boolean;
+}
+
+// ====================================================================================
+// SHADCN-INSPIRED STYLES
+// ====================================================================================
+
+const shadcnStyles = {
+  // Layout & Container Styles
+  pageContainer: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // background: 'linear-gradient(135deg, hsl(222.2, 84%, 4.9%) 0%, hsl(217.2, 32.6%, 17.5%) 100%)',
+    padding: '24px',
+    position: 'relative' as const
+  },
+  
+  // Logo Section
+  logoContainer: {
+
+    textAlign: 'center' as const
+  },
+  
+  // Main Card Styles
+  card: {
+    // background: 'hsl(222.2, 84%, 4.9%)',
+    border: '1px dashed #433C3C',
+    borderRadius: '25px',
+    padding: '32px',
+    width: '100%',
+    maxWidth: '400px',
+    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    backdropFilter: 'blur(8px)',
+    position: 'relative' as const
+  },
+  
+  cardHeader: {
+    textAlign: 'center' as const,
+    marginBottom: '20px'
+  },
+  
+  cardTitle: {
+    fontSize: '24px',
+    fontWeight: '600',
+    color: 'hsl(210, 40%, 98%)',
+    marginBottom: '8px',
+    letterSpacing: '-0.025em',
+    marginTop: '0'
+  },
+  
+  cardDescription: {
+    fontSize: '14px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    lineHeight: '1.5'
+  },
+  
+  // Form Styles
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '24px'
+  },
+  
+  fieldGroup: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '8px'
+  },
+  
+  label: {
+    fontSize: '14px',
+    fontWeight: '500',
+    color: 'hsl(210, 40%, 98%)',
+    marginBottom: '8px'
+  },
+  
+  // Input Styles (Shadcn-inspired)
+  inputContainer: {
+    position: 'relative' as const,
+    width: '100%'
+  },
+  
+  input: (hasError: boolean, isValid: boolean, showPassword?: boolean) => ({
+    width: '100%',
+    height: '44px',
+    padding:  '0 20px 0 20px',
+    fontSize: '14px',
+    fontFamily: 'inherit',
+    color: 'hsl(210, 40%, 98%)',
+    background: 'hsl(222.2, 84%, 4.9%)',
+    border: `1px solid ${hasError ? 'hsl(0, 84.2%, 60.2%)' : 'hsl(217.2, 32.6%, 17.5%)'}`,
+    borderRadius: '8px',
+    outline: 'none',
+    transition: 'all 0.2s ease-in-out',
+    boxSizing: 'border-box' as const,
+    '&:focus': {
+      borderColor: hasError ? 'hsl(0, 84.2%, 60.2%)' : 'hsl(217.2, 91.2%, 59.8%)',
+      boxShadow: hasError 
+        ? '0 0 0 2px hsl(0, 84.2%, 60.2%, 0.2)' 
+        : '0 0 0 2px hsl(217.2, 91.2%, 59.8%, 0.2)'
+    }
+  }),
+  
+  inputIcon: {
+    position: 'absolute' as const,
+    // left: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    fontSize: '16px',
+    pointerEvents: 'none' as const
+  },
+  
+  inputRightIcon: (clickable: boolean = false) => ({
+    position: 'absolute' as const,
+    right: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    fontSize: '16px',
+    cursor: clickable ? 'pointer' : 'default',
+    pointerEvents: clickable ? 'auto' as const : 'none' as const,
+    transition: 'color 0.2s ease'
+  }),
+  
+  validIcon: {
+    color: 'hsl(142.1, 76.2%, 36.3%)'
+  },
+  
+  errorIcon: {
+    color: 'hsl(0, 84.2%, 60.2%)'
+  },
+  
+  // Error Message Styles
+  errorMessage: {
+    fontSize: '12px',
+    color: 'hsl(0, 84.2%, 60.2%)',
+    marginTop: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  
+  // Security Badge Styles
+  securityBadge: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: '8px',
+    padding: '16px',
+    marginBottom: '24px',
+    background: 'hsl(142.1, 76.2%, 36.3%, 0.1)',
+    border: '1px solid hsl(142.1, 76.2%, 36.3%, 0.2)',
+    borderRadius: '8px'
+  },
+  
+  securityText: {
+    fontSize: '12px',
+    color: 'hsl(142.1, 76.2%, 36.3%)',
+    textAlign: 'center' as const,
+    margin: '0'
+  },
+  
+  securityUrl: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '13px',
+    fontWeight: '500',
+    color: 'hsl(142.1, 76.2%, 36.3%)'
+  },
+  
+  httpsText: {
+    color: 'hsl(142.1, 76.2%, 36.3%)',
+    fontWeight: '600'
+  },
+  
+  // Button Styles
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+    marginTop: '8px'
+  },
+  
+  button: (variant: 'primary' | 'secondary' = 'primary', isLoading: boolean = false) => ({
+    width: '100%',
+    height: '44px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    fontSize: '14px',
+    fontWeight: '500',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: isLoading ? 'not-allowed' : 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    outline: 'none',
+    ...(variant === 'primary' ? {
+      background:  Colors.bitFlexGoldenColor,
+      color: 'hsl(210, 40%, 98%)',
+      '&:hover': {
+        background: 'hsl(217.2, 91.2%, 54.8%)'
+      },
+      '&:focus': {
+        boxShadow: '0 0 0 2px hsl(217.2, 91.2%, 59.8%, 0.4)'
+      }
+    } : {
+      background: 'transparent',
+      color: 'hsl(210, 40%, 98%)',
+      border: '1px solid hsl(217.2, 32.6%, 17.5%)',
+      '&:hover': {
+        background: 'hsl(217.2, 32.6%, 17.5%)'
+      }
+    })
+  }),
+  
+  // Checkbox Styles
+  checkboxContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    cursor: 'pointer',
+    padding: '8px 0'
+  },
+  
+  checkbox: (isChecked: boolean) => ({
+    width: '16px',
+    height: '16px',
+    borderRadius: '4px',
+    border: `1px solid ${isChecked ? 'hsl(217.2, 91.2%, 59.8%)' : 'hsl(217.2, 32.6%, 17.5%)'}`,
+    background: isChecked ? 'hsl(217.2, 91.2%, 59.8%)' : 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease'
+  }),
+  
+  checkboxLabel: {
+    fontSize: '14px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    userSelect: 'none' as const
+  },
+  
+  // Links
+  link: {
+    color: 'hsl(217.2, 91.2%, 59.8%)',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: '500',
+    transition: 'color 0.2s ease',
+    '&:hover': {
+      color: 'hsl(217.2, 91.2%, 54.8%)',
+      textDecoration: 'underline'
+    }
+  },
+  
+  linkContainer: {
+    textAlign: 'center' as const,
+    marginTop: '16px'
+  },
+  
+  // Two Factor Authentication Styles
+  tfaContainer: {
+    textAlign: 'center' as const,
+    padding: '32px',
+    background: 'hsl(222.2, 84%, 4.9%)',
+    border: '1px solid hsl(217.2, 32.6%, 17.5%)',
+    borderRadius: '12px',
+    marginTop: '24px'
+  },
+  
+  tfaTitle: {
+    fontSize: '20px',
+    fontWeight: '600',
+    color: 'hsl(210, 40%, 98%)',
+    marginBottom: '8px'
+  },
+  
+  tfaDescription: {
+    fontSize: '14px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    marginBottom: '24px'
+  },
+  
+  tfaShield: {
+    marginBottom: '24px',
+    opacity: 0.8
+  },
+  
+  // OTP Input Styles
+  otpContainer: {
+    margin: '24px 0',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  
+  // Modal Styles
+  modalContent: {
+    padding: '24px',
+    textAlign: 'center' as const
+  },
+  
+  modalText: {
+    fontSize: '14px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    lineHeight: '1.6',
+    marginBottom: '16px'
+  },
+  
+  modalEmail: {
+    fontSize: '14px',
+    color: 'hsl(210, 40%, 98%)',
+    marginBottom: '24px'
+  },
+  
+  modalEmailValue: {
+    color: 'hsl(217.2, 91.2%, 59.8%)',
+    fontWeight: '500'
+  },
+  
+  modalButtons: {
+    display: 'flex',
+    gap: '12px',
+    justifyContent: 'center'
+  },
+  
+  // Copyright
+  copyright: {
+    position: 'absolute' as const,
+    bottom: '24px',
+    textAlign: 'center' as const,
+    fontSize: '12px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    opacity: 0.8
+  },
+  
+  // reCAPTCHA
+  recaptchaText: {
+    fontSize: '11px',
+    color: 'hsl(215, 20.2%, 65.1%)',
+    textAlign: 'center' as const,
+    marginTop: '16px',
+    lineHeight: '1.4'
+  },
+  
+  // Mobile Responsive
+  mobile: {
+    card: {
+      margin: '16px',
+      padding: '24px',
+      maxWidth: 'calc(100vw - 32px)'
+    },
+    input: {
+      fontSize: '16px' // Prevent zoom on iOS
+    }
+  }
+};
+
+// ====================================================================================
+// VALIDATION FUNCTIONS
+// ====================================================================================
+
 const validateEmail = (email: string): boolean => {
   const tester = /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
   return tester.test(email);
@@ -49,33 +425,36 @@ const validatePassword = (password: string): boolean => {
   return password.length >= 8;
 };
 
-const RememberDeviceCheckbox = React.memo<{
-  isChecked: boolean;
-  onToggle: () => void;
-  text: string;
-}>(({ isChecked, onToggle, text }) => (
-  <div style={signInStyles.checkboxContainer} onClick={onToggle}>
-    <div style={signInStyles.checkboxBox(isChecked)}>
-      <div style={signInStyles.checkboxText}>{text}</div>
-      <FaCheck style={signInStyles.checkboxIcon(isChecked)} />
-    </div>
-  </div>
-));
+// ====================================================================================
+// SUB-COMPONENTS
+// ====================================================================================
 
-const SecurityBadge = React.memo(() => (
-  <div style={signInStyles.securityBadgeContainer}>
-    <p style={signInStyles.securityBadgeText}>Ensure that you are visiting bcflex.com</p>
-    <div style={signInStyles.securityBadgeBox}>
-      <FaLock color={Colors.bitFlexGreenColor} size={13} />
-      <span style={signInStyles.securityBadgeUrl}>
-        <span style={signInStyles.httpsText}>https://</span>
-        bcflex.com
-      </span>
+/**
+ * Security Badge Component - Shows HTTPS verification
+ */
+const SecurityBadge: React.FC = React.memo(() => {
+  const { t } = useTranslation();
+  
+  return (
+    <div style={shadcnStyles.securityBadge}>
+      <p style={shadcnStyles.securityText}>
+        {t('Ensure that you are visiting bcflex.com')}
+      </p>
+      <div style={shadcnStyles.securityUrl}>
+        <FaLock size={12} />
+        <span>
+          <span style={shadcnStyles.httpsText}>https://</span>
+          bcflex.com
+        </span>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
-const CustomInput = React.memo<{
+/**
+ * Enhanced Input Component with Shadcn-style design
+ */
+const EnhancedInput: React.FC<{
   type: 'email' | 'password';
   placeholder: string;
   value: string;
@@ -83,111 +462,145 @@ const CustomInput = React.memo<{
   isError: boolean;
   errorText?: string;
   isValid?: boolean;
-}>(({ type, placeholder, value, onChange, isError, errorText, isValid }) => {
-  const [showError, setShowError] = useState(false);
+  disabled?: boolean;
+}> = React.memo(({ 
+  type, 
+  placeholder, 
+  value, 
+  onChange, 
+  isError, 
+  errorText, 
+  isValid = false,
+  disabled = false 
+}) => {
+  const { t } = useTranslation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [hasBlurred, setHasBlurred] = useState(false);
+  const [localError, setLocalError] = useState('');
 
-  useEffect(() => {
-    if (isError) {
-      setShowError(true);
-    } else {
-      setShowError(false);
-    }
-  }, [isError]);
-
-  const handleBlur = () => {
-    setHasBlurred(true);
-    if (type === 'email' && value && !validateEmail(value)) {
-      setShowError(true);
-    } else if (type === 'password' && value && !validatePassword(value)) {
-      setShowError(true);
-    } else {
-      setShowError(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
     
-    if (showError || hasBlurred) {
-      if (type === 'email' && newValue && !validateEmail(newValue)) {
-        setShowError(true);
-      } else if (type === 'password' && newValue && !validatePassword(newValue)) {
-        setShowError(true);
+    // Real-time validation after first blur
+    if (hasBlurred && newValue) {
+      if (type === 'email' && !validateEmail(newValue)) {
+        setLocalError(t('Please enter a valid email address'));
+      } else if (type === 'password' && !validatePassword(newValue)) {
+        setLocalError(t('Password must be at least 8 characters'));
       } else {
-        setShowError(false);
+        setLocalError('');
+      }
+    } else if (!newValue) {
+      setLocalError('');
+    }
+  }, [onChange, type, hasBlurred, t]);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+    setHasBlurred(true);
+    
+    if (value) {
+      if (type === 'email' && !validateEmail(value)) {
+        setLocalError(t('Please enter a valid email address'));
+      } else if (type === 'password' && !validatePassword(value)) {
+        setLocalError(t('Password must be at least 8 characters'));
+      } else {
+        setLocalError('');
       }
     }
-  };
+  }, [value, type, t]);
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px 40px 12px 12px',
-    backgroundColor: Colors.TextInput || '#2D2D2D',
-    border: `1px solid ${showError ? Colors.bitFlexRedColor : Colors.BITFLEXBorderTerminal || '#433C3C'}`,
-    borderRadius: '4px',
-    color: 'white',
-    fontSize: '14px',
-    outline: 'none',
-    transition: 'border-color 0.3s ease',
-    boxSizing: 'border-box' as const,
-    fontFamily: 'Roboto Condensed' 
-  };
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
 
-  const containerStyle = {
-    position: 'relative' as const,
-    width: '100%'
-  };
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
 
-  const iconStyle = {
-    position: 'absolute' as const,
-    right: '12px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    pointerEvents: 'none' as const
-  };
-
-  const errorStyle = {
-    position: 'absolute' as const,
-    top: '-40px',
-    left: '11%',
-    backgroundColor: Colors.bitFlexRedColor,
-    color: 'white',
-    padding: '6px',
-    borderRadius: '3px',
-    fontSize: '12px',
-    whiteSpace: 'nowrap' as const,
-    zIndex: 10
-  };
+  const hasError = isError || !!localError;
+  const errorMessage = errorText || localError;
+  const inputType = type === 'password' && showPassword ? 'text' : type;
 
   return (
-    <div style={containerStyle}>
+    <div style={shadcnStyles.inputContainer}>
       <input
-        type={type}
+        type={inputType}
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
+        onFocus={handleFocus}
         onBlur={handleBlur}
-        style={inputStyle}
-        autoComplete="off"
+        disabled={disabled}
+        style={{
+          ...shadcnStyles.input(hasError, isValid && !hasError, type === 'password'),
+          ...(isFocused && !hasError ? {
+            borderColor: 'hsl(217.2, 91.2%, 59.8%)',
+            boxShadow: '0 0 0 2px hsl(217.2, 91.2%, 59.8%, 0.2)'
+          } : {}),
+          ...(isMobile ? shadcnStyles.mobile.input : {})
+        }}
+        autoComplete={type === 'email' ? 'email' : 'current-password'}
+        autoCapitalize="none"
         autoCorrect="off"
+        spellCheck="false"
       />
       
-      {isValid && !showError && value && (
-        <div style={iconStyle}>
-          <FaCheckCircle size={13} color={Colors.bitFlexGreenColor} />
+      {type === 'password' && (
+        <div 
+          style={shadcnStyles.inputRightIcon(true)}
+          onClick={togglePasswordVisibility}
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
         </div>
       )}
       
-      {showError && errorText && (
-        <div style={errorStyle}>
-          {errorText}
+      {type === 'email' && isValid && !hasError && value && (
+        <div style={{ ...shadcnStyles.inputRightIcon(), ...shadcnStyles.validIcon }}>
+          <FaCheckCircle />
+        </div>
+      )}
+      
+      {/* Error Message */}
+      {hasError && errorMessage && (
+        <div style={shadcnStyles.errorMessage}>
+          <span>⚠</span>
+          {errorMessage}
         </div>
       )}
     </div>
   );
 });
+
+/**
+ * Enhanced Checkbox Component
+ */
+const EnhancedCheckbox: React.FC<{
+  isChecked: boolean;
+  onToggle: () => void;
+  label: string;
+  disabled?: boolean;
+}> = React.memo(({ isChecked, onToggle, label, disabled = false }) => (
+  <div 
+    style={{
+      ...shadcnStyles.checkboxContainer,
+      opacity: disabled ? 0.6 : 1,
+      cursor: disabled ? 'not-allowed' : 'pointer'
+    }}
+    onClick={disabled ? undefined : onToggle}
+  >
+    <div style={shadcnStyles.checkbox(isChecked)}>
+      {isChecked && <FaCheck size={10} color="white" />}
+    </div>
+    <span style={shadcnStyles.checkboxLabel}>{label}</span>
+  </div>
+));
+
+// ====================================================================================
+// MAIN COMPONENT
+// ====================================================================================
 
 const SignIn: React.FC = () => {
   const { setSignIn } = useUserState();
@@ -201,6 +614,7 @@ const SignIn: React.FC = () => {
   const notificationRef = useRef<IBFNotification>(null);
   const submitInProgressRef = useRef(false);
 
+  // State Management
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -217,7 +631,7 @@ const SignIn: React.FC = () => {
     password: ''
   });
 
-  const [ui, setUi] = useState({
+  const [ui, setUi] = useState<UIState>({
     isFault: false,
     requireTfa: false,
     isLoading: false,
@@ -229,11 +643,17 @@ const SignIn: React.FC = () => {
   const [twoStepVerificationType, setTwoStepVerificationType] = useState<TwoStepVerificationTypes>();
   const [recaptchaToken, setRecaptchaToken] = useState('');
 
+  // ====================================================================================
+  // HANDLERS & CALLBACKS
+  // ====================================================================================
+
   const updateFormData = useCallback((field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear fault state when user starts typing
-    setUi(prev => prev.isFault ? { ...prev, isFault: false } : prev);
+    if (ui.isFault) {
+      setUi(prev => ({ ...prev, isFault: false }));
+    }
     
     // Update validation
     if (field === 'email') {
@@ -251,7 +671,7 @@ const SignIn: React.FC = () => {
         password: !isValid && value ? t('Invalid Password Length. Minimum 8 characters') : '' 
       }));
     }
-  }, [t]);
+  }, [ui.isFault, t]);
 
   const showNotification = useCallback((title: string, message: string, type: BFNotificationType) => {
     notificationRef.current?.Notify(t(title), t(message), type);
@@ -355,6 +775,11 @@ const SignIn: React.FC = () => {
       return;
     }
 
+    if (!validation.isEmailValid || !validation.isPasswordValid) {
+      showNotification('Error', 'Please correct the errors before submitting', BFNotificationType.Error);
+      return;
+    }
+
     submitInProgressRef.current = true;
     setUi(prev => ({ ...prev, isLoading: true }));
 
@@ -380,7 +805,7 @@ const SignIn: React.FC = () => {
       setUi(prev => ({ ...prev, isLoading: false }));
       submitInProgressRef.current = false;
     }
-  }, [formData, ui, bitflexDeviceId, getRecaptchaToken, handleSignInResponse, showNotification]);
+  }, [formData, validation, ui, bitflexDeviceId, getRecaptchaToken, handleSignInResponse, showNotification]);
 
   const handleTwoFactorSubmit = useCallback(async () => {
     if (!formData.email || !formData.password || !formData.otp) {
@@ -401,9 +826,17 @@ const SignIn: React.FC = () => {
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
     if (event.code === "Enter" || event.code === "NumpadEnter") {
       event.preventDefault();
-      handleSubmit();
+      if (ui.requireTfa) {
+        handleTwoFactorSubmit();
+      } else {
+        handleSubmit();
+      }
     }
-  }, [handleSubmit]);
+  }, [handleSubmit, handleTwoFactorSubmit, ui.requireTfa]);
+
+  // ====================================================================================
+  // EFFECTS
+  // ====================================================================================
 
   useEffect(() => {
     LoadKeys();
@@ -427,157 +860,286 @@ const SignIn: React.FC = () => {
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, [handleKeyPress]);
 
+  const isFormValid = validation.isEmailValid && validation.isPasswordValid;
+
+  // ====================================================================================
+  // RENDER
+  // ====================================================================================
+
   return (
-    <div className="body-login login" style={signInStyles.bodyLogin} id="maindiv">
-      <div className="logo">
+    <div style={shadcnStyles.pageContainer}>
+      <BFNotification ref={notificationRef} />
+      
+      {/* Logo */}
+      <div style={shadcnStyles.logoContainer}>
         <Link to="/terminal">
-          <img src={BitflexLogo} alt="Bitflex Logo" width={isMobile ? '80%' : 350} />
+          <img 
+            src={BitflexLogo} 
+            alt="Bitflex Logo" 
+            width={isMobile ? 200 : 300}
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
         </Link>
       </div>
 
-      <div className="content">
-        <BFNotification ref={notificationRef} />
+      {/* Main Sign-In Card */}
+      {!ui.requireTfa && (
+        <div style={{ ...shadcnStyles.card, ...(isMobile ? shadcnStyles.mobile.card : {}) }}>
+          <div style={shadcnStyles.cardHeader}>
+            <h1 style={shadcnStyles.cardTitle}>
+              <Trans>Welcome back</Trans>
+            </h1>
+            <p style={shadcnStyles.cardDescription}>
+              <Trans>Enter your credentials to access your account</Trans>
+            </p>
+          </div>
 
-        <div className="box-login">
-          <div id="stay-in-place" style={signInStyles.formTitleSpacing}>
-            <h3 className="form-title"><Trans>Sign In</Trans></h3>
+          <SecurityBadge />
 
-            <div className={!ui.requireTfa ? '' : 'app-hover-disabled'}>
-              <SecurityBadge />
+          <form 
+            style={shadcnStyles.formContainer}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            {/* Email Field */}
+            <div style={shadcnStyles.fieldGroup}>
+              <label style={shadcnStyles.label}>
+                <Trans>Email Address</Trans>
+              </label>
+              <EnhancedInput
+                type="email"
+                placeholder={t('Enter your email address')}
+                value={formData.email}
+                onChange={(value) => updateFormData('email', value)}
+                isError={ui.isFault}
+                errorText={fieldErrors.email}
+                isValid={validation.isEmailValid}
+                disabled={ui.isLoading}
+              />
+            </div>
 
-              <div style={signInStyles.fieldContainer}>
-                <label><Trans>Email</Trans></label>
-                <CustomInput
-                  type="email"
-                  placeholder={t('Email used at registration')}
-                  value={formData.email}
-                  onChange={(value) => updateFormData('email', value)}
-                  isError={ui.isFault}
-                  errorText={fieldErrors.email}
-                  isValid={validation.isEmailValid}
-                />
-              </div>
+            {/* Password Field */}
+            <div style={shadcnStyles.fieldGroup}>
+              <label style={shadcnStyles.label}>
+                <Trans>Password</Trans>
+              </label>
+              <EnhancedInput
+                type="password"
+                placeholder={t('Enter your password')}
+                value={formData.password}
+                onChange={(value) => updateFormData('password', value)}
+                isError={ui.isFault}
+                errorText={fieldErrors.password}
+                isValid={validation.isPasswordValid}
+                disabled={ui.isLoading}
+              />
+            </div>
 
-              <div style={signInStyles.fieldContainerSpaced}>
-                <label><Trans>Password</Trans></label>
-                <CustomInput
-                  type="password"
-                  placeholder={t('Password')}
-                  value={formData.password}
-                  onChange={(value) => updateFormData('password', value)}
-                  isError={ui.isFault}
-                  errorText={fieldErrors.password}
-                  isValid={validation.isPasswordValid}
-                />
-              </div>
-
-              <div style={signInStyles.submitContainer}>
-                <BFGradientButton
-                  isDisabled={!validation.isEmailValid || !validation.isPasswordValid}
-                  isLoading={ui.isLoading}
-                  buttonType={BFGradientButtonType.Action}
-                  text={t('Submit')}
-                  onPress={handleSubmit}
-                />
-                <Link to="/signing/restore" className="dot">
-                  Forgot Password?
+            {/* Submit Button */}
+            <div style={shadcnStyles.buttonContainer}>
+              <button
+                type="submit"
+                disabled={!isFormValid || ui.isLoading}
+                style={{
+                  ...shadcnStyles.button('primary', ui.isLoading),
+                  opacity: (!isFormValid || ui.isLoading) ? 0.6 : 1
+                }}
+              >
+                {ui.isLoading ? (
+                  <>
+                    <div style={{ 
+                      width: '16px', 
+                      height: '16px', 
+                      border: '2px solid transparent',
+                      borderTop: '2px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }} />
+                    <Trans>Signing in...</Trans>
+                  </>
+                ) : (
+                  <Trans>Sign In</Trans>
+                )}
+              </button>
+              
+              <div style={shadcnStyles.linkContainer}>
+                <Link to="/signing/restore" style={shadcnStyles.link}>
+                  <Trans>Forgot your password?</Trans>
                 </Link>
               </div>
-
-              <div className="create-acc">
-                <p>
-                  <Link to="/signup">
-                    Don't Have an Account? <span style={{ color: '#cf8900' }}>Sign up</span>
-                  </Link>
-                </p>
-              </div>
             </div>
+          </form>
 
-            <div style={signInStyles.recaptchaContainer}>
-              This site is protected by reCAPTCHA and the Google
-              <a href="https://policies.google.com/privacy"> Privacy Policy</a> and
-              <a href="https://policies.google.com/terms"> Terms of Service</a> apply.
-            </div>
+          <div style={shadcnStyles.linkContainer}>
+            <p style={{ color: 'hsl(215, 20.2%, 65.1%)', fontSize: '14px', margin: '0' }}>
+              <Trans>Don't have an account?</Trans>{' '}
+              <Link to="/signup" style={shadcnStyles.link}>
+                <Trans>Sign up</Trans>
+              </Link>
+            </p>
           </div>
 
-          <div className={`${!ui.requireTfa ? 'app-hover-disabled' : 'app-hover-disabled app-hover-active'}`}>
-            {ui.requireTfa && twoStepVerificationType === TwoStepVerificationTypes.Google && (
-              <div style={signInStyles.twoFactorContainer}>
-                <h3 className="form-title">Account Secured</h3>
-                <p>Enter one-time-password from Authenticator App</p>
-                <img src={bf_shield} width="25%" alt="Security Shield" />
-
-                <div style={signInStyles.otpContainer}>
-                  <OTPInput
-                    autoFocus
-                    isNumberInput
-                    length={6}
-                    className="otpContainer"
-                    inputClassName="otpInput"
-                    onChangeOTP={(otp) => {
-                      if (otp.length === 6) {
-                        updateFormData('otp', otp);
-                      }
-                    }}
-                  />
-                </div>
-
-                <RememberDeviceCheckbox
-                  isChecked={ui.rememberDevice}
-                  onToggle={handleToggleRememberDevice}
-                  text={t('Remember this device?')}
-                />
-
-                <BFGradientButton
-                  buttonType={BFGradientButtonType.Action}
-                  width="98%"
-                  text={t('Confirm')}
-                  onPress={handleTwoFactorSubmit}
-                />
-              </div>
-            )}
+          <div style={shadcnStyles.recaptchaText}>
+            <Trans>This site is protected by reCAPTCHA and the Google</Trans>{' '}
+            <a href="https://policies.google.com/privacy" style={shadcnStyles.link}>
+              <Trans>Privacy Policy</Trans>
+            </a>{' '}
+            <Trans>and</Trans>{' '}
+            <a href="https://policies.google.com/terms" style={shadcnStyles.link}>
+              <Trans>Terms of Service</Trans>
+            </a>{' '}
+            <Trans>apply.</Trans>
           </div>
         </div>
-      </div>
+      )}
 
-      <div style={signInStyles.copyrightContainer}>
-        <p className="neon">
-          Flex Technologies Limited. 2021-{new Date().getFullYear()}
-        </p>
-      </div>
+      {/* Two-Factor Authentication Card */}
+      {ui.requireTfa && twoStepVerificationType === TwoStepVerificationTypes.Google && (
+        <div style={{ ...shadcnStyles.card, ...(isMobile ? shadcnStyles.mobile.card : {}) }}>
+          <div style={shadcnStyles.cardHeader}>
+            <div style={{ marginBottom: '16px' }}>
+              <FaShieldAlt size={48} color="hsl(142.1, 76.2%, 36.3%)" />
+            </div>
+            <h1 style={shadcnStyles.cardTitle}>
+              <Trans>Two-Factor Authentication</Trans>
+            </h1>
+            <p style={shadcnStyles.cardDescription}>
+              <Trans>Enter the 6-digit code from your authenticator app</Trans>
+            </p>
+          </div>
 
+          <div style={shadcnStyles.otpContainer}>
+            <OTPInput
+              autoFocus
+              isNumberInput
+              length={6}
+              className="otpContainer"
+              inputClassName="otpInput"
+              onChangeOTP={(otp) => {
+                if (otp.length === 6) {
+                  updateFormData('otp', otp);
+                }
+              }}
+            />
+          </div>
+
+          <EnhancedCheckbox
+            isChecked={ui.rememberDevice}
+            onToggle={handleToggleRememberDevice}
+            label={t('Remember this device for 30 days')}
+          />
+
+          <div style={shadcnStyles.buttonContainer}>
+            <button
+              type="button"
+              onClick={handleTwoFactorSubmit}
+              disabled={formData.otp.length !== 6 || ui.isLoading}
+              style={{
+                ...shadcnStyles.button('primary', ui.isLoading),
+                opacity: (formData.otp.length !== 6 || ui.isLoading) ? 0.6 : 1
+              }}
+            >
+              {ui.isLoading ? (
+                <>
+                  <div style={{ 
+                    width: '16px', 
+                    height: '16px', 
+                    border: '2px solid transparent',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  <Trans>Verifying...</Trans>
+                </>
+              ) : (
+                <Trans>Verify & Continue</Trans>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Email Confirmation Modal */}
       {ui.showResendModal && (
         <BFModalWindow
           isOpen={ui.showResendModal}
           title={t('Email Not Confirmed')}
           onClose={handleCloseResendModal}
         >
-          <div style={signInStyles.modalContent}>
-            <p style={signInStyles.modalText}>
+          <div style={shadcnStyles.modalContent}>
+            <p style={shadcnStyles.modalText}>
               <Trans>Your email address has not been confirmed yet. Would you like us to resend the confirmation email?</Trans>
             </p>
-            <p style={signInStyles.modalEmailText}>
-              <Trans>Email:</Trans> <span style={signInStyles.modalEmailValue}>{formData.email}</span>
+            <p style={shadcnStyles.modalEmail}>
+              <Trans>Email:</Trans>{' '}
+              <span style={shadcnStyles.modalEmailValue}>{formData.email}</span>
             </p>
 
-            <div style={signInStyles.modalButtonContainer}>
-              <BFGradientButton
-                buttonType={BFGradientButtonType.Destructive}
-                text={t('Cancel')}
-                onPress={handleCloseResendModal}
-                width="120px"
-              />
-              <BFGradientButton
-                buttonType={BFGradientButtonType.Action}
-                text={t('Resend Email')}
-                isLoading={ui.isResendLoading}
-                onPress={handleResendEmailConfirmation}
-                width="120px"
-              />
+            <div style={shadcnStyles.modalButtons}>
+              <button
+                type="button"
+                onClick={handleCloseResendModal}
+                style={shadcnStyles.button('secondary')}
+              >
+                <Trans>Cancel</Trans>
+              </button>
+              <button
+                type="button"
+                onClick={handleResendEmailConfirmation}
+                disabled={ui.isResendLoading}
+                style={{
+                  ...shadcnStyles.button('primary', ui.isResendLoading),
+                  opacity: ui.isResendLoading ? 0.6 : 1
+                }}
+              >
+                {ui.isResendLoading ? (
+                  <>
+                    <div style={{ 
+                      width: '16px', 
+                      height: '16px', 
+                      border: '2px solid transparent',
+                      borderTop: '2px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }} />
+                    <Trans>Sending...</Trans>
+                  </>
+                ) : (
+                  <Trans>Resend Email</Trans>
+                )}
+              </button>
             </div>
           </div>
         </BFModalWindow>
       )}
+
+      {/* Copyright */}
+      <div style={shadcnStyles.copyright}>
+        <p>
+          Flex Technologies Limited. 2021-{new Date().getFullYear()}
+        </p>
+      </div>
+
+      {/* Global Styles for Animations */}
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        input:focus {
+          outline: none !important;
+        }
+        
+        /* Custom scrollbar for mobile */
+        @media (max-width: 768px) {
+          body {
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+      `}</style>
     </div>
   );
 };

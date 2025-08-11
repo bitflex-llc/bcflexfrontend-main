@@ -39,11 +39,11 @@ interface BalanceRowData {
 // ====================================================================================
 
 const SWR_CONFIG = {
-  revalidateOnFocus: false,
+  revalidateOnFocus: true,
   revalidateOnReconnect: true,
-  refreshInterval: 30000,
-  errorRetryCount: 3,
-  errorRetryInterval: 5000
+  refreshInterval: 10000,
+  errorRetryCount: 5,
+  errorRetryInterval: 2500
 } as const;
 
 // ====================================================================================
