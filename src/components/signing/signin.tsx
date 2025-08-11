@@ -1122,8 +1122,8 @@ const SignIn: React.FC = () => {
         </p>
       </div>
 
-      {/* Global Styles for Animations */}
-      <style jsx>{`
+  {/* Global Styles for Animations */}
+  <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -1139,7 +1139,7 @@ const SignIn: React.FC = () => {
             -webkit-overflow-scrolling: touch;
           }
         }
-      `}</style>
+  `}</style>
     </div>
   );
 };

@@ -20,10 +20,10 @@ import { LoadingComponent } from '../../LoadingComponent';
 // ====================================================================================
 
 interface NetworkCurrency {
-  networkCurrencyId: number;
-  name: string;
-  imageBase64: string;
-  adreess: string; // Note: API typo maintained for compatibility
+  networkCurrencyId?: number;
+  name?: string | null;
+  imageBase64?: string | null;
+  adreess?: string | null; // Note: API typo maintained for compatibility
   fee?: number;
   estimatedTime?: string;
 }
@@ -274,8 +274,8 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = React.memo(({
         
         <div style={styles.networkInfo}>
           <img 
-            src={network.imageBase64} 
-            alt={network.name}
+            src={network.imageBase64 ?? ''} 
+            alt={network.name ?? ''}
             style={styles.networkImage}
             loading="lazy"
           />
