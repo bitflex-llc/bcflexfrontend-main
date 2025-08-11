@@ -1,20 +1,6 @@
-# Возьмите базовый образ
-FROM node:12 as build-stage
-
-# Устанавливаем рабочую директорию
-WORKDIR /app
-# Копируем файлы package.json yarn.lock в рабочую директорию
-# COPY package.json yarn.lock /app/
-# # Устаналиваем зависимости
-# RUN yarn install
-# Копируем исходники в рабочую директорию
-COPY . /app/
-# Собираем проект
-# RUN yarn build
-
 FROM nginx:latest
-# Копируем билд из ступени сборки "build-stage" в директорию образа /usr/share/nginx/html
-COPY --from=build-stage /app/build /usr/share/nginx/html
+# Копируем локальный билд (собранный в publish.sh) в директорию образа /usr/share/nginx/html
+COPY build /usr/share/nginx/html
 # Копируем конфиг nginx в директорию образа /etc/nginx/nginx.conf (Напишем его позже)
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY build/nginx-csp-header.conf /etc/nginx/csp.conf
