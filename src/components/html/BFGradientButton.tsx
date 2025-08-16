@@ -260,17 +260,7 @@ export const BFGradientButton = ({
                             <div style={{ fontSize: 22, color: 'white' }}>Google Authenticator</div>
                         </div>
                     </div>
-                    <OTPInput
-                        autoFocus
-                        isNumberInput
-                        length={6}
-                        className="otpContainer"
-                        inputClassName="otpInput"
-                        onChangeOTP={(otp) => {
-                            if (otp.length === 6)
-                                setOTP(otp)
-                        }}
-                    />
+
                 </div>
                 <div style={{ marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <BFGradientButton buttonType={BFGradientButtonType.Action} width={'100%'}
@@ -281,7 +271,7 @@ export const BFGradientButton = ({
                                 case GuardActionType.Withdraw: {
 
                                     const insideWithdrawRequest: PostWithdrawRequest = postWithdrawRequest!;
-                                    insideWithdrawRequest.googleAuthenticatorCode = OTP;
+                                    // insideWithdrawRequest.googleAuthenticatorCode = OTP;
 
                                     BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", insideWithdrawRequest)
                                         .then(response => {
@@ -334,28 +324,6 @@ export const BFGradientButton = ({
         }
     }, [currencies, postWithdrawRequest, verificationAction]);
 
-
-
-    const GuardModalWithdraw = useCallback(() => {
-        return (
-            <div style={{ margin: 10, position: 'relative' }}>
-
-                <div>
-                    <div style={{ textAlign: 'center', fontSize: 20 }}>
-                        This action is protected with BCFLEX Guard
-                    </div>
-                    {GuardAdditionalDataRenderSwitch()}
-
-                    <div style={{ textAlign: 'center', }}>
-                        <img src={loading_png} width={'20%'} alt='guard icon' />
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <h4>Waiting for confirmation on your device...</h4>
-                    </div>
-                </div>
-            </div>
-        );
-    }, [GuardAdditionalDataRenderSwitch]);
 
     useEffect(() => {
         if (isGoogleModalActive || isBitflexGuardModalActive)
@@ -440,7 +408,7 @@ export const BFGradientButton = ({
         )
 
     return <div style={{ position: 'relative' }}>
-        {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Google) && <BFModalWindow isOpen={isGoogleModalActive} title={'Google Authenticator'} onClose={() => {
+        <BFModalWindow isOpen={isGoogleModalActive} title={'Action Confirmation'} onClose={() => {
             setisGoogleModalActive(false)
             setisLoadingInside(false)
 
@@ -450,7 +418,7 @@ export const BFGradientButton = ({
                 onActionConfirmationCancel();
         }}>
             {RenderGoogleAutenticator()}
-        </BFModalWindow>}
+        </BFModalWindow>
 
         {/* {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Bitflex) && <BFModalWindow isOpen={isBitflexGuardModalActive} title={' BCFLEX Guard'} onClose={() => {
             setisBitflexGuardModalActive(false)
