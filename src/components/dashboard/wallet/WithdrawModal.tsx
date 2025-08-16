@@ -2,8 +2,8 @@
 
 import { BFGradientButton, BFGradientButtonType, } from '../../html/BFGradientButton';
 import { BFInput, BFInputType } from '../../html/BFInput';
-import { BFNotification, IBFNotification } from '../../html/BFNotification';
-import { Code, GuardActionType } from '../../../api-wrapper/api';
+import { BFNotification, BFNotificationType, IBFNotification } from '../../html/BFNotification';
+import { Code, GuardActionType, WithdrawErrorCodes } from '../../../api-wrapper/api';
 import { ICurrency, IState } from '../../../store/types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -231,12 +231,26 @@ export function WithdrawModal({
                             twoStepOverlayDiv={divRef}
 
                             isDisabled={!isAmountValid || !isAddressValid || (withdrawPage.networkCurrencies && withdrawPage.networkCurrencies?.length > 0 ? currencyNetworkId === 0 : false)}
-                            
 
-                            verificationAction={GuardActionType.Withdraw}
-                            postWithdrawRequest={{ address: withdrawAddress!, amount: withdrawAmountForm, currency: currencyData.name, googleAuthenticatorCode: '', networkCurrencyId: currencyNetworkId }}
+                            onPress={() => {
+                                BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", { address: withdrawAddress!, amount: withdrawAmountForm, currency: currencyData.name, googleAuthenticatorCode: '', networkCurrencyId: currencyNetworkId })
+                                    .then(response => {
+                                        if (!response.data.success && response.data.withdrawErrorCode) {
+                                           BFNotifictionRef.current?.Notify("Withdraw Error", "Status Code: " + WithdrawErrorCodes[response.data.withdrawErrorCode], BFNotificationType.Error);
+                                        }
+                                        else if (response.data.success) {
+                                            BFNotifictionRef.current?.Notify("Withdraw Success", "Your withdrawal was successful", BFNotificationType.Success);
+                                        }
+                                        else {
+                                            BFNotifictionRef.current?.Notify("Withdraw Error", "Unknown status code", BFNotificationType.Error);
+                                        }
+                                    })
+                            }}
+
+
 
                             onClose={onClose}
+
 
                             BFNotificationRef={BFNotifictionRef.current!}
                         />
