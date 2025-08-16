@@ -366,16 +366,11 @@ export const BFGradientButton = ({
     }, [dispatch, isBitflexGuardModalActive, isGoogleModalActive, twoStepOverlayDiv]);
 
     const prePress = () => {
-
-
         if (onPrePress) onPrePress();
 
         if (requireTwoStep && !isActionConfirmed) {
-
-
             if (onTwoStepActive)
                 onTwoStepActive();
-
 
             if (twoStepType === TwoStepVerificationTypes.Google) {
                 setisGoogleModalActive(true)
@@ -385,35 +380,36 @@ export const BFGradientButton = ({
                     onPress()
             }
         }
+    }
 
-        if (isLinkButton && to)
-            return (
-                <Link className={GetClass(buttonType) + " font-roboto"} to={to} style={{ marginRight: marginRight, width: width }}>
-                    {text}
-                </Link>
-            )
+    if (isLinkButton && to)
+        return (
+            <Link className={GetClass(buttonType) + " font-roboto"} to={to} style={{ marginRight: marginRight, width: width }}>
+                {text}
+            </Link>
+        )
 
-        return <div style={{ position: 'relative' }}>
-            {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Google) && <BFModalWindow isOpen={isGoogleModalActive} title={'Google Authenticator'} onClose={() => {
-                setisGoogleModalActive(false)
-                setisLoadingInside(false)
-
-                setisWithdrawSuccess(false)
-
-                if (onActionConfirmationCancel)
-                    onActionConfirmationCancel();
-            }}>
-                {RenderGoogleAutenticator()}
-            </BFModalWindow>}
-
-            {/* {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Bitflex) && <BFModalWindow isOpen={isBitflexGuardModalActive} title={' BCFLEX Guard'} onClose={() => {
-            setisBitflexGuardModalActive(false)
+    return <div style={{ position: 'relative' }}>
+        {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Google) && <BFModalWindow isOpen={isGoogleModalActive} title={'Google Authenticator'} onClose={() => {
+            setisGoogleModalActive(false)
             setisLoadingInside(false)
 
             setisWithdrawSuccess(false)
 
-            BitflexOpenApi.BalanceApi.apiBalanceWithdrawstatusPut(false)
+            if (onActionConfirmationCancel)
+                onActionConfirmationCancel();
+        }}>
+            {RenderGoogleAutenticator()}
+        </BFModalWindow>}
 
+        {/* {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Bitflex) && <BFModalWindow isOpen={isBitflexGuardModalActive} title={' BCFLEX Guard'} onClose={() => {
+            setisBitflexGuardModalActive(false)
+            setisLoadingInside(false)
+    
+            setisWithdrawSuccess(false)
+    
+            BitflexOpenApi.BalanceApi.apiBalanceWithdrawstatusPut(false)
+    
             if (onActionConfirmationCancel)
                 onActionConfirmationCancel();
         }}>
@@ -421,31 +417,31 @@ export const BFGradientButton = ({
         </BFModalWindow>} */}
 
 
-            {image &&
-                <div style={{ position: 'absolute', zIndex: 10, bottom: -4, left: 25 }}>
-                    {image}
-                </div>}
-            <button
-                className={GetClass(buttonType) + " font-roboto"}
-                disabled={(isDisabled || isLoading)}
-                style={{ overflow: 'hidden', width: width, opacity: (isDisabled || isLoading || isLoadingInside) ? 0.3 : 1, cursor: isDisabled ? 'default' : 'pointer', marginRight: marginRight }} onClick={prePress}>
-                {
-                    !isLoadingInside && twoStepType && <img src={twoStepType === TwoStepVerificationTypes.Bitflex ? bitflex_guard_icon : google_auth_icon} className="widget-thumb-icon" style={{ height: 25, marginBottom: -6, marginRight: 7 }} alt={'two step icon'} />
-                }
-                {
-                    isLoadingInside
-                        ? <img
-                            className="widget-thumb-icon"
-                            src={loading_png}
-                            alt="Loading"
-                            style={{ height: 90, marginTop: -27, marginBottom: -30 }
-                            }
-                        />
-                        : buttonType === BFGradientButtonType.FormSaveSquare
-                            ? <FaCheck color={Colors.bitFlexGreenColor} />
-                            : text
-                }
-            </button>
-        </div>
-    }
+        {image &&
+            <div style={{ position: 'absolute', zIndex: 10, bottom: -4, left: 25 }}>
+                {image}
+            </div>}
+        <button
+            className={GetClass(buttonType) + " font-roboto"}
+            disabled={(isDisabled || isLoading)}
+            style={{ overflow: 'hidden', width: width, opacity: (isDisabled || isLoading || isLoadingInside) ? 0.3 : 1, cursor: isDisabled ? 'default' : 'pointer', marginRight: marginRight }} onClick={prePress}>
+            {
+                !isLoadingInside && twoStepType && <img src={twoStepType === TwoStepVerificationTypes.Bitflex ? bitflex_guard_icon : google_auth_icon} className="widget-thumb-icon" style={{ height: 25, marginBottom: -6, marginRight: 7 }} alt={'two step icon'} />
+            }
+            {
+                isLoadingInside
+                    ? <img
+                        className="widget-thumb-icon"
+                        src={loading_png}
+                        alt="Loading"
+                        style={{ height: 90, marginTop: -27, marginBottom: -30 }
+                        }
+                    />
+                    : buttonType === BFGradientButtonType.FormSaveSquare
+                        ? <FaCheck color={Colors.bitFlexGreenColor} />
+                        : text
+            }
+        </button>
+    </div>
+}
 
