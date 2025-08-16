@@ -254,7 +254,7 @@ export default function Security() {
 
     // Get 2FA status text and color
     const getTfaStatusInfo = useCallback(() => {
-        if (!settings?.verificationTypes) {
+        if (!settings?.verificationTypes || settings.verificationTypes === TwoStepVerificationTypes.No) {
             return { text: 'Disabled', color: 'red' };
         }
 
