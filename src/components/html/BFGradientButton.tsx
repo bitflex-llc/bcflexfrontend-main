@@ -1,7 +1,7 @@
 import * as blockies from 'blockies-ts';
 
 import { BFNotificationType, IBFNotification } from './BFNotification';
-import { ChangePasswordRequest, GuardActionType, PostWithdrawRequest, TwoStepVerificationTypes } from '../../api-wrapper/api';
+import { ChangePasswordRequest, GuardActionType, PostWithdrawRequest, TwoStepVerificationTypes, WithdrawErrorCodes } from '../../api-wrapper/api';
 import React, { RefObject, useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 
@@ -278,25 +278,25 @@ export const BFGradientButton = ({
                         onPress={() => {
 
                             switch (verificationAction) {
-                                // case GuardActionType.Withdraw: {
+                                case GuardActionType.Withdraw: {
 
-                                //     const insideWithdrawRequest: PostWithdrawRequest = postWithdrawRequest!;
-                                //     insideWithdrawRequest.googleAuthenticatorCode = OTP;
+                                    const insideWithdrawRequest: PostWithdrawRequest = postWithdrawRequest!;
+                                    insideWithdrawRequest.googleAuthenticatorCode = OTP;
 
-                                //     BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", insideWithdrawRequest)
-                                //         .then(response => {
-                                //             if (!response.data.success && response.data.withdrawErrorCode) {
-                                //                 BFNotificationRef?.Notify("Withdraw Error", "Status Code: " + WithdrawErrorCode[response.data.withdrawErrorCode], BFNotificationType.Error);
-                                //             }
-                                //             else if (response.data.success) {
-                                //                 setisWithdrawSuccess(true)
-                                //             }
-                                //             else {
-                                //                 BFNotificationRef?.Notify("Withdraw Error", "Unknown status code", BFNotificationType.Error);
-                                //             }
-                                //         })
-                                //     break;
-                                // }
+                                    BitflexOpenApi.BalanceApi.apiVversionBalanceWithdrawPost("1.0", insideWithdrawRequest)
+                                        .then(response => {
+                                            if (!response.data.success && response.data.withdrawErrorCode) {
+                                                BFNotificationRef?.Notify("Withdraw Error", "Status Code: " + WithdrawErrorCodes[response.data.withdrawErrorCode], BFNotificationType.Error);
+                                            }
+                                            else if (response.data.success) {
+                                                setisWithdrawSuccess(true)
+                                            }
+                                            else {
+                                                BFNotificationRef?.Notify("Withdraw Error", "Unknown status code", BFNotificationType.Error);
+                                            }
+                                        })
+                                    break;
+                                }
                             }
                         }}
 

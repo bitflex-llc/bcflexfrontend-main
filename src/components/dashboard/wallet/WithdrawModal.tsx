@@ -231,6 +231,7 @@ export function WithdrawModal({
                             twoStepOverlayDiv={divRef}
 
                             isDisabled={!isAmountValid || !isAddressValid || (withdrawPage.networkCurrencies && withdrawPage.networkCurrencies?.length > 0 ? currencyNetworkId === 0 : false)}
+                            
 
                             onGuardResult={result => {
                                 setguardProceeded(true)
