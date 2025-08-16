@@ -227,16 +227,12 @@ export function WithdrawModal({
                             buttonType={BFGradientButtonType.GoldenBorder}
                             text={t('WITHDRAW')}
                             width={200}
-                            requireTwoStep={true}
+                            requireTwoStep={false}
                             twoStepOverlayDiv={divRef}
 
                             isDisabled={!isAmountValid || !isAddressValid || (withdrawPage.networkCurrencies && withdrawPage.networkCurrencies?.length > 0 ? currencyNetworkId === 0 : false)}
                             
 
-                            onGuardResult={result => {
-                                setguardProceeded(true)
-                                setguardResult(result)
-                            }}
                             verificationAction={GuardActionType.Withdraw}
                             postWithdrawRequest={{ address: withdrawAddress!, amount: withdrawAmountForm, currency: currencyData.name, googleAuthenticatorCode: '', networkCurrencyId: currencyNetworkId }}
 
