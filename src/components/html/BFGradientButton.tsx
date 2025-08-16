@@ -366,19 +366,69 @@ export const BFGradientButton = ({
     }, [dispatch, isBitflexGuardModalActive, isGoogleModalActive, twoStepOverlayDiv]);
 
     const prePress = () => {
+
+
         if (onPrePress) onPrePress();
 
         if (requireTwoStep && !isActionConfirmed) {
+
+
             if (onTwoStepActive)
                 onTwoStepActive();
 
-            if (twoStepType === TwoStepVerificationTypes.Google) {
+            // if (twoStepType === TwoStepVerificationTypes.Bitflex) {
+            //     switch (verificationAction) {
+
+            //         case GuardActionType.Withdraw:
+            //             BitflexOpenApi.BalanceApi.apiBalancePrewithdrawPost(postWithdrawRequest).then(preWithdrawResponse => {
+            //                 if (!preWithdrawResponse.data.success) {
+            //                     BFNotificationRef?.Notify("Withdraw Error", "Error Status Code: " + preWithdrawResponse.data.errorCode, BFNotificationType.Error);
+            //                     return;
+            //                 }
+
+            //                 setisLoadingInside(true)
+            //                 BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
+            //                     withdrawRequestModel: {
+            //                         address: postWithdrawRequest?.address!,
+            //                         amount: postWithdrawRequest?.amount!,
+            //                         currency: postWithdrawRequest?.currency!
+            //                     }
+            //                 })
+            //                     .then(response => response.data.success && setisBitflexGuardModalActive(true))
+            //                     .finally(() => setisLoadingInside(false))
+            //             })
+            //             break;
+
+            //         case GuardActionType.ChangePassword:
+            //             BitflexOpenApi.GuardApi.apiVversionGuardRequestPost("1.0", verificationAction, {
+            //                 changePasswordRequestModel: {
+            //                     oldPassword: changePasswordRequestData?.oldPassword!,
+            //                     newPassword: changePasswordRequestData?.newPassword!
+            //                 }
+            //             })
+            //                 .then(response => {
+            //                     if (response.data.success) {
+            //                         twoStepOverlayDiv?.current?.classList.add("invisible")
+            //                         setisBitflexGuardModalActive(true)
+            //                     }
+            //                 })
+            //                 .finally(() =>
+            //                     setisLoadingInside(false)
+            //                 )
+            //             break;
+
+            //         case GuardActionType.SignIn:
+            //             break;
+            //     }
+            // }
+            // else
+
+            if (twoStepType === TwoStepVerificationTypes.Google)
                 setisGoogleModalActive(true)
-            }
-            else {
-                if (onPress)
-                    onPress()
-            }
+        }
+        else {
+            if (onPress)
+                onPress()
         }
     }
 
@@ -405,11 +455,11 @@ export const BFGradientButton = ({
         {/* {(requireTwoStep && twoStepType === TwoStepVerificationTypes.Bitflex) && <BFModalWindow isOpen={isBitflexGuardModalActive} title={' BCFLEX Guard'} onClose={() => {
             setisBitflexGuardModalActive(false)
             setisLoadingInside(false)
-    
+
             setisWithdrawSuccess(false)
-    
+
             BitflexOpenApi.BalanceApi.apiBalanceWithdrawstatusPut(false)
-    
+
             if (onActionConfirmationCancel)
                 onActionConfirmationCancel();
         }}>
